@@ -5,11 +5,11 @@ public class Account
     public int Id { get; set; }
     public AccountTypes Type { get; private set; }
     public double Amount { get; private set; }
-    public string Number { get; private set; }
-    public string CardNumber { get; private set; }
+    public string[] Number { get; private set; }
+    public string[] CardNumber { get; private set; }
     public int UserId { get; init; }
     public string CVV2 { get; private set; }
-    public string ExpiryDate { get; private set; }
+    public DateTime ExpiryDate { get; private set; }
     public string Password { get; private set; }
     public bool IsBlocked { get; private set; }
     private Account(AccountTypes type, double amount, int userId)
@@ -29,6 +29,10 @@ public class Account
     {
         return "" + Amount + "\n" + Id + "\n" + Number;
     }
+    public string Report()
+    {
+        return "" + Password;
+    }
     public void BlockAccount()
     {
         this.IsBlocked = true;
@@ -43,45 +47,25 @@ public class Account
         var rnd = new Random();
         for (int i = 0; i < 6; i++)
         {
-            str += rnd.Next(0, 9);
+            str += rnd.Next(0, 10);
 
         }
         return str;
     }
-    public int ChangePassword(string oldPass, string newPassword)
+    public bool ChangePassword(string oldPass, string newPassword)
     {
         if (oldPass == Password)
         {
             Password = newPassword;
-            return 1;
+            return true;
 
         }
-        return 0;
+        return false;
     }
-    public string SetExpiry()
+    public DateTime SetExpiry()
     {
-        var str = "";
-        if ((DateTime.UtcNow.Year + 5).ToString().Length >= 2)
-        {
-            str += (DateTime.UtcNow.Year + 5).ToString().TakeLast(2);
+        return DateTime.UtcNow.AddYears(5);
 
-        }
-        else
-        {
-            str += 0;
-            str += (DateTime.UtcNow.Year + 5);
-        }
-        str += "/";
-        if (DateTime.UtcNow.Month.ToString().Length >= 2)
-        {
-            str += DateTime.UtcNow.Month;
-        }
-        else
-        {
-            str += 0;
-            str += DateTime.UtcNow.Month;
-        }
-        return str;
 
     }
     public string GenerateCVV2()
@@ -90,47 +74,46 @@ public class Account
         var rnd = new Random();
         for (int i = 0; i < 4; i++)
         {
-            str += rnd.Next(0, 9);
+            str += rnd.Next(0, 10);
         }
         return str;
     }
-    public string GenerateCartNumber()
+    public string[] GenerateCartNumber()
     {
+        var strArr = new string[4];
         var str = "";
         var rnd = new Random();
-        for (int i = 1; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
             {
-                str += rnd.Next(0, 9);
+                str += rnd.Next(0, 10);
 
             }
-            str += ".";
+            strArr[i] = str;
+            str = "";
         }
-        for (int j = 0; j < 4; j++)
-        {
-            str += rnd.Next(0, 9);
-
-        }
-        return str;
+        return strArr;
     }
-    public string GenerateAccountNumber()
+    public string[] GenerateAccountNumber()
     {
+        var strArr = new string[3];
         var str = "";
         var rnd = new Random();
         for (int i = 0; i < 2; i++)
         {
-            str += rnd.Next(0, 9);
+            str += rnd.Next(0, 10);
         }
-        str += ".";
+        strArr[0] = str;
+        str += "";
         str += this.UserId;
         for (int i = 0; i < 4; i++)
         {
-            str += rnd.Next(0, 9);
+            str += rnd.Next(0, 10);
 
         }
-        str += ".";
-
+        strArr[1] = str;
+        str += "";
         if (this.Type == AccountTypes.Saving)
         {
             str += 1;
@@ -140,12 +123,23 @@ public class Account
             str += 2;
 
         }
+        strArr[2] = str;
 
-        return str;
+
+        return strArr;
     }
-    public static Account OpenAccount(AccountTypes type, double amount, int userId)
+    public static Account OpenAccount(int type, double amount, int userId)
     {
-        return new Account(type, amount, userId);
+        if (type  == 1)
+        {
+            return new Account(AccountTypes.Saving, amount, userId);
+        }
+        else
+        {
+            return new Account(AccountTypes.Checking, amount, userId);
+
+        }
+        
     }
 
 }
