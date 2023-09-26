@@ -1,3 +1,5 @@
+using InternetBank.Domain.Interfaces.UOF;
+using InternetBank.Domain.Repositories;
 using InternetBank.Domain.Users;
 using MapsterMapper;
 using MediatR;
@@ -9,10 +11,14 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, bool>
 {
     private readonly IMapper _mapper;
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IAppUserRepository _appUserRepository;
 
-    public RegisterCommandHandler(IMapper mapper)
+    public RegisterCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, IAppUserRepository appUserRepository)
     {
         _mapper = mapper;
+        _unitOfWork = unitOfWork;
+        _appUserRepository = appUserRepository;
     }
 
     public async Task<bool> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -22,15 +28,21 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, bool>
             Email = request.Email,
             PhoneNumber = request.PhoneNumber
         };
-        
+
+
         var userRegisterResult = await _userManager.CreateAsync(identityUser);
-        
+
         if (userRegisterResult.Succeeded)
         {
+            await _unitOfWork.SaveChangesAsync();
             var appUser = ApplicationUser.CreateUser(request.FirstName, request.LastName, request.NationalCode, request.BirthDate, identityUser.Id);
+            _appUserRepository.Create(appUser);
+            await _unitOfWork.SaveChangesAsync();
+
+
             return true;
         }
         return false;
-        
+
     }
 }
