@@ -44,11 +44,7 @@ public class ApplicationUser : Entity
                 }
             }
         }
-        return new ApplicationUser(firstName,
-                                   lastName,
-                                   nationalCode,
-                                   birthDate,
-                                   identityUserId);
+        throw new Exception("something wrong when creating user");
     }
     public static bool IsCorrectPhoneNumber(string input)
     {

@@ -1,16 +1,24 @@
 using InternetBank.Domain.Interfaces.UOF;
+using InternetBank.Infrastructure.Data;
 
 namespace InternetBank.Infrastructure.UOF;
 
 public class UnitOfWork : IUnitOfWork
 {
-    public Task DisposeAsync()
+    private readonly ApplicationDbContext _context;
+
+    public UnitOfWork(ApplicationDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
 
-    public Task SaveChangesAsync()
+    public async Task DisposeAsync()
     {
-        throw new NotImplementedException();
+        await _context.DisposeAsync();
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await _context.SaveChangesAsync();
     }
 }
