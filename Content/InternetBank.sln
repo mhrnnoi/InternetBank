@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6CCE0C6B-75B8-42FE-9D12-D26B544BEBE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBank.Api", "src\InternetBank.Api\InternetBank.Api.csproj", "{CEEB2224-0755-4545-A74B-D60079739BDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBank.Application", "src\InternetBank.Application\InternetBank.Application.csproj", "{2C111C72-4D02-407D-B394-AD7EE36A221B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBank.Contracts", "src\InternetBank.Contracts\InternetBank.Contracts.csproj", "{52486B8C-D7DC-42E2-AC4F-80C258219003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBank.Domain", "src\InternetBank.Domain\InternetBank.Domain.csproj", "{AE10DEC7-388C-4B9B-A5A0-CA3CE5D668E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBank.Infrastructure", "src\InternetBank.Infrastructure\InternetBank.Infrastructure.csproj", "{F0FCFEFE-F4E8-42CC-85D0-E22FA2D8D58F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{26A377B4-C960-4974-9D20-096A293F7390}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{7EF13067-7591-4491-972A-8797B0EF8A39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBank.Domain.Tests", "test\UnitTests\InternetBank.Domain.Tests\InternetBank.Domain.Tests.csproj", "{311D8F08-C660-4F7E-8DC9-1954E668B199}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CEEB2224-0755-4545-A74B-D60079739BDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEEB2224-0755-4545-A74B-D60079739BDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEEB2224-0755-4545-A74B-D60079739BDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEEB2224-0755-4545-A74B-D60079739BDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C111C72-4D02-407D-B394-AD7EE36A221B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C111C72-4D02-407D-B394-AD7EE36A221B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C111C72-4D02-407D-B394-AD7EE36A221B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C111C72-4D02-407D-B394-AD7EE36A221B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52486B8C-D7DC-42E2-AC4F-80C258219003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52486B8C-D7DC-42E2-AC4F-80C258219003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52486B8C-D7DC-42E2-AC4F-80C258219003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52486B8C-D7DC-42E2-AC4F-80C258219003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE10DEC7-388C-4B9B-A5A0-CA3CE5D668E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE10DEC7-388C-4B9B-A5A0-CA3CE5D668E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE10DEC7-388C-4B9B-A5A0-CA3CE5D668E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE10DEC7-388C-4B9B-A5A0-CA3CE5D668E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0FCFEFE-F4E8-42CC-85D0-E22FA2D8D58F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0FCFEFE-F4E8-42CC-85D0-E22FA2D8D58F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0FCFEFE-F4E8-42CC-85D0-E22FA2D8D58F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0FCFEFE-F4E8-42CC-85D0-E22FA2D8D58F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{311D8F08-C660-4F7E-8DC9-1954E668B199}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{311D8F08-C660-4F7E-8DC9-1954E668B199}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{311D8F08-C660-4F7E-8DC9-1954E668B199}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{311D8F08-C660-4F7E-8DC9-1954E668B199}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CEEB2224-0755-4545-A74B-D60079739BDA} = {6CCE0C6B-75B8-42FE-9D12-D26B544BEBE7}
+		{2C111C72-4D02-407D-B394-AD7EE36A221B} = {6CCE0C6B-75B8-42FE-9D12-D26B544BEBE7}
+		{52486B8C-D7DC-42E2-AC4F-80C258219003} = {6CCE0C6B-75B8-42FE-9D12-D26B544BEBE7}
+		{AE10DEC7-388C-4B9B-A5A0-CA3CE5D668E6} = {6CCE0C6B-75B8-42FE-9D12-D26B544BEBE7}
+		{F0FCFEFE-F4E8-42CC-85D0-E22FA2D8D58F} = {6CCE0C6B-75B8-42FE-9D12-D26B544BEBE7}
+		{7EF13067-7591-4491-972A-8797B0EF8A39} = {26A377B4-C960-4974-9D20-096A293F7390}
+		{311D8F08-C660-4F7E-8DC9-1954E668B199} = {7EF13067-7591-4491-972A-8797B0EF8A39}
+	EndGlobalSection
+EndGlobal
