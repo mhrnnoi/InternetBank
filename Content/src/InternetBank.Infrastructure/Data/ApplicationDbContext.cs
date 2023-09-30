@@ -21,7 +21,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer("Server=localhost; Database=InternetBankDb; user Id=sa; Password=MyPassword@complex6690; TrustServerCertificate=True");
+            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=InternetBankDb;Username=mehran;Password=MyPassword@complex3343;");
         }
     }
 }

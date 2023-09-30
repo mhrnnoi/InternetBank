@@ -1,8 +1,9 @@
 using InternetBank.Domain.Accounts;
+using InternetBank.Domain.Exceptions;
 
 namespace InternetBank.Domain.Transactions;
 
-public class Transaction
+public sealed  class Transaction
 {
     public int Id { get; set; }
     public bool IsSuccess { get; set; }
@@ -29,6 +30,7 @@ public class Transaction
     {
 
         Amount = amount;
+        
         // amount == Amount;
         OTP = oTP;
 

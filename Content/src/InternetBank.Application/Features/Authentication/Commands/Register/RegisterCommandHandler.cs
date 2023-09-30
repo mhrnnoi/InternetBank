@@ -35,7 +35,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, bool>
 
 
         var appUser = ApplicationUser.CreateUser(request.FirstName, request.LastName, request.NationalCode, request.BirthDate, identityUser.Id);
-        if (appUser != null)
+        if (appUser is not null)
         {
             var userRegisterResult = await _userManager.CreateAsync(identityUser);
             if (userRegisterResult.Succeeded)

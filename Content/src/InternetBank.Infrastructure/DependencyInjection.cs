@@ -23,7 +23,7 @@ public static class DependencyInjection
         services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlServer("Server=localhost; Database=InternetBankDb; user Id=sa; Password=MyPassword@complex6690; TrustServerCertificate=True");
+            options.UseNpgsql("Host=localhost;Port=5432;Database=InternetBankDb;Username=mehran;Password=MyPassword@complex3343;");
         });
 
         var typeadapterConfig = TypeAdapterConfig.GlobalSettings;

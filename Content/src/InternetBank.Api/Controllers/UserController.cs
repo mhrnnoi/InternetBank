@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using InternetBank.Application.Features.Authentication.Commands.Register;
 using InternetBank.Contracts.Requests.Users;
+using InternetBank.Domain.Exceptions;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,10 @@ public class UserController : ApiController
     [HttpPost]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
+        throw new MyCustomEx("lele", 400, "hehe desc");
+
+
+
         var command = _mapper.Map<RegisterCommand>(request);
         var result = await _sender.Send(command);
         return Ok(result);

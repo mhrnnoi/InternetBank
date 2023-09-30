@@ -1,6 +1,6 @@
 namespace InternetBank.Domain.Accounts;
 
-public class Account
+public sealed class Account
 {
     public int Id { get; set; }
     public AccountTypes Type { get; private set; }

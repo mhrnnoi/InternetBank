@@ -1,9 +1,10 @@
 using System.Text.RegularExpressions;
 using InternetBank.Domain.Abstracts.Entity;
+using InternetBank.Domain.Exceptions;
 
 namespace InternetBank.Domain.Users;
 
-public class ApplicationUser : Entity
+public sealed class ApplicationUser : Entity
 {
     public string IdentityUserId { get; init; }
     public string FirstName { get; private set; }
@@ -16,6 +17,7 @@ public class ApplicationUser : Entity
                             string nationalCode,
                             DateTime birthDate,
                             string identityUserId)
+                            :base()
     {
         FirstName = firstName;
         LastName = lastName;
@@ -24,7 +26,7 @@ public class ApplicationUser : Entity
         IdentityUserId = identityUserId;
     }
 
-    public static ApplicationUser CreateUser(string firstName,
+    public static ApplicationUser? CreateUser(string firstName,
                                              string lastName,
                                              string nationalCode,
                                              DateTime birthDate,
@@ -39,12 +41,15 @@ public class ApplicationUser : Entity
                 {
                     if (DateTime.UtcNow.Year - birthDate.Year >= 18)
                     {
+                
                         return new ApplicationUser(firstName, lastName, nationalCode, birthDate, identityUserId);
                     }
                 }
             }
         }
-        throw new Exception("something wrong when creating user");
+        
+        return null;
+        // throw new Exception("something wrong when creating user");
     }
     public static bool IsCorrectPhoneNumber(string input)
     {
