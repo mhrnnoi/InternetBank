@@ -1,3 +1,5 @@
+using InternetBank.Domain.Exceptions;
+
 namespace InternetBank.Domain.Accounts;
 
 public sealed class Account
@@ -27,6 +29,7 @@ public sealed class Account
     }
     public string Balance()
     {
+        
         return "" + Amount + "\n" + Id + "\n" + Number;
     }
     public string Report()

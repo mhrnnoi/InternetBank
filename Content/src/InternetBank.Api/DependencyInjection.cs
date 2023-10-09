@@ -1,5 +1,7 @@
 using System.Reflection;
 using Asp.Versioning;
+using InternetBank.Api.MyProblemDetails;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace InternetBank.Application;
@@ -12,6 +14,7 @@ public static class DependencyInjection
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+        services.AddSingleton<ProblemDetailsFactory, MyProblemDetailsFactory>();
         services.AddApiVersioning(
             options =>
             {

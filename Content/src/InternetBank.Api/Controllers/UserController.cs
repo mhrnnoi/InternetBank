@@ -24,9 +24,6 @@ public class UserController : ApiController
     [HttpPost]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
-        throw new MyCustomEx("lele", 400, "hehe desc");
-
-
 
         var command = _mapper.Map<RegisterCommand>(request);
         var result = await _sender.Send(command);
