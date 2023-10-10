@@ -1,6 +1,7 @@
 using System.Reflection;
 using InternetBank.Domain.Interfaces.UOF;
 using InternetBank.Domain.Repositories;
+using InternetBank.Domain.Users;
 using InternetBank.Infrastructure.Data;
 using InternetBank.Infrastructure.Repositories;
 using InternetBank.Infrastructure.UOF;
@@ -30,7 +31,7 @@ public static class DependencyInjection
         typeadapterConfig.Scan(Assembly.GetExecutingAssembly());
         services.AddSingleton(typeadapterConfig);
         services.AddScoped<IMapper, ServiceMapper>();
-        
+
 
         return services;
 

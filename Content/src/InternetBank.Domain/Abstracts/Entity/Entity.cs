@@ -15,10 +15,7 @@ public abstract class Entity : IEquatable<Entity>
         if (e1 is not null)
         {
             if (e2 is not null)
-            {
                 return e1.Equals(e2);
-                
-            }
             return false;
         }
         return false;
@@ -30,13 +27,9 @@ public abstract class Entity : IEquatable<Entity>
     public override bool Equals(object? obj)
     {
         if (obj is null || obj.GetType() != GetType())
-        {
             return false;
-        }
         if (obj is Entity en)
-        {
             return en.Id == Id;
-        }
         return false;
     }
 
@@ -49,9 +42,7 @@ public abstract class Entity : IEquatable<Entity>
     public bool Equals(Entity? other)
     {
         if (other is null || other.GetType() != GetType())
-        {
             return false;
-        }
         return other.Id == Id;
     }
 }

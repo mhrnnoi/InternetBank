@@ -7,4 +7,6 @@ public record RegisterCommand(string FirstName,
                               string NationalCode,
                               DateTime BirthDate,
                               string PhoneNumber,
-                              string Email) : IRequest<bool>;
+                              string Email,
+                              string Username,
+                              string Password) : IRequest<bool>;

@@ -1,3 +1,5 @@
+using System.Security.Principal;
+using InternetBank.Domain.Interfaces.IdentityService;
 using InternetBank.Domain.Interfaces.UOF;
 using InternetBank.Domain.Repositories;
 using InternetBank.Domain.Users;
@@ -13,37 +15,39 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, bool>
     private readonly UserManager<IdentityUser> _userManager;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IAppUserRepository _appUserRepository;
+    private readonly IIdentityService _identityservice;
 
-    public RegisterCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, IAppUserRepository appUserRepository, UserManager<IdentityUser> userManager)
+    public RegisterCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, IAppUserRepository appUserRepository, UserManager<IdentityUser> userManager, IIdentityService identityservice)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
         _appUserRepository = appUserRepository;
         _userManager = userManager;
+        _identityservice = identityservice;
     }
 
     public async Task<bool> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        var identityUser = new IdentityUser()
+        //identity service create user 
+        var userRegisterResult = _identityservice.CreateUserAsync(request.FirstName,
+                                         request.LastName,
+                                         request.NationalCode,
+                                         request.BirthDate,
+                                         request.Email,
+                                         request.PhoneNumber,
+                                         request.Username,
+                                         request.Password);
+        //dbset savechanges
+
+
+
+
+
         {
-            UserName = request.Email,
-            Email = request.Email,
-            PhoneNumber = request.PhoneNumber
-        };
 
-
-
-
-        var appUser = ApplicationUser.CreateUser(request.FirstName, request.LastName, request.NationalCode, request.BirthDate, identityUser.Id);
-        if (appUser is not null)
-        {
-            var userRegisterResult = await _userManager.CreateAsync(identityUser);
-            if (userRegisterResult.Succeeded)
+            if (userRegisterResult)
             {
-                _appUserRepository.Create(appUser);
                 await _unitOfWork.SaveChangesAsync();
-
-
                 return true;
             }
 
