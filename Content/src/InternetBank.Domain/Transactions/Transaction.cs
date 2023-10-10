@@ -16,7 +16,7 @@ public sealed  class Transaction
     public DateTime OTPExpireDate { get; set; }
     public Status Status { get; set; }
 
-    private Transaction(double amount, int accountId, string destinationCardNumber, int oTP)
+    private Transaction(double amount, int accountId, string destinationCardNumber, int oTP, string description)
     {
         Amount = amount;
         CreatedDateTime = DateTime.UtcNow;
@@ -25,6 +25,7 @@ public sealed  class Transaction
         DestinationCardNumber = destinationCardNumber;
         OTP = oTP;
         Status = Status.Pending;
+        Description = description;
     }
     public string TransferMoney(double amount, string description, int oTP)
     {
@@ -55,7 +56,7 @@ public sealed  class Transaction
         CheckAmount(amount);
         CheckCardNumberFormat(destinationCardNumber);
 
-        var transaction = new Transaction(amount, accountId, destinationCardNumber, 6464);
+        var transaction = new Transaction(amount, accountId, destinationCardNumber, 6464, "desc");
         transaction.OTPExpireDate = DateTime.Now.AddMinutes(1);
 
         return "";

@@ -9,7 +9,7 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
     {
         RuleFor(x => x.Email).EmailAddress().NotEmpty().WithMessage("incorrect email address format");
         RuleFor(x => x.PhoneNumber.Select(x => char.IsNumber(x)).Count()).NotEmpty().GreaterThanOrEqualTo(10).LessThanOrEqualTo(16)
-                                    .WithMessage("its not correct phone number");
+                                    .WithMessage("its not correct phone number").WithName("phone number numbers");
         RuleFor(x => x.FirstName.Length).NotEmpty().GreaterThanOrEqualTo(2).LessThanOrEqualTo(15)
         .WithMessage("plz enter valid name ");
         RuleFor(x => x.LastName.Length).NotEmpty().GreaterThanOrEqualTo(2).LessThanOrEqualTo(15)

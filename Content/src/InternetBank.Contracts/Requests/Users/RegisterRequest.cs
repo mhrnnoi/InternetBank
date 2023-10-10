@@ -5,4 +5,6 @@ public record RegisterRequest(string FirstName,
                               string NationalCode,
                               DateTime BirthDate,
                               string PhoneNumber,
-                              string Email);
+                              string Email,
+                              string Username,
+                              string Password);
