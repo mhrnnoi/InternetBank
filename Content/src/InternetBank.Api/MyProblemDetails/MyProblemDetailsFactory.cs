@@ -76,6 +76,7 @@ internal sealed class MyProblemDetailsFactory : ProblemDetailsFactory
             problemDetails.Title = title;
         }
 
+
         ApplyProblemDetailsDefaults(httpContext, problemDetails, statusCode.Value);
 
         return problemDetails;
@@ -95,6 +96,7 @@ internal sealed class MyProblemDetailsFactory : ProblemDetailsFactory
         if (traceId != null)
         {
             problemDetails.Extensions["traceId"] = traceId;
+
         }
         // ClientErrorData
         // problemDetails.Extensions["Errors"] = httpContext.;

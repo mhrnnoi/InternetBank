@@ -33,6 +33,7 @@ public sealed class ApplicationUser : Entity
                                              DateTime birthDate,
                                              string identityUserId)
     {
+        var ss = IsPersian(firstName) == false ? throw new DomainExceptions.User.FirstNameIsNotFarsi() : null;
         var exces = new List<DomainExceptions>();
         if (IsPersian(firstName))
         {

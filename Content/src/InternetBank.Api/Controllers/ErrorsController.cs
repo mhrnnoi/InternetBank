@@ -2,8 +2,9 @@ using FluentValidation;
 using InternetBank.Domain.Exceptions;
 using InternetBank.Domain.Exceptions.User.AggregateExceptions;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace InternetBank.Api.Controllers;
 
@@ -24,17 +25,23 @@ public class ErrorsController : ApiController
         else if (exceptionFeature is ValidationException validationException)
         {
             var dct = new Dictionary<string, string[]>();
-            dct["errors"] = validationException.Errors.Select(x => x.PropertyName + ": " + x.ErrorMessage).ToArray();
-            var dct2 = new ValidationProblemDetails(dct);
-            return ValidationProblem(dct2);
+            // dct["errors"] = validationException.Errors.Select(x => x.PropertyName + ": " + x.ErrorMessage).ToArray();
+           foreach (var item in validationException.Errors)
+           {
+                ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
+           }
+            
+            // var dct2 = new ValidationProblemDetails(dct);
+            return ValidationProblem(ModelState);
+            
             // return Problem(statusCode: 400, title: "expected error : some input is wrong");
 
         }
-        else if (exceptionFeature is UserAggregateExceptions userAggregateExceptions)
-        {
-            return Problem(statusCode: userAggregateExceptions.StatusCode, title: "expected error : " + "some input is wrong.");
+        // else if (exceptionFeature is UserAggregateExceptions userAggregateExceptions)
+        // {
+        //     return Problem(statusCode: userAggregateExceptions.StatusCode, title: "expected error : " + "some input is wrong.");
 
-        }
+        // }
         else
         {
             return Problem(statusCode: 500, title: "unexpected error : internal server error");
