@@ -1,6 +1,6 @@
 using System.Reflection;
 using InternetBank.Application.Common.Interfaces;
-using InternetBank.Domain.Interfaces.IdentityService;
+using InternetBank.Application.Interfaces;
 using InternetBank.Domain.Interfaces.UOF;
 using InternetBank.Infrastructure.Data;
 using InternetBank.Infrastructure.Identity;

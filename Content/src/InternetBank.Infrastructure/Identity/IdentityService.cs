@@ -1,23 +1,24 @@
-using InternetBank.Domain.Interfaces.IdentityService;
+using InternetBank.Application.Interfaces;
 using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
 
 namespace InternetBank.Infrastructure.Identity;
 public class IdentityService : IIdentityService
 {
+
     private readonly UserManager<ApplicationUser> _userManager;
     public IdentityService(UserManager<ApplicationUser> userManager)
     {
         _userManager = userManager;
     }
-    public async Task<string> CreateUserAsync(string firstName,
-                                            string lastName,
-                                            string nationalCode,
-                                            DateTime birthDate,
-                                            string Email,
-                                            string PhoneNumber,
-                                            string Username,
-                                            string Password)
+    public async Task<(IdentityResult result, string id)> CreateUserAsync(string firstName,
+                                                                           string lastName,
+                                                                           string nationalCode,
+                                                                           DateTime birthDate,
+                                                                           string Email,
+                                                                           string PhoneNumber,
+                                                                           string Username,
+                                                                           string Password)
     {
         var user = ApplicationUser.CreateUser(firstName, lastName, nationalCode, birthDate);
         user.UserName = Username;
@@ -28,8 +29,11 @@ public class IdentityService : IIdentityService
 
         var res = await _userManager.CreateAsync(user, Password);
         if (res.Succeeded)
-            return user.Id;
-        throw new Exception(res.Errors.First().Description);
+        {
+            return (res, user.Id);
+        }
+        return (res, string.Empty);
+
     }
 
     // public void Delete(ApplicationUser user)
