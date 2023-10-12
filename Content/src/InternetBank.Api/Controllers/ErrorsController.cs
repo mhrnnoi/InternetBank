@@ -33,6 +33,10 @@ public class ErrorsController : ApiController
 
 
         }
+        else if (exceptionFeature is NullReferenceException)
+        {
+            return Problem();
+        }
 
         else
         {

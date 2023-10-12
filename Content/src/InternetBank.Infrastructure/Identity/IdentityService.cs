@@ -1,5 +1,5 @@
+using InternetBank.Application.Features.Authentication.Queries.Common;
 using InternetBank.Application.Interfaces;
-using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
 
 namespace InternetBank.Infrastructure.Identity;
@@ -7,9 +7,11 @@ public class IdentityService : IIdentityService
 {
 
     private readonly UserManager<ApplicationUser> _userManager;
-    public IdentityService(UserManager<ApplicationUser> userManager)
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    public IdentityService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
     {
         _userManager = userManager;
+        _signInManager = signInManager;
     }
     public async Task<(IdentityResult result, string id)> CreateUserAsync(string firstName,
                                                                            string lastName,
@@ -34,6 +36,16 @@ public class IdentityService : IIdentityService
         }
         return (res, string.Empty);
 
+    }
+
+    public async Task<UserDTO?> GetByIdAsync(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user is null)
+        {
+            return null;
+        }
+        return new UserDTO(user.FirstName, user.LastName);
     }
 
     public async Task<(bool res, string id, string username)> LoginUserAsync(string Email, string Password)

@@ -1,5 +1,9 @@
 using Asp.Versioning;
+using InternetBank.Application.Features.Authentication.Commands.Login;
 using InternetBank.Application.Features.Authentication.Commands.Register;
+using InternetBank.Application.Features.Authentication.Queries.GetUserById;
+
+// using InternetBank.Application.Features.Authentication.Queries.GetUserById;
 using InternetBank.Contracts.Requests.Users;
 using MapsterMapper;
 using MediatR;
@@ -25,6 +29,24 @@ public class UserController : ApiController
     {
         var command = _mapper.Map<RegisterCommand>(request);
         var result = await _sender.Send(command);
+        return Created("/api/v{version:apiVersion}/[controller]/[GetUserById]", request);
+    }
+    [HttpPost]
+    public async Task<IActionResult> Login(LoginRequest request)
+    {
+        var command = _mapper.Map<LoginCommand>(request);
+        var result = await _sender.Send(command);
+        return Ok(result);
+    }
+    [HttpGet]
+    public async Task<IActionResult> GetUserById(string id)
+    {
+        var query = new GetUserByIdQuery(id);
+        var result = await _sender.Send(query);
+        if (result is null)
+        {
+            return NotFound();
+        }
         return Ok(result);
     }
 }

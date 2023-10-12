@@ -3,11 +3,5 @@ using MediatR;
 
 namespace InternetBank.Application.Features.Authentication.Commands.Login;
 
-public record LoginCommand(string FirstName,
-                              string LastName,
-                              string NationalCode,
-                              DateTime BirthDate,
-                              string PhoneNumber,
-                              string Email,
-                              string Username,
+public record LoginCommand(string Email,
                               string Password) : IRequest<LoginActionResult>;

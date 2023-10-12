@@ -1,3 +1,4 @@
+using InternetBank.Application.Features.Authentication.Queries.Common;
 using Microsoft.AspNetCore.Identity;
 
 namespace InternetBank.Application.Interfaces;
@@ -5,7 +6,7 @@ namespace InternetBank.Application.Interfaces;
 public interface IIdentityService
 {
     // Task<List<ApplicationUser>> GetAllAsync();
-    // Task<ApplicationUser?> GetByIdAsync(string id);
+    Task<UserDTO?> GetByIdAsync(string id);
     Task<(IdentityResult result, string id)> CreateUserAsync(string firstName,
                                                              string lastName,
                                                              string nationalCode,
