@@ -36,6 +36,21 @@ public class IdentityService : IIdentityService
 
     }
 
+    public async Task<(bool res, string id, string username)> LoginUserAsync(string Email, string Password)
+    {
+        var user = await _userManager.FindByEmailAsync(Email);
+        if (user is not null)
+        {
+            var result = await _userManager.CheckPasswordAsync(user, Password);
+            if (result)
+            {
+                return (true, user.Id, user.UserName ??= "");
+            }
+        }
+
+        return (false, string.Empty, string.Empty);
+    }
+
     // public void Delete(ApplicationUser user)
     // {
     //     throw new NotImplementedException();

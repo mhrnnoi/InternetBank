@@ -4,12 +4,21 @@ namespace InternetBank.Application.Common.Services;
 
 public class AuthResultService
 {
-    public static RegisterationResult CreateRegisterResult(string id,
+    public static RegisterActionResult CreateRegisterResult(string id,
                                                            string token)
     {
-        return new RegisterationResult("registeration succesfull",
+        return new RegisterActionResult("registeration succesfull",
                                        id,
                                        $"User/id={id}",
+                                       token);
+    }
+    public static LoginActionResult CreateLoginResult(string id,
+                                                           string token,
+                                                           string username)
+    {
+        return new LoginActionResult("Login succesfull",
+                                       id,
+                                       username,
                                        token);
     }
 }

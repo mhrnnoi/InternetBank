@@ -8,7 +8,7 @@ using MediatR;
 
 namespace InternetBank.Application.Features.Authentication.Commands.Register;
 
-public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterationResult>
+public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterActionResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IIdentityService _identityservice;
@@ -21,7 +21,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Registera
         _jwtGenerator = jwtGenerator;
     }
 
-    public async Task<RegisterationResult> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public async Task<RegisterActionResult> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         //identity service create user 
         var (result, id) = await _identityservice.CreateUserAsync(request.FirstName,
