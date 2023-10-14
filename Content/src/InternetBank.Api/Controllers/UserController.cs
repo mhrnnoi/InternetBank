@@ -29,7 +29,7 @@ public class UserController : ApiController
     {
         var command = _mapper.Map<RegisterCommand>(request);
         var result = await _sender.Send(command);
-        return Created("/api/v{version:apiVersion}/[controller]/[GetUserById]", request);
+        return Created("/api/v{version:apiVersion}/[controller]/?id="+$"{result.Id}", request);
     }
     [HttpPost]
     public async Task<IActionResult> Login(LoginRequest request)

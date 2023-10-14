@@ -26,7 +26,13 @@ public static class DependencyInjection
         services.AddScoped<IJwtGenerator, JwtGenerator>();
         services.AddScoped<IIdentityService, IdentityService>();
 
-        services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+        services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+        {
+            options.User.RequireUniqueEmail = true;
+
+        })
+                            .AddEntityFrameworkStores<ApplicationDbContext>()
+                            .AddDefaultTokenProviders();
         services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseNpgsql("Host=localhost;Port=5432;Database=InternetBankDb;Username=mehran;Password=MyPassword@complex3343;");
