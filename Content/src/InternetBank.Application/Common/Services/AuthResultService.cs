@@ -1,4 +1,4 @@
-using InternetBank.Application.Features.Authentication.Commands.Common;
+using InternetBank.Application.Authentication.Commands.Common;
 
 namespace InternetBank.Application.Common.Services;
 

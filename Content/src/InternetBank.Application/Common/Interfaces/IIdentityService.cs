@@ -1,4 +1,4 @@
-using InternetBank.Application.Features.Authentication.Queries.Common;
+using InternetBank.Application.Authentication.Queries.Common;
 using Microsoft.AspNetCore.Identity;
 
 namespace InternetBank.Application.Interfaces;

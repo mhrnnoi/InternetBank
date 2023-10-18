@@ -1,4 +1,4 @@
-namespace InternetBank.Application.Features.Account.Commands.CreateAccount;
+namespace InternetBank.Application.Account.Commands.CreateAccount;
 
 public record CreateAccountResult(string AccountNumber,
 string CardNumber,
