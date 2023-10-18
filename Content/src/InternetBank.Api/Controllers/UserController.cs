@@ -2,8 +2,6 @@ using Asp.Versioning;
 using InternetBank.Application.Features.Authentication.Commands.Login;
 using InternetBank.Application.Features.Authentication.Commands.Register;
 using InternetBank.Application.Features.Authentication.Queries.GetUserById;
-
-// using InternetBank.Application.Features.Authentication.Queries.GetUserById;
 using InternetBank.Contracts.Requests.Users;
 using MapsterMapper;
 using MediatR;
@@ -12,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace InternetBank.Api.Controllers;
 
 [ApiVersion("1.0")]
-[Route("/api/v{version:apiVersion}/[controller]/[action]")]
+[Route("/api/v{version:apiVersion}/")]
 public class UserController : ApiController
 {
     private readonly ISender _sender;
@@ -24,28 +22,33 @@ public class UserController : ApiController
         _mapper = mapper;
     }
 
-    [HttpPost]
+    [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
         var command = _mapper.Map<RegisterCommand>(request);
         var result = await _sender.Send(command);
-        return Created("/api/v{version:apiVersion}/[controller]/?id="+$"{result.Id}", request);
+        var apiVersion = HttpContext.GetRequestedApiVersion()?.MajorVersion;
+        return Created($"/api/v{apiVersion}/users" + $"/{result.Id}", result);
     }
-    [HttpPost]
+    [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequest request)
     {
         var command = _mapper.Map<LoginCommand>(request);
         var result = await _sender.Send(command);
+        if (result is null)
+        {
+            return Unauthorized();
+        }
         return Ok(result);
     }
-    [HttpGet]
+    [HttpGet("users/{id}")]
     public async Task<IActionResult> GetUserById(string id)
     {
         var query = new GetUserByIdQuery(id);
         var result = await _sender.Send(query);
         if (result is null)
         {
-            return NotFound();
+            return NotFound("there is no user with this id");
         }
         return Ok(result);
     }

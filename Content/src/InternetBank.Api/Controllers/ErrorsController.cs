@@ -1,10 +1,7 @@
 using FluentValidation;
 using InternetBank.Domain.Exceptions;
-using InternetBank.Domain.Exceptions.User.AggregateExceptions;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace InternetBank.Api.Controllers;
 
@@ -35,7 +32,7 @@ public class ErrorsController : ApiController
         }
         else if (exceptionFeature is NullReferenceException)
         {
-            return Problem();
+            return Problem(statusCode: 404, title: "expected error :" + exceptionFeature?.Message);
         }
 
         else

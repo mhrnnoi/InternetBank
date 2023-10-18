@@ -7,12 +7,10 @@ public static class DbMigration
 {
     public static void DbMigrate(WebApplication app)
     {
-        using (var scope = app.Services.CreateScope())
-        {
-            var dbContext = scope.ServiceProvider
-                .GetRequiredService<ApplicationDbContext>();
+        using var scope = app.Services.CreateScope();
+        var dbContext = scope.ServiceProvider
+            .GetRequiredService<ApplicationDbContext>();
 
-            dbContext.Database.Migrate();
-        }
+        dbContext.Database.Migrate();
     }
 }

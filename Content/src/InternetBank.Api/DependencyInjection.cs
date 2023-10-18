@@ -1,8 +1,6 @@
-using System.Reflection;
 using Asp.Versioning;
 using InternetBank.Api.MyProblemDetails;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace InternetBank.Application;
 

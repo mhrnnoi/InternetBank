@@ -9,7 +9,7 @@ public class AuthResultService
     {
         return new RegisterActionResult("registeration succesfull",
                                        id,
-                                       $"User/id={id}",
+                                       $"users/{id}",
                                        token);
     }
     public static LoginActionResult CreateLoginResult(string id,

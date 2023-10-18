@@ -1,4 +1,3 @@
-using FluentValidation.Results;
 using InternetBank.Application.Common.Interfaces;
 using InternetBank.Application.Common.Services;
 using InternetBank.Application.Features.Authentication.Commands.Common;
@@ -8,7 +7,7 @@ using MediatR;
 
 namespace InternetBank.Application.Features.Authentication.Commands.Login;
 
-public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginActionResult>
+public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginActionResult?>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IIdentityService _identityservice;
@@ -21,36 +20,23 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginActionResu
         _jwtGenerator = jwtGenerator;
     }
 
-    public async Task<LoginActionResult> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<LoginActionResult?> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         //identity service create user 
         var (result, id, username) = await _identityservice.LoginUserAsync(request.Email,
-                                                        request.Password);
+                                                                           request.Password);
 
 
         //dbset savechanges
 
         if (!result)
         {
-            
-            //throw un authorize and invalid cred property and descri[ption]
-
-
+            // return new FailedLoginResult();
         }
 
         await _unitOfWork.SaveChangesAsync();
         var output = AuthResultService.CreateLoginResult(id, _jwtGenerator.GenerateToken(), username);
         return output;
-
-
-
-
-
-
-
-
-
-
 
         //generate Login result
 
