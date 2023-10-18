@@ -5,16 +5,16 @@ namespace InternetBank.Domain.Accounts;
 public sealed class Account
 {
     public int Id { get; set; }
-    public AccountTypes Type { get; private set; }
+    public int Type { get; private set; }
     public double Amount { get; private set; }
-    public string[] Number { get; private set; }
-    public string[] CardNumber { get; private set; }
-    public int UserId { get; init; }
+    public string Number { get; private set; }
+    public string CardNumber { get; private set; }
+    public string UserId { get; init; }
     public string CVV2 { get; private set; }
     public DateTime ExpiryDate { get; private set; }
     public string Password { get; private set; }
     public bool IsBlocked { get; private set; }
-    private Account(AccountTypes type, double amount, int userId)
+    private Account(int type, double amount, string userId)
     {
 
         Type = type;
@@ -81,7 +81,7 @@ public sealed class Account
         }
         return str;
     }
-    public string[] GenerateCartNumber()
+    public string GenerateCartNumber()
     {
         var strArr = new string[4];
         var str = "";
@@ -96,9 +96,9 @@ public sealed class Account
             strArr[i] = str;
             str = "";
         }
-        return strArr;
+        return string.Join(" ", strArr);
     }
-    public string[] GenerateAccountNumber()
+    public string GenerateAccountNumber()
     {
         var strArr = new string[3];
         var str = "";
@@ -108,7 +108,7 @@ public sealed class Account
             str += rnd.Next(0, 10);
         }
         strArr[0] = str;
-        str += "";
+        str = "";
         str += this.UserId;
         for (int i = 0; i < 4; i++)
         {
@@ -116,8 +116,8 @@ public sealed class Account
 
         }
         strArr[1] = str;
-        str += "";
-        if (this.Type == AccountTypes.Saving)
+        str = "";
+        if (this.Type == 1)
         {
             str += 1;
         }
@@ -129,17 +129,17 @@ public sealed class Account
         strArr[2] = str;
 
 
-        return strArr;
+        return string.Join(".", strArr);
     }
-    public static Account OpenAccount(int type, double amount, int userId)
+    public static Account OpenAccount(int type, double amount, string userId)
     {
         if (type  == 1)
         {
-            return new Account(AccountTypes.Saving, amount, userId);
+            return new Account(1, amount, userId);
         }
         else
         {
-            return new Account(AccountTypes.Checking, amount, userId);
+            return new Account(2, amount, userId);
 
         }
         

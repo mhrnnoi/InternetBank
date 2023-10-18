@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace InternetBank.Api.Controllers;
 
 [ApiVersion("1.0")]
-[Route("/api/v{version:apiVersion}/")]
+[Route("/api/v{version:apiVersion}/user/")]
 public class UserController : ApiController
 {
     private readonly ISender _sender;
@@ -37,11 +37,12 @@ public class UserController : ApiController
         var result = await _sender.Send(command);
         if (result is null)
         {
-            return Unauthorized();
+            return Unauthorized("invalid cred");
         }
         return Ok(result);
     }
-    [HttpGet("users/{id}")]
+    [HttpGet]
+    [Route("/api/v{version:apiVersion}/users/{id}")]
     public async Task<IActionResult> GetUserById(string id)
     {
         var query = new GetUserByIdQuery(id);

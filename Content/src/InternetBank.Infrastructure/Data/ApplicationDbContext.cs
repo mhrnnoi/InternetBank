@@ -1,3 +1,4 @@
+using InternetBank.Domain.Accounts;
 using InternetBank.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ namespace InternetBank.Infrastructure.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
+    public DbSet<Account> Accounts { get; set; }
     public ApplicationDbContext()
     {
 
