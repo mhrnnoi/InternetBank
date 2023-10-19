@@ -1,5 +1,8 @@
+using System.Linq.Expressions;
+using FluentValidation.Results;
 using InternetBank.Application.Authentication.Queries.Common;
 using InternetBank.Application.Interfaces;
+using InternetBank.Domain.Exceptions;
 using Microsoft.AspNetCore.Identity;
 
 namespace InternetBank.Infrastructure.Identity;
@@ -13,30 +16,50 @@ public class IdentityService : IIdentityService
         _userManager = userManager;
         _signInManager = signInManager;
     }
-    public async Task<(IdentityResult result, string id)> CreateUserAsync(string firstName,
-                                                                           string lastName,
-                                                                           string nationalCode,
-                                                                           DateTime birthDate,
-                                                                           string Email,
-                                                                           string PhoneNumber,
-                                                                           string Username,
-                                                                           string Password)
+    public async Task<string> CreateUserAsync(string firstName,
+                                              string lastName,
+                                              string nationalCode,
+                                              DateTime birthDate,
+                                              string Email,
+                                              string PhoneNumber,
+                                              string Username,
+                                              string Password)
     {
-        var user = ApplicationUser.CreateUser(firstName, lastName, nationalCode, birthDate);
-        user.UserName = Username;
-        user.Email = Email;
-        user.PhoneNumber = PhoneNumber;
-
-
+        var user = ApplicationUser.CreateUser(firstName,
+                                              lastName,
+                                              nationalCode,
+                                              birthDate,
+                                              Username,
+                                              Email,
+                                              PhoneNumber);
 
         var res = await _userManager.CreateAsync(user, Password);
         if (res.Succeeded)
         {
-            return (res, user.Id);
+            return user.Id;
         }
-        return (res, string.Empty);
+        var failures = GetErrors(res);
+        throw new FluentValidation.ValidationException(failures);
+
+
+
+
+
 
     }
+    private static List<ValidationFailure> GetErrors(IdentityResult result)
+    {
+        var failures = new List<ValidationFailure>();
+        foreach (var item in result.Errors)
+        {
+            failures.Add(new ValidationFailure(item.Code, item.Description));
+        }
+
+        return failures;
+    }
+
+
+
 
     public async Task<UserDTO?> GetByIdAsync(string id)
     {
@@ -48,20 +71,22 @@ public class IdentityService : IIdentityService
         return new UserDTO(user.FirstName, user.LastName);
     }
 
-    public async Task<(bool res, string id, string username)> LoginUserAsync(string Email, string Password)
+    public async Task<string> LoginUserAsync(string Email, string Password)
     {
+
         var user = await _userManager.FindByEmailAsync(Email);
         if (user is not null)
         {
             var result = await _userManager.CheckPasswordAsync(user, Password);
             if (result)
             {
-                return (true, user.Id, user.UserName ??= "");
+                return user.Id;
             }
         }
 
-        return (false, string.Empty, string.Empty);
+        throw new DomainExceptions.User.InvalidCred();
     }
+
 
     // public void Delete(ApplicationUser user)
     // {

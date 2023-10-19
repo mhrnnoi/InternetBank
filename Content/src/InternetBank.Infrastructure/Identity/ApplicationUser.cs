@@ -14,37 +14,50 @@ public sealed class ApplicationUser : IdentityUser
     private ApplicationUser(string firstName,
                             string lastName,
                             string nationalCode,
-                            DateTime birthDate)
+                            DateTime birthDate,
+                            string userName,
+                            string email,
+                            string phoneNumber)
                             : base()
     {
         FirstName = firstName;
         LastName = lastName;
         NationalCode = nationalCode;
         BirthDate = birthDate;
+        UserName = userName;
+        Email = email;
+        PhoneNumber = phoneNumber;
     }
 
     public static ApplicationUser CreateUser(string firstName,
                                              string lastName,
                                              string nationalCode,
-                                             DateTime birthDate)
+                                             DateTime birthDate,
+                                             string userName,
+                                             string email,
+                                             string phoneNumber)
     {
         FirstNamePersianCheck(firstName);
         LastNamePersianCheck(lastName);
         CorrectNationalCodeCheck(nationalCode);
         BirthDateCheck(birthDate);
+        //check user name phone number and email
 
         return new ApplicationUser(firstName,
                                    lastName,
                                    nationalCode,
-                                   birthDate);
+                                   birthDate,
+                                   userName,
+                                   email,
+                                   phoneNumber);
     }
 
     private static void BirthDateCheck(DateTime birthDate)
     {
         if (!(DateTime.UtcNow.Year - birthDate.Year >= 18))
-           throw new DomainExceptions.User.Below18();
-        
-        
+            throw new DomainExceptions.User.Below18();
+
+
     }
 
     private static void CorrectNationalCodeCheck(string nationalCode)

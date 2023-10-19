@@ -12,10 +12,20 @@ public class ErrorsController : ApiController
     public IActionResult Error()
     {
         var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
+        
         if (exceptionFeature is DomainExceptions domainExceptions)
         {
+            switch (domainExceptions.StatusCode)
+            {
+                case 401:
+                    return Unauthorized(domainExceptions.Message);
+                case 400:
+                    return Problem(statusCode: 400, title: "expected error : " + domainExceptions.Title);
 
-            return Problem(statusCode: domainExceptions.StatusCode, title: "expected error : " + domainExceptions.Title);
+                default:
+                    return Problem(statusCode: domainExceptions.StatusCode, title: "expected error : " + domainExceptions.Title);
+
+            }
 
 
         }

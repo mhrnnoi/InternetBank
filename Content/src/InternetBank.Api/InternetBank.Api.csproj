@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\InternetBank.Contracts\InternetBank.Contracts.csproj" />
     <ProjectReference Include="..\InternetBank.Application\InternetBank.Application.csproj" />
     <ProjectReference Include="..\InternetBank.Infrastructure\InternetBank.Infrastructure.csproj" />
   </ItemGroup>

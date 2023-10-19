@@ -33,10 +33,6 @@ public class UserController : ApiController
     {
         var command = _mapper.Map<LoginCommand>(request);
         var result = await _sender.Send(command);
-        if (result is null)
-        {
-            return Unauthorized("invalid cred");
-        }
         return Ok(result);
     }
     [HttpGet]
