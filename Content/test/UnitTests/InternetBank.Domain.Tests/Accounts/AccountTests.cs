@@ -9,7 +9,7 @@ public class AccountTests
     public void Handle_Should_Return_AccountWithDesiredInformation_When_InformationIsCorrect()
     {
         //Arrange
-        var account = Account.OpenAccount(1, 50000, 32);
+        var account = Account.OpenAccount(1, 50000, "32");
         //Act
         account.BlockAccount();
         //Assert

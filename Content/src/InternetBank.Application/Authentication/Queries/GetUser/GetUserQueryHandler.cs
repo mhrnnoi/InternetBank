@@ -3,9 +3,9 @@ using InternetBank.Application.Interfaces;
 using InternetBank.Domain.Exceptions;
 using MediatR;
 
-namespace InternetBank.Application.Authentication.Queries.GetUserById;
+namespace InternetBank.Application.Authentication.Queries.GetUser;
 
-public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserDTO?>
+public class GetUserByIdQueryHandler : IRequestHandler<GetUserQuery, UserDTO>
 {
     private readonly IIdentityService _identityService;
 
@@ -14,7 +14,7 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserDTO
         _identityService = identityService;
     }
 
-    public async Task<UserDTO?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+    public async Task<UserDTO> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
         var userDTO = await _identityService.GetByIdAsync(request.Id);
 

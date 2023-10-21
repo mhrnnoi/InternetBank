@@ -5,11 +5,11 @@ using InternetBank.Api.Requests.Users;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-
+using InternetBank.Application.Authentication.Queries.GetUser;
+using InternetBank.Application.Authentication.Queries.GetUsers;
 namespace InternetBank.Api.Controllers;
 
 [ApiVersion("1.0")]
-[Route("/api/v1/user")]
 public class UserController : ApiController
 {
     private readonly ISender _sender;
@@ -21,42 +21,32 @@ public class UserController : ApiController
         _mapper = mapper;
     }
 
-    [HttpPost("/register")]
+    [HttpPost("/api/v{version:apiVersion}/user/register")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
         var command = _mapper.Map<RegisterCommand>(request);
         var result = await _sender.Send(command);
-        return Created($"/api/v1/users/{result.Id}", result);
+        return Created($"/api/v1/user/{result.Id}", result);
     }
-    [HttpPost("/login")]
+    [HttpPost("/api/v{version:apiVersion}/user/login")]
     public async Task<IActionResult> Login(LoginRequest request)
     {
         var command = _mapper.Map<LoginCommand>(request);
         var result = await _sender.Send(command);
         return Ok(result);
     }
-    [HttpGet]
-    [Route("/api/v1/users/{id}")]
-    public async Task<IActionResult> GetUser(string id)
+    [HttpGet("/api/v{version:apiVersion}/user/{id}")]
+    public async Task<IActionResult> GetUserById(string id)
     {
         var query = new GetUserQuery(id);
         var result = await _sender.Send(query);
-        if (result is null)
-        {
-            return NotFound("there is no user with this id");
-        }
         return Ok(result);
     }
-    [HttpGet]
-    [Route("/api/v1/users")]
+    [HttpGet("/api/v{version:apiVersion}/user")]
     public async Task<IActionResult> GetUsers()
     {
         var query = new GetUsersQuery();
         var result = await _sender.Send(query);
-        if (result is null)
-        {
-            return NotFound("there is no user");
-        }
         return Ok(result);
     }
 }
