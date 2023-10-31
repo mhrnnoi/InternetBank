@@ -44,11 +44,6 @@ public class IdentityService : IIdentityService
         var failures = GetErrors(res);
         throw new FluentValidation.ValidationException(failures);
 
-
-
-
-
-
     }
     private static List<ValidationFailure> GetErrors(IdentityResult result)
     {
@@ -71,10 +66,10 @@ public class IdentityService : IIdentityService
         {
             throw new DomainExceptions.User.NotFoundUserById();
         }
-        return new UserDTO(user.FirstName, user.LastName);
+        return new UserDTO(user.FirstName, user.LastName, id, user.Email);
     }
 
-    public async Task<string> LoginUserAsync(string Email, string Password)
+    public async Task<UserDTO> LoginUserAsync(string Email, string Password)
     {
 
         var user = await _userManager.FindByEmailAsync(Email);
@@ -83,7 +78,7 @@ public class IdentityService : IIdentityService
             var result = await _userManager.CheckPasswordAsync(user, Password);
             if (result)
             {
-                return user.Id;
+                return new UserDTO(user.FirstName, user.LastName, user.Id, user.Email);
             }
         }
 

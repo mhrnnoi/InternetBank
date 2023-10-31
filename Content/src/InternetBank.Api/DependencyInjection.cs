@@ -10,7 +10,7 @@ namespace InternetBank.Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPresentation(this IServiceCollection services)
+    public static IServiceCollection AddPresentation(this IServiceCollection services, IConfiguration configuration)
     {
          services.AddAuthentication(options =>
         {
@@ -20,15 +20,16 @@ public static class DependencyInjection
         }).AddJwtBearer(options =>
         {
             options.SaveToken = true;
-            options.Audience = "user";
+            options.Audience = configuration["JwtSettings:Audience"];
+            options.RequireHttpsMetadata = true;
             options.TokenValidationParameters = new TokenValidationParameters()
             {
-                ValidIssuer = "mehran",
-                ValidAudience = "user",
+                ValidIssuer = configuration["JwtSettings:Issuer"],
+                ValidAudience = configuration["JwtSettings:Audience"],
                 ValidateIssuer = true,
                 ValidateLifetime = true,
                 ValidateAudience = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super-secret-key")),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"])),
                 ValidateIssuerSigningKey = true
             };
 

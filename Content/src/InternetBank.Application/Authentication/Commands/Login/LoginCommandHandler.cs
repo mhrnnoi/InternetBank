@@ -21,9 +21,9 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginActionResu
 
     public async Task<LoginActionResult> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        var id = await _identityservice.LoginUserAsync(request.Email, request.Password);
+        var user = await _identityservice.LoginUserAsync(request.Email, request.Password);
         await _unitOfWork.SaveChangesAsync();
-        var output = AuthResultService.CreateLoginResult(id, _jwtGenerator.GenerateToken());
+        var output = AuthResultService.CreateLoginResult(user.Id, _jwtGenerator.GenerateToken(user));
         return output;
 
 

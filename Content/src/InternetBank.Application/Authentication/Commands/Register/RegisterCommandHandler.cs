@@ -20,13 +20,13 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterA
     public async Task<RegisterActionResult> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         var id = await _identityservice.CreateUserAsync(request.FirstName,
-                                                  request.LastName,
-                                                  request.NationalCode,
-                                                  request.BirthDate,
-                                                  request.Email,
-                                                  request.PhoneNumber,
-                                                  request.Username,
-                                                  request.Password);
+                                                        request.LastName,
+                                                        request.NationalCode,
+                                                        request.BirthDate,
+                                                        request.Email,
+                                                        request.PhoneNumber,
+                                                        request.Username,
+                                                        request.Password);
 
         await _unitOfWork.SaveChangesAsync();
         return AuthResultService.CreateRegisterResult(id);

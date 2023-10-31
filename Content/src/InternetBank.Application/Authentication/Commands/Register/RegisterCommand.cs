@@ -1,4 +1,3 @@
-using InternetBank.Application.Authentication.Commands.Common;
 using MediatR;
 
 namespace InternetBank.Application.Authentication.Commands.Register;

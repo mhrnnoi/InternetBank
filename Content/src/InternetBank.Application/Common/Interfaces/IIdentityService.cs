@@ -7,14 +7,15 @@ public interface IIdentityService
     Task<List<UserDTO>> GetAllAsync();
     Task<UserDTO> GetByIdAsync(string id);
     Task<string> CreateUserAsync(string firstName,
-                      string lastName,
-                      string nationalCode,
-                      DateTime birthDate,
-                      string Email,
-                      string PhoneNumber,
-                      string Username,
-                      string Password);
-    Task<string> LoginUserAsync(string Email,
+                                 string lastName,
+                                 string nationalCode,
+                                 DateTime birthDate,
+                                 string Email,
+                                 string PhoneNumber,
+                                 string Username,
+                                 string Password);
+    
+    Task<UserDTO> LoginUserAsync(string Email,
                                 string Password);
     // void Delete(ApplicationUser user);
     // void Update(ApplicationUser user);

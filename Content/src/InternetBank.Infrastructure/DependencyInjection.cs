@@ -25,7 +25,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IAccountRepository, AccountRepository>();
-        var cred = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super-secret-key")), SecurityAlgorithms.HmacSha512);
+        var cred = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"])), SecurityAlgorithms.HmacSha512);
 
        
         services.AddScoped<IMapper, ServiceMapper>();
@@ -39,6 +39,8 @@ public static class DependencyInjection
         services.AddIdentity<ApplicationUser, IdentityRole>(options =>
         {
             options.User.RequireUniqueEmail = true;
+            
+
 
         })
                             .AddEntityFrameworkStores<ApplicationDbContext>()
