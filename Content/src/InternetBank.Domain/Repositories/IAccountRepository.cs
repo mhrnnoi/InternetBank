@@ -4,5 +4,6 @@ namespace InternetBank.Domain.Repositories;
 
 public interface IAccountRepository
 {
-    void AddAccount(Account account);
+    Account CreateAccount(int accountype, double amount,  string userId);
+    Task ChangePassword(int AccountId, string OldPassword, string NewPassword, string RepeatNewPassword);
 }

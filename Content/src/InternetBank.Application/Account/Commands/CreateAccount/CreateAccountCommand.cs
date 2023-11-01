@@ -1,3 +1,4 @@
+using InternetBank.Domain.Accounts;
 using MediatR;
 
 namespace InternetBank.Application.Account.Commands.CreateAccount;

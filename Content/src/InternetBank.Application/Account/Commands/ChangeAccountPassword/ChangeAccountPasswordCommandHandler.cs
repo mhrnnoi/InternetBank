@@ -1,11 +1,20 @@
+using InternetBank.Domain.Repositories;
 using MediatR;
 
 namespace InternetBank.Application.Account.Commands.ChangeAccountPassword;
 
-public class ChangeAccountPasswordCommandHandler : IRequestHandler<ChangeAccountPasswordCommand, string>
+public class ChangeAccountPasswordCommandHandler : IRequestHandler<ChangeAccountPasswordCommand, bool>
 {
-    public Task<string> Handle(ChangeAccountPasswordCommand request, CancellationToken cancellationToken)
+    private readonly IAccountRepository _accountRepository;
+
+    public ChangeAccountPasswordCommandHandler(IAccountRepository accountRepository)
     {
-        throw new NotImplementedException();
+        _accountRepository = accountRepository;
+    }
+
+    public async Task<bool> Handle(ChangeAccountPasswordCommand request, CancellationToken cancellationToken)
+    {
+        await _accountRepository.ChangePassword(request.AccountId, request.OldPassword, request.NewPassword, request.RepeatNewPassword);
+        return true;
     }
 }

@@ -10,6 +10,7 @@ using InternetBank.Application.Authentication.Queries.GetUsers;
 namespace InternetBank.Api.Controllers;
 
 [ApiVersion("1.0")]
+[Route("/api/v{version:apiVersion}/user")]
 public class UserController : ApiController
 {
     private readonly ISender _sender;
@@ -26,7 +27,8 @@ public class UserController : ApiController
     {
         var command = _mapper.Map<RegisterCommand>(request);
         var result = await _sender.Send(command);
-        return Created($"/api/v1/user/{result.Id}", result);
+        var apiVersion = HttpContext.GetRequestedApiVersion()?.MajorVersion;
+        return Created($"/api/v{apiVersion}/user/{result.Id}", result);
     }
     [HttpPost("/api/v{version:apiVersion}/user/login")]
     public async Task<IActionResult> Login(LoginRequest request)
@@ -42,11 +44,12 @@ public class UserController : ApiController
         var result = await _sender.Send(query);
         return Ok(result);
     }
-    [HttpGet("/api/v{version:apiVersion}/user")]
+    [HttpGet]
     public async Task<IActionResult> GetUsers()
     {
         var query = new GetUsersQuery();
         var result = await _sender.Send(query);
         return Ok(result);
     }
+
 }

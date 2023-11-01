@@ -5,7 +5,7 @@ namespace InternetBank.Domain.Accounts;
 public sealed class Account
 {
     public int Id { get; set; }
-    public int Type { get; private set; }
+    public AccountTypes Type { get; private set; }
     public double Amount { get; private set; }
     public string Number { get; private set; }
     public string CardNumber { get; private set; }
@@ -14,7 +14,7 @@ public sealed class Account
     public DateTime ExpiryDate { get; private set; }
     public string Password { get; private set; }
     public bool IsBlocked { get; private set; }
-    private Account(int type, double amount, string userId)
+    private Account(AccountTypes type, double amount, string userId)
     {
 
         Type = type;
@@ -29,7 +29,6 @@ public sealed class Account
     }
     public string Balance()
     {
-        
         return "" + Amount + "\n" + Id + "\n" + Number;
     }
     public string Report()
@@ -44,7 +43,7 @@ public sealed class Account
     {
         this.IsBlocked = false;
     }
-    public string GeneratePassword()
+    private static string GeneratePassword()
     {
         var str = "";
         var rnd = new Random();
@@ -65,13 +64,13 @@ public sealed class Account
         }
         return false;
     }
-    public DateTime SetExpiry()
+    private static DateTime SetExpiry()
     {
         return DateTime.UtcNow.AddYears(5);
 
 
     }
-    public string GenerateCVV2()
+    private static string GenerateCVV2()
     {
         var str = "";
         var rnd = new Random();
@@ -81,7 +80,7 @@ public sealed class Account
         }
         return str;
     }
-    public string GenerateCartNumber()
+    private static string GenerateCartNumber()
     {
         var strArr = new string[4];
         var str = "";
@@ -109,7 +108,10 @@ public sealed class Account
         }
         strArr[0] = str;
         str = "";
-        str += this.UserId;
+        for (int i = 0; i < 3; i++)
+        {
+            str+= UserId[i];
+        }
         for (int i = 0; i < 4; i++)
         {
             str += rnd.Next(0, 10);
@@ -117,7 +119,7 @@ public sealed class Account
         }
         strArr[1] = str;
         str = "";
-        if (this.Type == 1)
+        if (this.Type == AccountTypes.Saving)
         {
             str += 1;
         }
@@ -131,18 +133,9 @@ public sealed class Account
 
         return string.Join(".", strArr);
     }
-    public static Account OpenAccount(int type, double amount, string userId)
+    public static Account OpenAccount(AccountTypes type, double amount, string userId)
     {
-        if (type  == 1)
-        {
-            return new Account(1, amount, userId);
-        }
-        else
-        {
-            return new Account(2, amount, userId);
-
-        }
-        
+        return new Account(type, amount, userId);
     }
 
 }

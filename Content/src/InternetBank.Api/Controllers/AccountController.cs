@@ -34,7 +34,7 @@ public class AccountController : ApiController
         var command = _mapper.Map<CreateAccountCommand>(request);
         var result = await _sender.Send(command);
         var apiVersion = HttpContext.GetRequestedApiVersion()?.MajorVersion;
-        return Created($"/api/v{apiVersion}/accounts" + $"/{result.Id}", result);
+        return Created($"/api/v{apiVersion}/account" + $"/{result.Id}", result);
     }
     [HttpPost("change-password")]
     [Authorize]

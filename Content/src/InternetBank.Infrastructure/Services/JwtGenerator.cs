@@ -27,7 +27,6 @@ public class JwtGenerator : IJwtGenerator
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(ClaimTypes.Email, userDTO.Email),
             new Claim(JwtRegisteredClaimNames.Iss, configuration["JwtSettings:Issuer"]),
-            // new Claim(JwtRegisteredClaimNames.Aud, configuration["JwtSettings:Audience"]),
             new Claim(JwtRegisteredClaimNames.Exp, configuration["JwtSettings:Expiry"]),
             new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
             new Claim(JwtRegisteredClaimNames.Name, userDTO.FirstName + " " + userDTO.LastName),

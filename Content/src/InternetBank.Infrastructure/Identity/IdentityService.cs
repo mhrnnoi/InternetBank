@@ -5,6 +5,7 @@ using InternetBank.Domain.Exceptions;
 using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using static InternetBank.Domain.Exceptions.DomainExceptions.User;
 
 namespace InternetBank.Infrastructure.Identity;
 public class IdentityService : IIdentityService
@@ -28,13 +29,26 @@ public class IdentityService : IIdentityService
                                               string Username,
                                               string Password)
     {
+
+        var isNationalCodeUnique = await IsNationalCodeUnique(nationalCode);
+        if (!isNationalCodeUnique)
+        {
+            throw new AlreadyExistNationalCode();
+        }
+
+        var isPhoneNumberUnique = await IsPhoneNumberUnique(PhoneNumber);
+        if (!isPhoneNumberUnique)
+        {
+            throw new AlreadyExistPhoneNumber();
+        }
+
         var user = ApplicationUser.CreateUser(firstName,
-                                              lastName,
-                                              nationalCode,
-                                              birthDate,
-                                              Username,
-                                              Email,
-                                              PhoneNumber);
+                                      lastName,
+                                      nationalCode,
+                                      birthDate,
+                                      Username,
+                                      Email,
+                                      PhoneNumber);
 
         var res = await _userManager.CreateAsync(user, Password);
         if (res.Succeeded)
@@ -45,6 +59,22 @@ public class IdentityService : IIdentityService
         throw new FluentValidation.ValidationException(failures);
 
     }
+
+    private async Task<bool> IsPhoneNumberUnique(string phoneNumber)
+    {
+        if (await _userManager.Users.AnyAsync(x => x.PhoneNumber == phoneNumber))
+            return false;
+        return true;
+
+    }
+
+    private async Task<bool> IsNationalCodeUnique(string nationalCode)
+    {
+        if (await _userManager.Users.AnyAsync(x => x.NationalCode == nationalCode))
+            return false;
+        return true;
+    }
+
     private static List<ValidationFailure> GetErrors(IdentityResult result)
     {
         var failures = new List<ValidationFailure>();
@@ -78,7 +108,7 @@ public class IdentityService : IIdentityService
             var result = await _userManager.CheckPasswordAsync(user, Password);
             if (result)
             {
-                return new UserDTO(user.FirstName, user.LastName, user.Id, user.Email);
+                return new UserDTO(user.FirstName, user.LastName, user.Id, Email);
             }
         }
 
