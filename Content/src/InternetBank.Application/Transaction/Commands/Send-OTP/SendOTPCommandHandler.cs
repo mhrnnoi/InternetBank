@@ -1,6 +1,7 @@
 using InternetBank.Domain.Interfaces.UOF;
 using InternetBank.Domain.Repositories;
 using MediatR;
+using static InternetBank.Domain.Exceptions.DomainExceptions.Transaction;
 
 namespace InternetBank.Application.Transaction.Commands.Send_OTP;
 
@@ -21,22 +22,40 @@ public class Send_OTPCommandHandler : IRequestHandler<Send_OTPCommand, int>
     {
 
         var account = await _accountRepository.GetByCardNumber(request.CardNumber);
-        if (account is not null && account.CVV2 == request.CVV2 && account.IsBlocked == false && account.UserId == request.UserId && account.ExpiryDate == request.ExpiryDate)
+        if (account is null)
         {
-            var transaction = Domain.Transactions.Transaction.CreateTransaction(request.Amount,
-                                                                    request.DestinationCardNumber,
-                                                                    request.CardNumber,
-                                                                    request.CVV2,
-                                                                    request.ExpiryDate,
-                                                                    _transactionRepository.SendOTP(),
-                                                                    request.UserId);
-            _transactionRepository.Add(transaction);
-            await _unitOfWork.SaveChangesAsync();
-            return transaction.Id;
+            throw new IncorrectCardNumber();
         }
-        throw new Exception();
+        if (account.CVV2 == request.CVV2)
+        {
+            throw new IncorrectCVV2();
+        }
+        if (account.IsBlocked == false)
+        {
+            throw new AccountIsBlocked();
+        }
+        if (account.UserId == request.UserId)
+        {
+            throw new AccountIsNotYours();
+        }
+        if (account.ExpiryDate == request.ExpiryDate)
+        {
+            throw new ExpiredAccount();
+        }
 
-        
+        var transaction = Domain.Transactions.Transaction.CreateTransaction(request.Amount,
+                                                                            request.DestinationCardNumber,
+                                                                            request.CardNumber,
+                                                                            request.CVV2,
+                                                                            request.ExpiryDate,
+                                                                            _transactionRepository.SendOTP(),
+                                                                            request.UserId);
+        _transactionRepository.Add(transaction);
+        await _unitOfWork.SaveChangesAsync();
+        return transaction.Id;
+
+
+
 
     }
 }

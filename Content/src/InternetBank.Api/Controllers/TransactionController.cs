@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using InternetBank.Api.Requests.Transactions;
 using InternetBank.Application.Transaction.Commands.Send_OTP;
+using InternetBank.Application.Transaction.Commands.Transfer_Money;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -33,23 +34,18 @@ public class TransactionController : ApiController
                                           request.DestinationCardNumber,
                                           userId);
         var result = await _sender.Send(command);
-        var apiVersion = GetApiVersion(HttpContext);
-        return Created($"/api/v{apiVersion}/transaction/{result}", result);
+        return Ok(result);
 
     }
-    [HttpPost("/api/v{version:apiVersion}/transaction/send-otp")]
+    [HttpPost("/api/v{version:apiVersion}/transaction/transfer-money")]
     public async Task<IActionResult> TransferMoney(TransferMoneyRequest request)
     {
         var userId = GetUserId(User.Claims);
-        var command = new TransferMoneyCommand(request.CardNumber,
-                                          request.CVV2,
-                                          request.ExpiryDate,
-                                          request.Amount,
-                                          request.DestinationCardNumber,
+        var command = new TransferMoneyCommand(request.OTP,
+                                          request.amount,
                                           userId);
         var result = await _sender.Send(command);
-        var apiVersion = GetApiVersion(HttpContext);
-        return Created($"/api/v{apiVersion}/transaction/{result}", result);
+        return Ok(result);
 
     }
     // [HttpGet("/api/v{version:apiVersion}/transaction/{id}")]

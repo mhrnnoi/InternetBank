@@ -32,6 +32,14 @@ public sealed class Account
         
         return "" + Amount + "\n" + Id + "\n" + Number;
     }
+    public void Deposit(double amount)
+    {
+        Amount += amount;
+    }
+    public void Withdrawl(double amount)
+    {
+        Amount -= amount;
+    }
     public string Report()
     {
         return "" + Password;

@@ -14,8 +14,20 @@ public class TransferMoneyCommandHandler : IRequestHandler<TransferMoneyCommand,
         _accountRepository = accountRepository;
     }
 
-    public Task<bool> Handle(TransferMoneyCommand request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(TransferMoneyCommand request, CancellationToken cancellationToken)
     {
-        _transactionRepository
+        var transaction =  await _transactionRepository.GetByOTP(request.OTP, request.Amount);
+        if (transaction is not null && (DateTime.UtcNow - transaction.CreatedDateTime).Minutes <= 2 && transaction.IsSuccess == false)
+        {
+            var srcAcc =  await _accountRepository.GetByCardNumber(transaction.SourceCardNumber);
+            var destAcc = await _accountRepository.GetByCardNumber(transaction.DestinationCardNumber);
+            srcAcc.Withdrawl(transaction.Amount);
+            destAcc.Deposit(transaction.Amount);
+            transaction.IsSuccess = true;
+            return true;
+
+        }
+        throw new Exception();
+
     }
 }
