@@ -21,27 +21,9 @@ public class Send_OTPCommandHandler : IRequestHandler<Send_OTPCommand, int>
     public async Task<int> Handle(Send_OTPCommand request, CancellationToken cancellationToken)
     {
 
-        var account = await _accountRepository.GetByCardNumber(request.CardNumber);
-        if (account is null)
-        {
-            throw new IncorrectCardNumber();
-        }
-        if (account.CVV2 == request.CVV2)
-        {
-            throw new IncorrectCVV2();
-        }
-        if (account.IsBlocked == false)
-        {
-            throw new AccountIsBlocked();
-        }
-        if (account.UserId == request.UserId)
-        {
-            throw new AccountIsNotYours();
-        }
-        if (account.ExpiryDate == request.ExpiryDate)
-        {
-            throw new ExpiredAccount();
-        }
+        var sourceAccount = await _accountRepository.GetByCardNumber(request.CardNumber) ?? throw new IncorrectCardNumber();
+        var destAccount = await _accountRepository.GetByCardNumber(request.DestinationCardNumber) ?? throw new IncorrectCardNumber();
+        CheckAccounts(request, sourceAccount, destAccount);
 
         var transaction = Domain.Transactions.Transaction.CreateTransaction(request.Amount,
                                                                             request.DestinationCardNumber,
@@ -57,5 +39,30 @@ public class Send_OTPCommandHandler : IRequestHandler<Send_OTPCommand, int>
 
 
 
+    }
+
+    private static void CheckAccounts(Send_OTPCommand request, Domain.Accounts.Account account, Domain.Accounts.Account destAccount)
+    {
+
+        if (account.UserId != request.UserId)
+        {
+            throw new AccountIsNotYours();
+        }
+        if (account.IsBlocked == true)
+        {
+            throw new AccountIsBlocked("source account is blocked");
+        }
+        if (destAccount.IsBlocked == true)
+        {
+            throw new AccountIsBlocked("destination account is blocked");
+        }
+        // if (account.ExpiryDate.Year != request.ExpiryDate)
+        // {
+        //     throw new ExpiredAccount();
+        // }
+        if (account.CVV2 != request.CVV2)
+        {
+            throw new IncorrectCVV2();
+        }
     }
 }

@@ -4,12 +4,12 @@ public abstract partial class DomainExceptions
 {
     public abstract partial class Transaction
     {
-        public class AccountIsBlocked : DomainExceptions
+        public class WrongOTP : DomainExceptions
         {
-            
+            public const string Massage = "your entered otp is wrong or maybe expired";
             public const int StatusCodeConst = 400;
-            public const string TitleConst = "Blocked Account";
-            public AccountIsBlocked(string Massage)
+            public const string TitleConst = "wrong otp";
+            public WrongOTP()
                 : base(Massage, StatusCodeConst, TitleConst)
             {
 

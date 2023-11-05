@@ -31,7 +31,9 @@ public class AccountController : ApiController
     [HttpPost]
     public async Task<IActionResult> CreateAccount(CreateAccountRequest request)
     {
+        var userId = GetUserId(User.Claims);
         var command = _mapper.Map<CreateAccountCommand>(request);
+        command = command with {UserId = userId};
         var result = await _sender.Send(command);
         int? apiVersion = GetApiVersion(HttpContext);
         return Created($"/api/v{apiVersion}/account" + $"/{result.Id}", result);

@@ -22,7 +22,13 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand,
         var acc = _accountRepository.CreateAccount(request.AccountTypes, request.Amount, request.UserId);
         await _unitOfWork.SaveChangesAsync();
 
-        return new CreateAccountResult(acc.Number, acc.CardNumber, acc.CVV2, acc.ExpiryDate, acc.Password, acc.Id, acc.Type);
+        return new CreateAccountResult(acc.Number,
+                                       acc.CardNumber,
+                                       acc.CVV2,
+                                       acc.ExpiryDate,
+                                       acc.Password,
+                                       acc.Id,
+                                       acc.Type);
 
 
     }

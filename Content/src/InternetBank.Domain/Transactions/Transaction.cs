@@ -1,3 +1,6 @@
+using InternetBank.Domain.Accounts;
+using static InternetBank.Domain.Exceptions.DomainExceptions.Transaction;
+
 namespace InternetBank.Domain.Transactions;
 
 public sealed class Transaction
@@ -26,19 +29,41 @@ public sealed class Transaction
         SourceCardExpireDate = sourceCardExpireDate;
         OTP = oTP;
         UserId = userId;
+        Description = "عملیات ناموفق به دلیل انجام ندادن کاری یا گذشتن زمان مجاز";
     }
-    public string TransferMoney(double amount, string description, int oTP)
+    public string TransferMoney(Account account, Account account1, string userId)
     {
+        if (UserId == userId)
+        {
+            throw new NotYourTransaction();
 
-        Amount = amount;
+        }
+        if (IsSuccess)
+        {
+            throw new AlreadyCompletedTransaction();
+        }
 
-        // amount == Amount;
-   
-
-
-
-
-        return "";
+        if (DateTime.UtcNow > OTPExpireDate)
+        {
+            Description = "عملیات ناموفق - رمز نادرست";
+        }
+        if (account.IsBlocked)
+        {
+            Description = "عملیات ناموفق - اکانت مبدا مسدود هست";
+        }
+        if (account1.IsBlocked)
+        {
+            Description = "عملیات ناموفق - اکانت مقصد مسدود هست";
+        }
+        if (account.Amount >= Amount)
+        {
+            Description = "عملیات ناموفق - عدم موجودی";
+        }
+        account.Withdrawl(Amount);
+        account1.Deposit(Amount);
+        IsSuccess = true;
+        Description = "عملیات موفق";
+        return Description;
 
 
 
@@ -56,7 +81,7 @@ public sealed class Transaction
         CheckExpireDate(sourceCardExpireDate);
         CheckAmount(amount);
         CheckCardNumberFormat(destinationCardNumber);
-        
+
         return new Transaction(amount,
                                destinationCardNumber,
                                sourceCardNumber,

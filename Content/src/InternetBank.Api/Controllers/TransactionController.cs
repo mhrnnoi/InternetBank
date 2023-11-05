@@ -42,12 +42,23 @@ public class TransactionController : ApiController
     {
         var userId = GetUserId(User.Claims);
         var command = new TransferMoneyCommand(request.OTP,
-                                          request.amount,
-                                          userId);
+                                               request.amount,
+                                               userId);
         var result = await _sender.Send(command);
         return Ok(result);
 
     }
+    // [HttpGet("/api/v{version:apiVersion}/transaction/report")]
+    // public async Task<IActionResult> TransferMoney(TransferMoneyRequest request)
+    // {
+    //     var userId = GetUserId(User.Claims);
+    //     var command = new TransferMoneyCommand(request.OTP,
+    //                                            request.amount,
+    //                                            userId);
+    //     var result = await _sender.Send(command);
+    //     return Ok(result);
+
+    // }
     // [HttpGet("/api/v{version:apiVersion}/transaction/{id}")]
     // public async Task<IActionResult> Get(int id)
     // {
