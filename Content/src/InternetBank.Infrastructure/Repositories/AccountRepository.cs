@@ -14,26 +14,6 @@ public class AccountRepository : IAccountRepository
         _context = context.Accounts;
     }
 
-    public async Task ChangePassword(int AccountId, string OldPassword, string NewPassword, string RepeatNewPassword)
-    {
-        var acc = await _context.FirstOrDefaultAsync(x => x.Id == AccountId);
-        if (acc is null)
-        {
-            throw new Exception();
-        }
-        else
-        {
-            if (acc.Password != OldPassword)
-            {
-                throw new Exception();
-            }
-            else
-            {
-
-            }
-        }
-    }
-
     public Account CreateAccount(int accountype, double amount, string userId)
     {
         var acc = Account.OpenAccount((AccountTypes)accountype, amount, userId);
@@ -41,4 +21,21 @@ public class AccountRepository : IAccountRepository
         return acc;
 
     }
+
+    public async Task<List<Account>> GetAllAccounts(string userId)
+    {
+        return await _context.Where(x => x.UserId == userId).ToListAsync();
+    }
+
+    public async Task<Account?> GetByCardNumber(string cardNumber)
+    {
+        return await _context.FirstOrDefaultAsync(x => x.CardNumber == cardNumber);
+    }
+
+    public async Task<Account?> GetById(int AccountId, string userId)
+    {
+        return await _context.FirstOrDefaultAsync(x => x.Id == AccountId && x.UserId == userId);
+    }
+
+
 }

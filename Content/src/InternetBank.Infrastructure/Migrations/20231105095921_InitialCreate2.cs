@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace InternetBank.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialCreate2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -74,6 +74,28 @@ namespace InternetBank.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    IsSuccess = table.Column<bool>(type: "boolean", nullable: false),
+                    Amount = table.Column<double>(type: "double precision", nullable: false),
+                    CreatedDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    SourceCardNumber = table.Column<string>(type: "text", nullable: false),
+                    DestinationCardNumber = table.Column<string>(type: "text", nullable: false),
+                    OTP = table.Column<string>(type: "text", nullable: false),
+                    OTPExpireDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CVV2 = table.Column<string>(type: "text", nullable: false),
+                    SourceCardExpireDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -240,6 +262,9 @@ namespace InternetBank.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Transactions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

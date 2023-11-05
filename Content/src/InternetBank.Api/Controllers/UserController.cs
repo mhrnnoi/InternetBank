@@ -27,7 +27,7 @@ public class UserController : ApiController
     {
         var command = _mapper.Map<RegisterCommand>(request);
         var result = await _sender.Send(command);
-        var apiVersion = HttpContext.GetRequestedApiVersion()?.MajorVersion;
+        var apiVersion = GetApiVersion(HttpContext);
         return Created($"/api/v{apiVersion}/user/{result.Id}", result);
     }
     [HttpPost("/api/v{version:apiVersion}/user/login")]

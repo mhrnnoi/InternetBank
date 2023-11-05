@@ -34,6 +34,7 @@ public static class DependencyInjection
         services.AddSingleton(typeadapterConfig);
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IJwtGenerator, JwtGenerator>();
+        services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IIdentityService, IdentityService>();
 
         services.AddIdentity<ApplicationUser, IdentityRole>(options =>

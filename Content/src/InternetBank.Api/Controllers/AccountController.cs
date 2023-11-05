@@ -10,11 +10,13 @@ using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using InternetBank.Application.Account.Queries.GetAllAccounts;
 
 namespace InternetBank.Api.Controllers;
 
 [ApiVersion("1.0")]
-[Route("/api/v{version:apiVersion}/account/")]
+[Route("/api/v{version:apiVersion}/account")]
+[Authorize]
 public class AccountController : ApiController
 {
     private readonly ISender _sender;
@@ -27,57 +29,65 @@ public class AccountController : ApiController
     }
 
     [HttpPost]
-    [Route("/api/v{version:apiVersion}/account")]
-    [Authorize]
     public async Task<IActionResult> CreateAccount(CreateAccountRequest request)
     {
         var command = _mapper.Map<CreateAccountCommand>(request);
         var result = await _sender.Send(command);
-        var apiVersion = HttpContext.GetRequestedApiVersion()?.MajorVersion;
+        int? apiVersion = GetApiVersion(HttpContext);
         return Created($"/api/v{apiVersion}/account" + $"/{result.Id}", result);
     }
-    [HttpPost("change-password")]
-    [Authorize]
+
+    [HttpPost("/api/v{version:apiVersion}/account/change-password")]
     public async Task<IActionResult> ChangeAccountPassword(ChangeAccountPasswordRequest request)
     {
         var command = _mapper.Map<ChangeAccountPasswordCommand>(request);
-        var result = await _sender.Send(command);
-        return Ok("");
-    }
-    [HttpPost("block/{id}")]
-    [Authorize]
-    public async Task<IActionResult> BlockAccountById(int id)
-    {
-        var command = _mapper.Map<BlockAccountCommand>(id);
-        var result = await _sender.Send(command);
-        return Ok("");
-    }
-    [HttpPost("unblock/{id}")]
-    [Authorize]
-    public async Task<IActionResult> UnBlockAccountById(int id)
-    {
-        var command = _mapper.Map<UnBlockAccountCommand>(id);
-        var result = await _sender.Send(command);
-        return Ok("");
-    }
-    [HttpGet("balance/{id}")]
-    [Authorize]
-    public async Task<IActionResult> GetBalance(int id)
-    {
-        var query = _mapper.Map<GetAccountBalanceByIdQuery>(id);
-        var result = await _sender.Send(query);
-        return Ok("");
-    }
-    [HttpGet]
-    [Route("/api/v{version:apiVersion}/accounts/{id}")]
-    public async Task<IActionResult> GetAccount(int id)
-    {
-        var command = _mapper.Map<GetAccountByIdQuery>(id);
+        var userId = GetUserId(User.Claims);
+        command = command with {UserId = userId};
         var result = await _sender.Send(command);
         return Ok(result);
     }
 
-    //GetAllAccounts
+    [HttpPost("/api/v{version:apiVersion}/account/block/{id}")]
+    public async Task<IActionResult> BlockAccountById(int id)
+    {
+        var userId =  GetUserId(User.Claims);
+        var command = new BlockAccountCommand(id, userId);
+        var result = await _sender.Send(command);
+        return Ok(result);
+    }
+    [HttpPost("/api/v{version:apiVersion}/account/unblock/{id}")]
+    public async Task<IActionResult> UnBlockAccountById(int id)
+    {
+        var userId =  GetUserId(User.Claims);
+        var command = new UnBlockAccountCommand(id, userId);
+        var result = await _sender.Send(command);
+        return Ok(result);
+    }
+    [HttpGet("/api/v{version:apiVersion}/account/balance/{id}")]
+    public async Task<IActionResult> GetBalance(int id)
+    {
+        var userId = GetUserId(User.Claims);
+        var query = new GetAccountBalanceByIdQuery(id, userId);
+        var result = await _sender.Send(query);
+        return Ok(result);
+    }
+    [HttpGet("/api/v{version:apiVersion}/account/{id}")]
+    public async Task<IActionResult> GetAccount(int id)
+    {
+        var userId = GetUserId(User.Claims);
+        var query = new GetAccountByIdQuery(id, userId);
+        var result = await _sender.Send(query);
+        return Ok(result);
+    }
+    [HttpGet]
+    public async Task<IActionResult> GetAllAccounts()
+    {
+        var userId = GetUserId(User.Claims);
+        var query = new GetAllAccountsQuery(userId);
+        var result = await _sender.Send(query);
+        return Ok(result);
+    }
+
 
 
 }

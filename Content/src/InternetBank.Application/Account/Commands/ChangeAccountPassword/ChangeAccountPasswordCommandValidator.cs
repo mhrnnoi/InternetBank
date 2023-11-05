@@ -7,7 +7,10 @@ public class ChangeAccountPasswordCommandValidator : AbstractValidator<ChangeAcc
 {
     public ChangeAccountPasswordCommandValidator()
     {
-        RuleFor(x => x.NewPassword).Must(x => x.Length == 6);
-        RuleFor(x => x.RepeatNewPassword).Must((model, field, context) => model.NewPassword == field).WithMessage("new pass and repeat should equal");
+        RuleFor(x => x.NewPassword).Must(x => x.Length == 6 &&
+                                                x.All(x => char.IsDigit(x)))
+                                                    .WithMessage("password should have 6 numeric characters");
+        RuleFor(x => x.RepeatNewPassword).Must((model, field, context) => model.NewPassword == field)
+                                         .WithMessage("new pass and repeat should equal");
     }
 }

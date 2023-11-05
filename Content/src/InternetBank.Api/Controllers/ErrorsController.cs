@@ -17,7 +17,7 @@ public class ErrorsController : ApiController
         if (exceptionFeature is DomainExceptions domainExceptions)
         {
 
-            return Problem(statusCode: domainExceptions.StatusCode, title: "expected error : " + domainExceptions.Title);
+            return Problem(statusCode: domainExceptions.StatusCode, title: "expected error : " + domainExceptions.Message);
 
         }
         else if (exceptionFeature is ValidationException validationException)

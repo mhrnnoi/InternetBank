@@ -33,7 +33,7 @@ public class JwtGenerator : IJwtGenerator
         };
 
         var cred = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"])), SecurityAlgorithms.HmacSha512);
-        var securityToken = new JwtSecurityToken(issuer: configuration["JwtSettings:Issuer"], audience: configuration["JwtSettings:Audience"], claims, signingCredentials: cred, expires: DateTime.Now.AddMinutes(5));
+        var securityToken = new JwtSecurityToken(issuer: configuration["JwtSettings:Issuer"], audience: configuration["JwtSettings:Audience"], claims, signingCredentials: cred, expires: DateTime.Now.AddMinutes(int.Parse(configuration["JwtSettings:Expiry"])));
         var tokenHandler = new JwtSecurityTokenHandler();
         return tokenHandler.WriteToken(securityToken);
     }

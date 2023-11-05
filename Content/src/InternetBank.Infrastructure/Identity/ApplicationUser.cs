@@ -42,6 +42,7 @@ public sealed class ApplicationUser : IdentityUser
         CorrectNationalCodeCheck(nationalCode);
         BirthDateCheck(birthDate);
         //check user name phone number and email
+        
 
         return new ApplicationUser(firstName,
                                    lastName,

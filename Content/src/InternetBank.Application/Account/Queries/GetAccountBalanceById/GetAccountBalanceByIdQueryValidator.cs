@@ -6,5 +6,6 @@ public class GetAccountBalanceByIdQueryValidator : AbstractValidator<GetAccountB
 {
     public GetAccountBalanceByIdQueryValidator()
     {
+        RuleFor(x => x.Id).NotEmpty().NotNull();
     }
 }

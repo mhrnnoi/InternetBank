@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace InternetBank.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231101105717_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20231105095921_InitialCreate2")]
+    partial class InitialCreate2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,6 +68,54 @@ namespace InternetBank.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Accounts");
+                });
+
+            modelBuilder.Entity("InternetBank.Domain.Transactions.Transaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("CVV2")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("DestinationCardNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsSuccess")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("OTP")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("OTPExpireDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("SourceCardExpireDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("SourceCardNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("InternetBank.Infrastructure.Identity.ApplicationUser", b =>

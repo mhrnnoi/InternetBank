@@ -1,4 +1,4 @@
-using InternetBank.Domain.Exceptions;
+using static InternetBank.Domain.Exceptions.DomainExceptions.User;
 
 namespace InternetBank.Domain.Accounts;
 
@@ -29,6 +29,7 @@ public sealed class Account
     }
     public string Balance()
     {
+        
         return "" + Amount + "\n" + Id + "\n" + Number;
     }
     public string Report()
@@ -37,6 +38,7 @@ public sealed class Account
     }
     public void BlockAccount()
     {
+        
         this.IsBlocked = true;
     }
     public void UnBlockAccount()
@@ -54,15 +56,25 @@ public sealed class Account
         }
         return str;
     }
-    public bool ChangePassword(string oldPass, string newPassword)
+    public bool ChangePassword(string oldPass, string newPassword, string repeatNewPassword)
     {
         if (oldPass == Password)
         {
-            Password = newPassword;
-            return true;
-
+            if (newPassword == repeatNewPassword)
+            {
+                if (newPassword.Length is 6 && newPassword.All(x => char.IsDigit(x)))
+                {
+                    Password = newPassword;
+                    return true;
+                }
+                else
+                    throw new IncorrectPassFormat();
+            }
+            else
+                throw new PassAndRepeatPassIsNotSame();
         }
-        return false;
+        else
+            throw new IncorrectPass();
     }
     private static DateTime SetExpiry()
     {
@@ -110,7 +122,7 @@ public sealed class Account
         str = "";
         for (int i = 0; i < 3; i++)
         {
-            str+= UserId[i];
+            str += UserId[i];
         }
         for (int i = 0; i < 4; i++)
         {
