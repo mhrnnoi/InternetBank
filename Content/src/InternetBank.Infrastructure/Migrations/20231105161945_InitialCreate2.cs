@@ -24,7 +24,8 @@ namespace InternetBank.Infrastructure.Migrations
                     CardNumber = table.Column<string>(type: "text", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false),
                     CVV2 = table.Column<string>(type: "text", nullable: false),
-                    ExpiryDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ExpiryYear = table.Column<string>(type: "text", nullable: false),
+                    ExpiryMonth = table.Column<string>(type: "text", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: false),
                     IsBlocked = table.Column<bool>(type: "boolean", nullable: false)
                 },
@@ -91,7 +92,9 @@ namespace InternetBank.Infrastructure.Migrations
                     OTP = table.Column<string>(type: "text", nullable: false),
                     OTPExpireDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CVV2 = table.Column<string>(type: "text", nullable: false),
-                    SourceCardExpireDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    SourceCardExpireYear = table.Column<string>(type: "text", nullable: false),
+                    SourceCardExpireMonth = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {

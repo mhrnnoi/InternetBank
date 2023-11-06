@@ -2,6 +2,7 @@ using Asp.Versioning;
 using InternetBank.Api.Requests.Transactions;
 using InternetBank.Application.Transaction.Commands.Send_OTP;
 using InternetBank.Application.Transaction.Commands.Transfer_Money;
+using InternetBank.Application.Transaction.Queries.GetReportQuery;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -29,7 +30,8 @@ public class TransactionController : ApiController
         var userId = GetUserId(User.Claims);
         var command = new Send_OTPCommand(request.CardNumber,
                                           request.CVV2,
-                                          request.ExpiryDate,
+                                          request.ExpiryYear,
+                                          request.ExpiryMonth,
                                           request.Amount,
                                           request.DestinationCardNumber,
                                           userId);
@@ -42,9 +44,24 @@ public class TransactionController : ApiController
     {
         var userId = GetUserId(User.Claims);
         var command = new TransferMoneyCommand(request.OTP,
-                                               request.amount,
+                                               request.Amount,
                                                userId);
         var result = await _sender.Send(command);
+        return Ok(result);
+
+    }
+
+    [HttpGet("/api/v{version:apiVersion}/transaction/report")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ReportAsync(DateOnly? from,
+                                            DateOnly? to,
+                                            bool? isSuccess)
+    {
+        // var userId = GetUserId(User.Claims);
+        var query = new GetReportQuery(from,
+                                       to,
+                                       isSuccess);
+        var result = await _sender.Send(query);
         return Ok(result);
 
     }
@@ -73,6 +90,7 @@ public class TransactionController : ApiController
 
 public record OTPRequest(string CardNumber,
                          string CVV2,
-                         DateTime ExpiryDate,
+                         string ExpiryYear,
+                         string ExpiryMonth,
                          double Amount,
                          string DestinationCardNumber);

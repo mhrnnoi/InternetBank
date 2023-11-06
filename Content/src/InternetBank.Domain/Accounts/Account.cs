@@ -11,7 +11,8 @@ public sealed class Account
     public string CardNumber { get; private set; }
     public string UserId { get; init; }
     public string CVV2 { get; private set; }
-    public DateTime ExpiryDate { get; private set; }
+    public string ExpiryYear { get; private set; } = null!;
+    public string ExpiryMonth { get; private set; } = null!;
     public string Password { get; private set; }
     public bool IsBlocked { get; private set; }
     private Account(AccountTypes type, double amount, string userId)
@@ -25,11 +26,11 @@ public sealed class Account
         CardNumber = GenerateCartNumber();
         CVV2 = GenerateCVV2();
         Password = GeneratePassword();
-        ExpiryDate = SetExpiry();
+        SetExpiry();
     }
     public string Balance()
     {
-        
+
         return "" + Amount + "\n" + Id + "\n" + Number;
     }
     public void Deposit(double amount)
@@ -46,7 +47,7 @@ public sealed class Account
     }
     public void BlockAccount()
     {
-        
+
         this.IsBlocked = true;
     }
     public void UnBlockAccount()
@@ -84,11 +85,10 @@ public sealed class Account
         else
             throw new IncorrectPass();
     }
-    private static DateTime SetExpiry()
+    private void SetExpiry()
     {
-        return DateTime.UtcNow.AddYears(5);
-
-
+        ExpiryYear = DateTime.UtcNow.AddYears(5).Year.ToString();
+        ExpiryMonth = DateTime.UtcNow.AddYears(5).Month.ToString();
     }
     private static string GenerateCVV2()
     {

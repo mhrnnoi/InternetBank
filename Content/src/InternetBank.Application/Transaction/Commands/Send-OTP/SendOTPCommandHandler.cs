@@ -29,7 +29,8 @@ public class Send_OTPCommandHandler : IRequestHandler<Send_OTPCommand, int>
                                                                             request.DestinationCardNumber,
                                                                             request.CardNumber,
                                                                             request.CVV2,
-                                                                            request.ExpiryDate,
+                                                                            request.ExpiryYear,
+                                                                            request.ExpiryMonth,
                                                                             _transactionRepository.SendOTP(),
                                                                             request.UserId);
         _transactionRepository.Add(transaction);
@@ -56,10 +57,10 @@ public class Send_OTPCommandHandler : IRequestHandler<Send_OTPCommand, int>
         {
             throw new AccountIsBlocked("destination account is blocked");
         }
-        // if (account.ExpiryDate.Year != request.ExpiryDate)
-        // {
-        //     throw new ExpiredAccount();
-        // }
+        if (account.ExpiryYear != request.ExpiryYear || account.ExpiryMonth != request.ExpiryMonth)
+        {
+            throw new IncorrectExpiryDate();
+        }
         if (account.CVV2 != request.CVV2)
         {
             throw new IncorrectCVV2();

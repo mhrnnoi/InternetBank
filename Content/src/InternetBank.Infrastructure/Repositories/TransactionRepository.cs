@@ -11,12 +11,29 @@ public class TransactionRepository : ITransactionRepository
     public TransactionRepository(ApplicationDbContext appdbContext)
     {
         dbContext = appdbContext.Transactions;
-        
+
     }
 
     public void Add(Domain.Transactions.Transaction transactions)
     {
         dbContext.Add(transactions);
+    }
+
+    public async Task<List<Domain.Transactions.Transaction>> GetByDateAndSuccess(DateOnly? from, DateOnly? to, bool? isSuccess)
+    {
+        if (from is not null && to is not null && isSuccess is not null)
+        {
+
+            return await dbContext.Where(x => DateOnly.FromDateTime(x.CreatedDateTime) >= from && DateOnly.FromDateTime(x.CreatedDateTime) <= to && x.IsSuccess == isSuccess)
+                                .ToListAsync();
+        }
+        else
+        {
+            var transactions = await dbContext.ToListAsync();
+            return transactions.OrderByDescending(x => x.CreatedDateTime).Take(5).ToList();
+
+        }
+
     }
 
     public async Task<Domain.Transactions.Transaction?> GetByOTP(string otp, double amount)

@@ -41,8 +41,13 @@ namespace InternetBank.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("ExpiryDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<string>("ExpiryMonth")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExpiryYear")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsBlocked")
                         .HasColumnType("boolean");
@@ -103,10 +108,19 @@ namespace InternetBank.Infrastructure.Migrations
                     b.Property<DateTime>("OTPExpireDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("SourceCardExpireDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<string>("SourceCardExpireMonth")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SourceCardExpireYear")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("SourceCardNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");
 

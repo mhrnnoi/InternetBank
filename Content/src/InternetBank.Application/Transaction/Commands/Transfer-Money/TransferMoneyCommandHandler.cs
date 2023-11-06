@@ -1,3 +1,4 @@
+using InternetBank.Domain.Interfaces.UOF;
 using InternetBank.Domain.Repositories;
 using MediatR;
 using static InternetBank.Domain.Exceptions.DomainExceptions.Transaction;
@@ -8,11 +9,14 @@ public class TransferMoneyCommandHandler : IRequestHandler<TransferMoneyCommand,
 {
     private readonly ITransactionRepository _transactionRepository;
     private readonly IAccountRepository _accountRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public TransferMoneyCommandHandler(ITransactionRepository transactionRepository, IAccountRepository accountRepository)
+
+    public TransferMoneyCommandHandler(ITransactionRepository transactionRepository, IAccountRepository accountRepository, IUnitOfWork unitOfWork)
     {
         _transactionRepository = transactionRepository;
         _accountRepository = accountRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<string> Handle(TransferMoneyCommand request, CancellationToken cancellationToken)
@@ -28,7 +32,9 @@ public class TransferMoneyCommandHandler : IRequestHandler<TransferMoneyCommand,
 
         if (srcAcc is not null && destAcc is not null)
         {
-           return transaction.TransferMoney(srcAcc, destAcc, request.UserId);
+            var res = transaction.TransferMoney(srcAcc, destAcc, request.UserId);
+            await _unitOfWork.SaveChangesAsync();
+            return res;
         }
         else
         {

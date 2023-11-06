@@ -25,7 +25,7 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand,
         return new CreateAccountResult(acc.Number,
                                        acc.CardNumber,
                                        acc.CVV2,
-                                       acc.ExpiryDate,
+                                       ""+ acc.ExpiryYear + "/" + acc.ExpiryMonth,
                                        acc.Password,
                                        acc.Id,
                                        acc.Type);

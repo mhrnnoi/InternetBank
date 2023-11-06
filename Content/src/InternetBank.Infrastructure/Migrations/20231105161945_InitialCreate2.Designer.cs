@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace InternetBank.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231105095921_InitialCreate2")]
+    [Migration("20231105161945_InitialCreate2")]
     partial class InitialCreate2
     {
         /// <inheritdoc />
@@ -44,8 +44,13 @@ namespace InternetBank.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("ExpiryDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<string>("ExpiryMonth")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExpiryYear")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsBlocked")
                         .HasColumnType("boolean");
@@ -106,10 +111,19 @@ namespace InternetBank.Infrastructure.Migrations
                     b.Property<DateTime>("OTPExpireDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("SourceCardExpireDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<string>("SourceCardExpireMonth")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SourceCardExpireYear")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("SourceCardNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");
 

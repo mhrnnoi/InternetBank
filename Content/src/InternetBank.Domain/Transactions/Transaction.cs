@@ -15,10 +15,18 @@ public sealed class Transaction
     public string OTP { get; private init; }
     public DateTime OTPExpireDate { get; set; }
     public string CVV2 { get; set; }
-    public DateTime SourceCardExpireDate { get; set; }
+    public string SourceCardExpireYear { get; set; }
+    public string SourceCardExpireMonth { get; set; }
     public string UserId { get; set; }
 
-    private Transaction(double amount, string destinationCardNumber, string sourceCardNumber, string cVV2, DateTime sourceCardExpireDate, string oTP, string userId)
+    private Transaction(double amount,
+                        string destinationCardNumber,
+                        string sourceCardNumber,
+                        string cVV2,
+                        string sourceCardExpireYear,
+                        string sourceCardExpireMonth,
+                        string oTP,
+                        string userId)
     {
         Amount = amount;
         CreatedDateTime = DateTime.UtcNow;
@@ -26,14 +34,15 @@ public sealed class Transaction
         DestinationCardNumber = destinationCardNumber;
         SourceCardNumber = sourceCardNumber;
         CVV2 = cVV2;
-        SourceCardExpireDate = sourceCardExpireDate;
+        SourceCardExpireYear = sourceCardExpireYear;
+        SourceCardExpireMonth = sourceCardExpireMonth;
         OTP = oTP;
         UserId = userId;
         Description = "عملیات ناموفق به دلیل انجام ندادن کاری یا گذشتن زمان مجاز";
     }
     public string TransferMoney(Account account, Account account1, string userId)
     {
-        if (UserId == userId)
+        if (UserId != userId)
         {
             throw new NotYourTransaction();
 
@@ -72,13 +81,15 @@ public sealed class Transaction
                                                 string destinationCardNumber,
                                                 string sourceCardNumber,
                                                 string cVV2,
-                                                DateTime sourceCardExpireDate,
+                                                string sourceCardExpireYear,
+                                                string sourceCardExpireMonth,
                                                 string otp,
                                                 string userId)
     {
         CheckCardNumberFormat(sourceCardNumber);
         CheckCVV2(cVV2);
-        CheckExpireDate(sourceCardExpireDate);
+        CheckExpireYear(sourceCardExpireYear);
+        CheckExpireMonth(sourceCardExpireMonth);
         CheckAmount(amount);
         CheckCardNumberFormat(destinationCardNumber);
 
@@ -86,7 +97,8 @@ public sealed class Transaction
                                destinationCardNumber,
                                sourceCardNumber,
                                cVV2,
-                               sourceCardExpireDate,
+                               sourceCardExpireYear,
+                               sourceCardExpireMonth,
                                otp,
                                userId);
     }
@@ -101,9 +113,17 @@ public sealed class Transaction
         return true;
     }
 
-    private static bool CheckExpireDate(DateTime expiryDate)
+    private static bool CheckExpireYear(string expiryYear)
     {
-        if (expiryDate <= DateTime.UtcNow)
+        if (int.Parse(expiryYear) <= DateTime.UtcNow.Year)
+        {
+            return true;
+        }
+        return false;
+    }
+    private static bool CheckExpireMonth(string expiryMonth)
+    {
+        if (int.Parse(expiryMonth) <= DateTime.UtcNow.Month)
         {
             return true;
         }
