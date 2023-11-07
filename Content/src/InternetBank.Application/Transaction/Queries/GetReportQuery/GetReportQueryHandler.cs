@@ -19,8 +19,9 @@ public class GetReportQueryHandler : IRequestHandler<GetReportQuery, List<Transa
 
     public async Task<List<TransactionDTO>> Handle(GetReportQuery request, CancellationToken cancellationToken)
     {
-     
-        var transactions =  await _transactionRepository.GetByDateAndSuccess(request.From, request.To, request.IsSuccess);
+        var transactions =  await _transactionRepository.GetByDateAndSuccess(request.From,
+                                                                             request.To,
+                                                                             request.IsSuccess);
         var transactionDTO = _mapper.Map<List<TransactionDTO>>(transactions);
         return transactionDTO;
     }

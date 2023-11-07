@@ -1,10 +1,10 @@
 using FluentValidation.Results;
 using InternetBank.Application.Authentication.Queries.Common;
 using InternetBank.Application.Interfaces;
+using InternetBank.Domain.Exceptions.User;
 using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using static InternetBank.Domain.Exceptions.DomainExceptions.User;
 
 namespace InternetBank.Infrastructure.Identity;
 public class IdentityService : IIdentityService
@@ -39,7 +39,7 @@ public class IdentityService : IIdentityService
         var user = ApplicationUser.CreateUser(firstName,
                                               lastName,
                                               nationalCode,
-                                              birthDate,
+                                              birthDate.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc),
                                               Username,
                                               Email,
                                               PhoneNumber);

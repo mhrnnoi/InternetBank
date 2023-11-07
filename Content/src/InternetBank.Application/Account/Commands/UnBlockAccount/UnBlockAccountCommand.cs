@@ -2,4 +2,5 @@ using MediatR;
 
 namespace InternetBank.Application.Account.Commands.UnBlockAccount;
 
-public record UnBlockAccountCommand(int Id, string UserId) : IRequest<bool>;
+public record UnBlockAccountCommand(int Id,
+                                    string UserId) : IRequest<bool>;

@@ -1,22 +1,21 @@
-namespace InternetBank.Domain.Exceptions;
-
-public abstract partial class DomainExceptions
+namespace InternetBank.Domain.Exceptions.User;
+public class NotFoundUserById : DomainExceptions
 {
-    public abstract partial class User
+    public const string Massage = "there is no user with this id";
+    public const int StatusCodeConst = 404;
+
+    public NotFoundUserById()
+: base(StatusCodeConst, Massage)
     {
-        public class NotFoundUserById : DomainExceptions
-        {
-            public const string Massage = "there is no user with this id";
-            public const int StatusCodeConst = 404;
-            public const string TitleConst = "Not Found";
-            public NotFoundUserById()
-                : base(Massage, StatusCodeConst, TitleConst)
-            {
 
-
-            }
-
-        }
 
     }
+    public NotFoundUserById(string? massage)
+        : base(StatusCodeConst, massage ?? Massage)
+    {
+
+
+    }
+
 }
+

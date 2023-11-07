@@ -6,6 +6,7 @@ public class GetAccountByIdQueryValidator : AbstractValidator<GetAccountByIdQuer
 {
     public GetAccountByIdQueryValidator()
     {
-        RuleFor(x => x.Id).NotEmpty().NotNull();
+        RuleFor(x => x.Id).NotEmpty()
+                          .NotNull();
     }
 }

@@ -6,6 +6,7 @@ public class BlockAccountCommandValidator : AbstractValidator<BlockAccountComman
 {
     public BlockAccountCommandValidator()
     {
-        RuleFor(x => x.Id).NotEmpty().NotNull();
+        RuleFor(x => x.Id).NotEmpty()
+                          .NotNull();
     }
 }

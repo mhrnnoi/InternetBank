@@ -1,6 +1,6 @@
 namespace InternetBank.Domain.Exceptions;
 
-public abstract partial class DomainExceptions : Exception
+public abstract class DomainExceptions : Exception
 {
     public int StatusCode { get; protected init; }
 

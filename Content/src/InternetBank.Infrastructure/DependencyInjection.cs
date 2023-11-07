@@ -11,7 +11,6 @@ using InternetBank.Infrastructure.Services;
 using InternetBank.Infrastructure.UOF;
 using Mapster;
 using MapsterMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,9 +24,9 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IAccountRepository, AccountRepository>();
-        var cred = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"])), SecurityAlgorithms.HmacSha512);
+        var cred = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"]!)),
+                                          SecurityAlgorithms.HmacSha512);
 
-       
         services.AddScoped<IMapper, ServiceMapper>();
         var typeadapterConfig = TypeAdapterConfig.GlobalSettings;
         typeadapterConfig.Scan(Assembly.GetExecutingAssembly());
@@ -40,19 +39,14 @@ public static class DependencyInjection
         services.AddIdentity<ApplicationUser, IdentityRole>(options =>
         {
             options.User.RequireUniqueEmail = true;
-            
-
-
         })
-                            .AddEntityFrameworkStores<ApplicationDbContext>()
-                            .AddDefaultTokenProviders();
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
         services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseNpgsql("Host=localhost;Port=5432;Database=InternetBankDb;Username=mehran;Password=MyPassword@complex3343;");
         });
-
-
-
 
         return services;
 

@@ -1,7 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using InternetBank.Application.Authentication.Commands.Login;
 using InternetBank.Application.Authentication.Queries.Common;
 using InternetBank.Application.Common.Interfaces;
 using Microsoft.Extensions.Configuration;
@@ -26,14 +25,21 @@ public class JwtGenerator : IJwtGenerator
             new Claim(JwtRegisteredClaimNames.Sub, userDTO.Id),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(ClaimTypes.Email, userDTO.Email),
-            new Claim(JwtRegisteredClaimNames.Iss, configuration["JwtSettings:Issuer"]),
-            new Claim(JwtRegisteredClaimNames.Exp, configuration["JwtSettings:Expiry"]),
+            new Claim(JwtRegisteredClaimNames.Iss, configuration["JwtSettings:Issuer"]!),
+            new Claim(JwtRegisteredClaimNames.Exp, configuration["JwtSettings:Expiry"]!),
             new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
             new Claim(JwtRegisteredClaimNames.Name, userDTO.FirstName + " " + userDTO.LastName),
         };
 
-        var cred = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"])), SecurityAlgorithms.HmacSha512);
-        var securityToken = new JwtSecurityToken(issuer: configuration["JwtSettings:Issuer"], audience: configuration["JwtSettings:Audience"], claims, signingCredentials: cred, expires: DateTime.Now.AddMinutes(int.Parse(configuration["JwtSettings:Expiry"])));
+        var cred = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"]!)),
+                                          SecurityAlgorithms.HmacSha512);
+
+        var securityToken = new JwtSecurityToken(issuer: configuration["JwtSettings:Issuer"],
+                                                 audience: configuration["JwtSettings:Audience"],
+                                                 claims,
+                                                 signingCredentials: cred,
+                                                 expires: DateTime.Now.AddMinutes(int.Parse(configuration["JwtSettings:Expiry"]!)));
+                                                 
         var tokenHandler = new JwtSecurityTokenHandler();
         return tokenHandler.WriteToken(securityToken);
     }

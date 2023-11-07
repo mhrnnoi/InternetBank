@@ -1,76 +1,59 @@
 using InternetBank.Domain.Accounts;
-using static InternetBank.Domain.Exceptions.DomainExceptions.Transaction;
-using static InternetBank.Domain.Exceptions.Transaction;
+using InternetBank.Domain.Exceptions.Account;
+using InternetBank.Domain.Exceptions.Transaction;
 
 namespace InternetBank.Domain.Transactions;
 
 public sealed class Transaction
 {
     public int Id { get; set; }
+    public int AccountId { get; set; }
     public bool IsSuccess { get; set; }
     public double Amount { get; set; }
     public DateTime CreatedDateTime { get; set; }
     public string Description { get; set; } = string.Empty;
-    public string SourceCardNumber { get; set; }
     public string DestinationCardNumber { get; set; } = string.Empty;
-    public string OTP { get; private init; }
-    public DateTime OTPExpireDate { get; set; }
-    public string CVV2 { get; set; }
-    public string SourceCardExpireYear { get; set; }
-    public string SourceCardExpireMonth { get; set; }
+    public string Otp { get; private set; } = string.Empty;
+    public DateTime OtpExpireDate { get; private set; }
     public string UserId { get; set; }
 
     private Transaction(double amount,
                         string destinationCardNumber,
-                        string sourceCardNumber,
-                        string cVV2,
-                        string sourceCardExpireYear,
-                        string sourceCardExpireMonth,
-                        string oTP,
-                        string userId)
+                        string userId,
+                        int accountId)
     {
         Amount = amount;
         CreatedDateTime = DateTime.UtcNow;
         IsSuccess = false;
         DestinationCardNumber = destinationCardNumber;
-        SourceCardNumber = sourceCardNumber;
-        CVV2 = cVV2;
-        SourceCardExpireYear = sourceCardExpireYear;
-        SourceCardExpireMonth = sourceCardExpireMonth;
-        OTP = oTP;
         UserId = userId;
         Description = "عملیات ناموفق به دلیل انجام ندادن کاری یا گذشتن زمان مجاز";
+        AccountId = accountId;
     }
-    public string TransferMoney(Account account, Account account1, string userId)
+    public string TransferMoney(Account sourceAccount,
+                                Account destinationAcc,
+                                string userId)
     {
         if (UserId != userId)
-        {
             throw new NotYourTransaction();
 
-        }
         if (IsSuccess)
-        {
             throw new AlreadyCompletedTransaction();
-        }
 
-        if (DateTime.UtcNow > OTPExpireDate)
-        {
+        if (DateTime.UtcNow > OtpExpireDate)
             Description = "عملیات ناموفق - رمز نادرست";
-        }
-        if (account.IsBlocked)
-        {
+
+        if (sourceAccount.IsBlocked)
             Description = "عملیات ناموفق - اکانت مبدا مسدود هست";
-        }
-        if (account1.IsBlocked)
-        {
+
+        if (destinationAcc.IsBlocked)
             Description = "عملیات ناموفق - اکانت مقصد مسدود هست";
-        }
-        if (account.Amount >= Amount)
-        {
+
+        if (sourceAccount.Amount < Amount)
             Description = "عملیات ناموفق - عدم موجودی";
-        }
-        account.Withdrawl(Amount);
-        account1.Deposit(Amount);
+
+        sourceAccount.Withdrawl(Amount);
+        destinationAcc.Deposit(Amount);
         IsSuccess = true;
         Description = "عملیات موفق";
         return Description;
@@ -78,73 +61,87 @@ public sealed class Transaction
 
 
     }
-    public static Transaction CreateTransaction(double amount,
-                                                string destinationCardNumber,
-                                                string sourceCardNumber,
-                                                string cVV2,
-                                                string sourceCardExpireYear,
-                                                string sourceCardExpireMonth,
-                                                string otp,
+    public static Transaction CreateTransaction(Account sourceAccount,
+                                                Account destinationAccount,
+                                                string expiryYear,
+                                                string expiryMonth,
+                                                double amount,
+                                                string cvv2,
                                                 string userId)
     {
-        CheckCardNumberFormat(sourceCardNumber);
-        CheckCVV2(cVV2);
-        CheckExpireYear(sourceCardExpireYear);
-        CheckExpireMonth(sourceCardExpireMonth);
+        CheckCardNumberFormat(sourceAccount.CardNumber);
+        CheckCardNumberFormat(destinationAccount.CardNumber);
+        CheckCVV2(cvv2);
+        CheckExpiry(expiryYear, expiryMonth);
         CheckAmount(amount);
-        CheckCardNumberFormat(destinationCardNumber);
+        CheckAccounts(sourceAccount,
+                      destinationAccount,
+                      expiryYear,
+                      expiryMonth,
+                      userId,
+                      cvv2);
 
         return new Transaction(amount,
-                               destinationCardNumber,
-                               sourceCardNumber,
-                               cVV2,
-                               sourceCardExpireYear,
-                               sourceCardExpireMonth,
-                               otp,
-                               userId);
+                               destinationAccount.CardNumber,
+                               userId,
+                               sourceAccount.Id);
+    }
+    private static void CheckAccounts(Account sourceAccount,
+                                      Account destinationAccount,
+                                      string expiryYear,
+                                      string expiryMonth,
+                                      string userId,
+                                      string cvv2)
+    {
+
+        if (sourceAccount.UserId != userId)
+            throw new AccountIsNotYours();
+
+        if (sourceAccount.IsBlocked)
+            throw new AccountIsBlocked("source account is blocked");
+
+        if (destinationAccount.IsBlocked)
+            throw new AccountIsBlocked("destination account is blocked");
+
+        if (sourceAccount.ExpiryYear != expiryYear || sourceAccount.ExpiryMonth != expiryMonth)
+            throw new IncorrectExpiryDate();
+
+        if (sourceAccount.Cvv2 != cvv2)
+            throw new IncorrectCVV2();
     }
 
 
-    private static bool CheckAmount(double amount)
+    private static void CheckAmount(double amount)
     {
         if (amount < 1000 || amount > 5000000)
-        {
-            return false;
-        }
-        return true;
+            throw new IncorrectAmountRange();
     }
 
-    private static bool CheckExpireYear(string expiryYear)
+    private static void CheckExpiry(string expiryYear, string expiryMonth)
     {
-        if (int.Parse(expiryYear) <= DateTime.UtcNow.Year)
-        {
-            return true;
-        }
-        return false;
-    }
-    private static bool CheckExpireMonth(string expiryMonth)
-    {
-        if (int.Parse(expiryMonth) <= DateTime.UtcNow.Month)
-        {
-            return true;
-        }
-        return false;
+        if (Convert.ToDateTime(expiryYear + "/" + expiryMonth) < DateTime.UtcNow)
+            throw new ExpiredAccount();
+
     }
 
-    private static bool CheckCVV2(string cVV2)
+    private static void CheckCVV2(string cVV2)
     {
-        return cVV2.All(x => char.IsDigit(x))
-                && cVV2.Length == 4;
+        if (!(cVV2.All(x => char.IsDigit(x))
+                && cVV2.Length == 4))
+            throw new IncorrectCVV2();
     }
 
-    private static bool CheckCardNumberFormat(string cardNumber)
+    private static void CheckCardNumberFormat(string cardNumber)
     {
 
-        return cardNumber.All(x => char.IsDigit(x))
-                 && cardNumber.Length == 16;
+        if (!(cardNumber.All(char.IsDigit)
+                 && cardNumber.Length == 16))
+            throw new IncorrectCardNumber();
     }
-    public string Report()
+    public void SetOtp(string otp)
     {
-        return "";
+        Otp = otp;
+        OtpExpireDate = DateTime.UtcNow.AddMinutes(2);
     }
+
 }

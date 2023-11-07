@@ -1,4 +1,3 @@
-using System.Security.Authentication;
 using InternetBank.Domain.Accounts;
 using InternetBank.Domain.Repositories;
 using InternetBank.Infrastructure.Data;
@@ -14,17 +13,15 @@ public class AccountRepository : IAccountRepository
         _context = context.Accounts;
     }
 
-    public Account CreateAccount(int accountype, double amount, string userId)
+    public void AddAccount(Account account)
     {
-        var acc = Account.OpenAccount((AccountTypes)accountype, amount, userId);
-        _context.Add(acc);
-        return acc;
-
+        _context.Add(account);
     }
 
     public async Task<List<Account>> GetAllAccounts(string userId)
     {
-        return await _context.Where(x => x.UserId == userId).ToListAsync();
+        return await _context.Where(x => x.UserId == userId)
+                             .ToListAsync();
     }
 
     public async Task<Account?> GetByCardNumber(string cardNumber)
@@ -32,7 +29,8 @@ public class AccountRepository : IAccountRepository
         return await _context.FirstOrDefaultAsync(x => x.CardNumber == cardNumber);
     }
 
-    public async Task<Account?> GetById(int AccountId, string userId)
+    public async Task<Account?> GetById(int AccountId,
+                                        string userId)
     {
         return await _context.FirstOrDefaultAsync(x => x.Id == AccountId && x.UserId == userId);
     }

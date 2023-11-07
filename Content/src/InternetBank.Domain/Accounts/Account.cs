@@ -1,37 +1,38 @@
-using static InternetBank.Domain.Exceptions.DomainExceptions.User;
+using InternetBank.Domain.Exceptions.Account;
 
 namespace InternetBank.Domain.Accounts;
 
 public sealed class Account
 {
     public int Id { get; set; }
-    public AccountTypes Type { get; private set; }
+    public AccountTypes AccountType { get; private set; }
     public double Amount { get; private set; }
-    public string Number { get; private set; }
+    public string AccountNumber { get; private set; }
     public string CardNumber { get; private set; }
     public string UserId { get; init; }
-    public string CVV2 { get; private set; }
+    public string Cvv2 { get; private set; }
     public string ExpiryYear { get; private set; } = null!;
     public string ExpiryMonth { get; private set; } = null!;
-    public string Password { get; private set; }
+    public string StaticPassword { get; private set; }
     public bool IsBlocked { get; private set; }
-    private Account(AccountTypes type, double amount, string userId)
+    private Account(AccountTypes accountType,
+                    double amount,
+                    string userId)
     {
 
-        Type = type;
+        AccountType = accountType;
         Amount = amount;
         UserId = userId;
         IsBlocked = false;
-        Number = GenerateAccountNumber();
+        AccountNumber = GenerateAccountNumber();
         CardNumber = GenerateCartNumber();
-        CVV2 = GenerateCVV2();
-        Password = GeneratePassword();
+        Cvv2 = GenerateCVV2();
+        StaticPassword = GeneratePassword();
         SetExpiry();
     }
     public string Balance()
     {
-
-        return "" + Amount + "\n" + Id + "\n" + Number;
+        return "" + Amount + "\n" + Id + "\n" + AccountNumber;
     }
     public void Deposit(double amount)
     {
@@ -43,16 +44,15 @@ public sealed class Account
     }
     public string Report()
     {
-        return "" + Password;
+        return "" + StaticPassword;
     }
     public void BlockAccount()
     {
-
-        this.IsBlocked = true;
+        IsBlocked = true;
     }
     public void UnBlockAccount()
     {
-        this.IsBlocked = false;
+        IsBlocked = false;
     }
     private static string GeneratePassword()
     {
@@ -65,15 +65,17 @@ public sealed class Account
         }
         return str;
     }
-    public bool ChangePassword(string oldPass, string newPassword, string repeatNewPassword)
+    public bool ChangePassword(string oldPass,
+                               string newPassword,
+                               string repeatNewPassword)
     {
-        if (oldPass == Password)
+        if (oldPass == StaticPassword)
         {
             if (newPassword == repeatNewPassword)
             {
-                if (newPassword.Length is 6 && newPassword.All(x => char.IsDigit(x)))
+                if (newPassword.Length is 6 && newPassword.All(char.IsDigit))
                 {
-                    Password = newPassword;
+                    StaticPassword = newPassword;
                     return true;
                 }
                 else
@@ -87,8 +89,10 @@ public sealed class Account
     }
     private void SetExpiry()
     {
-        ExpiryYear = DateTime.UtcNow.AddYears(5).Year.ToString();
-        ExpiryMonth = DateTime.UtcNow.AddYears(5).Month.ToString();
+        ExpiryYear = DateTime.UtcNow.AddYears(5).Year
+                                    .ToString();
+        ExpiryMonth = DateTime.UtcNow.AddYears(5).Month
+                                     .ToString();
     }
     private static string GenerateCVV2()
     {
@@ -110,14 +114,13 @@ public sealed class Account
             for (int j = 0; j < 4; j++)
             {
                 str += rnd.Next(0, 10);
-
             }
             strArr[i] = str;
             str = "";
         }
-        return string.Join(" ", strArr);
+        return string.Join("", strArr);
     }
-    public string GenerateAccountNumber()
+    private string GenerateAccountNumber()
     {
         var strArr = new string[3];
         var str = "";
@@ -128,34 +131,38 @@ public sealed class Account
         }
         strArr[0] = str;
         str = "";
+
         for (int i = 0; i < 3; i++)
         {
             str += UserId[i];
         }
+
         for (int i = 0; i < 4; i++)
         {
             str += rnd.Next(0, 10);
-
         }
+
         strArr[1] = str;
         str = "";
-        if (this.Type == AccountTypes.Saving)
-        {
+
+        if (AccountType == AccountTypes.Saving)
             str += 1;
-        }
+
         else
-        {
             str += 2;
 
-        }
         strArr[2] = str;
-
-
         return string.Join(".", strArr);
     }
-    public static Account OpenAccount(AccountTypes type, double amount, string userId)
+    public static Account OpenAccount(int type,
+                                      double amount,
+                                      string userId)
     {
-        return new Account(type, amount, userId);
+        if (type is 1 || type is 2)
+            return new Account((AccountTypes)type, amount, userId);
+            
+        else
+            throw new InvalidAccountType();
     }
 
 }

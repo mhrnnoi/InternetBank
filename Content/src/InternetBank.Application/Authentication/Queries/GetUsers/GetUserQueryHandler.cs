@@ -15,8 +15,6 @@ public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, List<UserDTO>
 
     public async Task<List<UserDTO>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
     {
-        var usersDTO = await _identityService.GetAllAsync();
-
-        return usersDTO;
+        return await _identityService.GetAllAsync();
     }
 }

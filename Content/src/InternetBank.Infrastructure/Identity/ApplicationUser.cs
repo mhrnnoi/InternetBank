@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-using InternetBank.Domain.Exceptions;
+using InternetBank.Domain.Exceptions.User;
 using Microsoft.AspNetCore.Identity;
 
 namespace InternetBank.Infrastructure.Identity;
@@ -32,7 +32,7 @@ public sealed class ApplicationUser : IdentityUser
     public static ApplicationUser CreateUser(string firstName,
                                              string lastName,
                                              string nationalCode,
-                                             DateOnly birthDate,
+                                             DateTime birthDate,
                                              string userName,
                                              string email,
                                              string phoneNumber)
@@ -45,16 +45,16 @@ public sealed class ApplicationUser : IdentityUser
         return new ApplicationUser(firstName,
                                    lastName,
                                    nationalCode,
-                                   birthDate.ToDateTime(default),
+                                   birthDate,
                                    userName,
                                    email,
                                    phoneNumber);
     }
 
-    private static void BirthDateCheck(DateOnly birthDate)
+    private static void BirthDateCheck(DateTime birthDate)
     {
         if (!(DateTime.UtcNow.Year - birthDate.Year >= 18))
-            throw new DomainExceptions.User.Below18();
+            throw new Below18();
 
 
     }
@@ -62,7 +62,7 @@ public sealed class ApplicationUser : IdentityUser
     private static void CorrectNationalCodeCheck(string nationalCode)
     {
         if (nationalCode.Any(x => char.IsNumber(x) == false))
-            throw new DomainExceptions.User.IncorrectNationalCode();
+            throw new IncorrectNationalCode();
 
         if (nationalCode.Length >= 8 && nationalCode.Length <= 10)
         {
@@ -81,16 +81,16 @@ public sealed class ApplicationUser : IdentityUser
             if (reminder < 2)
             {
                 if (!(reminder == int.Parse(nationalCode[^1].ToString())))
-                    throw new DomainExceptions.User.IncorrectNationalCode();
+                    throw new IncorrectNationalCode();
             }
             else
             {
                 if (!(11 - reminder == int.Parse(nationalCode[^1].ToString())))
-                    throw new DomainExceptions.User.IncorrectNationalCode();
+                    throw new IncorrectNationalCode();
             }
         }
         else
-            throw new DomainExceptions.User.IncorrectNationalCode();
+            throw new IncorrectNationalCode();
 
 
 
@@ -102,13 +102,13 @@ public sealed class ApplicationUser : IdentityUser
     {
         string pattern = @"^[\u0600-\u06FF\s-]+$";
         if (!Regex.IsMatch(input, pattern))
-            throw new DomainExceptions.User.FirstNameIsNotFarsi();
+            throw new FirstNameIsNotFarsi();
     }
     private static void LastNamePersianCheck(string input)
     {
         string pattern = @"^[\u0600-\u06FF\s-]+$";
         if (!Regex.IsMatch(input, pattern))
-            throw new DomainExceptions.User.LastNameIsNotFarsi();
+            throw new LastNameIsNotFarsi();
     }
 
 }

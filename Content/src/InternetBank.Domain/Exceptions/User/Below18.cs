@@ -1,22 +1,21 @@
-namespace InternetBank.Domain.Exceptions;
-
-public abstract partial class DomainExceptions
+namespace InternetBank.Domain.Exceptions.User;
+public class Below18 : DomainExceptions
 {
-    public abstract partial class User
+    public const string Massage = "you're not in supported age range ";
+    public const int StatusCodeConst = 400;
+
+    public Below18()
+: base(StatusCodeConst, Massage)
     {
-        public class Below18 : DomainExceptions
-        {
-            public const string Massage = "you're not in supported age range ";
-            public const int StatusCodeConst = 400;
-            public const string TitleConst = "below 18 !";
-            public Below18()
-                : base(Massage, StatusCodeConst, TitleConst)
-            {
 
-
-            }
-
-        }
 
     }
+    public Below18(string? massage)
+        : base(StatusCodeConst, massage ?? Massage)
+    {
+
+
+    }
+
 }
+

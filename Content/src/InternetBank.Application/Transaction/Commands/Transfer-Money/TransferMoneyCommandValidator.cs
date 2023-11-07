@@ -6,7 +6,7 @@ public class TransferMoneyCommandValidator : AbstractValidator<TransferMoneyComm
 {
     public TransferMoneyCommandValidator()
     {
-        RuleFor(x => x.OTP)
+        RuleFor(x => x.Otp)
                       .Must(x => x.All(x => char.IsDigit(x)) && x.Length == 5)
                       .WithMessage("otp should have 5 numeric character");
         RuleFor(x => x.Amount)

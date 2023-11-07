@@ -6,6 +6,7 @@ public class UnBlockAccountCommandValidator : AbstractValidator<UnBlockAccountCo
 {
     public UnBlockAccountCommandValidator()
     {
-        RuleFor(x => x.Id).NotEmpty().NotNull();
+        RuleFor(x => x.Id).NotEmpty()
+                          .NotNull();
     }
 }

@@ -5,13 +5,13 @@ public class AccountIsBlocked : DomainExceptions
     public const string Massage = "Account is blocked so no transfering can be done both recieve and send";
     public const int StatusCodeConst = 400;
     public AccountIsBlocked()
-        : base(Massage)
+        : base(StatusCodeConst, Massage)
     {
 
 
     }
     public AccountIsBlocked(string? massage)
-        : base(massage ??= Massage, StatusCodeConst)
+        : base(StatusCodeConst, massage ?? Massage)
     {
 
 

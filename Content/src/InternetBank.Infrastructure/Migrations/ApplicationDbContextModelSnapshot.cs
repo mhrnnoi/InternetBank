@@ -30,14 +30,21 @@ namespace InternetBank.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("Amount")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("CVV2")
+                    b.Property<string>("AccountNumber")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("AccountType")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("double precision");
+
                     b.Property<string>("CardNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Cvv2")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -52,16 +59,9 @@ namespace InternetBank.Infrastructure.Migrations
                     b.Property<bool>("IsBlocked")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Number")
+                    b.Property<string>("StaticPassword")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -80,12 +80,11 @@ namespace InternetBank.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AccountId")
+                        .HasColumnType("integer");
+
                     b.Property<double>("Amount")
                         .HasColumnType("double precision");
-
-                    b.Property<string>("CVV2")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("timestamp with time zone");
@@ -101,24 +100,12 @@ namespace InternetBank.Infrastructure.Migrations
                     b.Property<bool>("IsSuccess")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("OTP")
+                    b.Property<string>("Otp")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("OTPExpireDate")
+                    b.Property<DateTime>("OtpExpireDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("SourceCardExpireMonth")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("SourceCardExpireYear")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("SourceCardNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("UserId")
                         .IsRequired()

@@ -18,15 +18,15 @@ namespace InternetBank.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Type = table.Column<int>(type: "integer", nullable: false),
+                    AccountType = table.Column<int>(type: "integer", nullable: false),
                     Amount = table.Column<double>(type: "double precision", nullable: false),
-                    Number = table.Column<string>(type: "text", nullable: false),
+                    AccountNumber = table.Column<string>(type: "text", nullable: false),
                     CardNumber = table.Column<string>(type: "text", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false),
-                    CVV2 = table.Column<string>(type: "text", nullable: false),
+                    Cvv2 = table.Column<string>(type: "text", nullable: false),
                     ExpiryYear = table.Column<string>(type: "text", nullable: false),
                     ExpiryMonth = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
+                    StaticPassword = table.Column<string>(type: "text", nullable: false),
                     IsBlocked = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
@@ -83,17 +83,14 @@ namespace InternetBank.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AccountId = table.Column<int>(type: "integer", nullable: false),
                     IsSuccess = table.Column<bool>(type: "boolean", nullable: false),
                     Amount = table.Column<double>(type: "double precision", nullable: false),
                     CreatedDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    SourceCardNumber = table.Column<string>(type: "text", nullable: false),
                     DestinationCardNumber = table.Column<string>(type: "text", nullable: false),
-                    OTP = table.Column<string>(type: "text", nullable: false),
-                    OTPExpireDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CVV2 = table.Column<string>(type: "text", nullable: false),
-                    SourceCardExpireYear = table.Column<string>(type: "text", nullable: false),
-                    SourceCardExpireMonth = table.Column<string>(type: "text", nullable: false),
+                    Otp = table.Column<string>(type: "text", nullable: false),
+                    OtpExpireDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>

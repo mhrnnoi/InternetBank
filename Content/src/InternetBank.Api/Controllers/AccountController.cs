@@ -69,7 +69,8 @@ public class AccountController : ApiController
     public async Task<IActionResult> GetBalance(int id)
     {
         var userId = GetUserId(User.Claims);
-        var query = new GetAccountBalanceByIdQuery(id, userId);
+        var query = new GetAccountBalanceByIdQuery(id,
+                                                   userId);
         var result = await _sender.Send(query);
         return Ok(result);
     }
@@ -77,7 +78,8 @@ public class AccountController : ApiController
     public async Task<IActionResult> GetAccount(int id)
     {
         var userId = GetUserId(User.Claims);
-        var query = new GetAccountByIdQuery(id, userId);
+        var query = new GetAccountByIdQuery(id,
+                                            userId);
         var result = await _sender.Send(query);
         return Ok(result);
     }
@@ -89,7 +91,5 @@ public class AccountController : ApiController
         var result = await _sender.Send(query);
         return Ok(result);
     }
-
-
 
 }

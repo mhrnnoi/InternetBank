@@ -1,22 +1,22 @@
-namespace InternetBank.Domain.Exceptions;
+namespace InternetBank.Domain.Exceptions.User;
 
-public abstract partial class DomainExceptions
+public class AlreadyExistNationalCode : DomainExceptions
 {
-    public abstract partial class User
+    public const string Massage = "a user with this national code is already exist";
+    public const int StatusCodeConst = 409;
+
+    public AlreadyExistNationalCode()
+: base(StatusCodeConst, Massage)
     {
-        public class AlreadyExistNationalCode : DomainExceptions
-        {
-            public const string Massage = "a user with this national code is already exist";
-            public const int StatusCodeConst = 409;
-            public const string TitleConst = "Already Exist National Code";
-            public AlreadyExistNationalCode()
-                : base(Massage, StatusCodeConst, TitleConst)
-            {
 
-
-            }
-
-        }
 
     }
+    public AlreadyExistNationalCode(string? massage)
+        : base(StatusCodeConst, massage ?? Massage)
+    {
+
+
+    }
+
 }
+

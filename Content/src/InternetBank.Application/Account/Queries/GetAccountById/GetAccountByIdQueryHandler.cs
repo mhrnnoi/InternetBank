@@ -1,4 +1,5 @@
-using InternetBank.Domain.Exceptions;
+using InternetBank.Application.Account.Queries.GetAccountById;
+using InternetBank.Domain.Exceptions.User;
 using InternetBank.Domain.Repositories;
 using MapsterMapper;
 using MediatR;
@@ -18,9 +19,9 @@ public class GetAccountByIdQueryHandler : IRequestHandler<GetAccountByIdQuery, A
 
     public async Task<AccountDTO> Handle(GetAccountByIdQuery request, CancellationToken cancellationToken)
     {
-        var acc = await _accountRepository.GetById(request.Id, request.UserId) ?? throw new DomainExceptions.User.NotFoundAccountById();
+        var acc = await _accountRepository.GetById(request.Id, request.UserId) ?? throw new NotFoundAccountById();
         var accDTO = _mapper.Map<AccountDTO>(acc);
-        return accDTO with {CVV2 = acc.CVV2};
+        return accDTO ;
 
 
 

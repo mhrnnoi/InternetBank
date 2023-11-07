@@ -6,7 +6,7 @@ public class Send_OTPCommandValidator : AbstractValidator<Send_OTPCommand>
 {
     public Send_OTPCommandValidator()
     {
-        RuleFor(x => x.CVV2)
+        RuleFor(x => x.Cvv2)
                             .Must(x => x.All(x => char.IsDigit(x)) && x.Length == 4)
                             .WithMessage("CVV2 should have 4 numeric character");
         RuleFor(x => x.Amount)

@@ -28,13 +28,8 @@ public class TransactionController : ApiController
     public async Task<IActionResult> SendOTP(OTPRequest request)
     {
         var userId = GetUserId(User.Claims);
-        var command = new Send_OTPCommand(request.CardNumber,
-                                          request.CVV2,
-                                          request.ExpiryYear,
-                                          request.ExpiryMonth,
-                                          request.Amount,
-                                          request.DestinationCardNumber,
-                                          userId);
+        var command = _mapper.Map<Send_OTPCommand>(request);
+        command = command with {UserId = userId};
         var result = await _sender.Send(command);
         return Ok(result);
 
@@ -43,7 +38,7 @@ public class TransactionController : ApiController
     public async Task<IActionResult> TransferMoney(TransferMoneyRequest request)
     {
         var userId = GetUserId(User.Claims);
-        var command = new TransferMoneyCommand(request.OTP,
+        var command = new TransferMoneyCommand(request.Otp,
                                                request.Amount,
                                                userId);
         var result = await _sender.Send(command);
@@ -54,10 +49,9 @@ public class TransactionController : ApiController
     [HttpGet("/api/v{version:apiVersion}/transaction/report")]
     [AllowAnonymous]
     public async Task<IActionResult> ReportAsync(DateOnly? from,
-                                            DateOnly? to,
-                                            bool? isSuccess)
+                                                 DateOnly? to,
+                                                 bool? isSuccess)
     {
-        // var userId = GetUserId(User.Claims);
         var query = new GetReportQuery(from,
                                        to,
                                        isSuccess);
@@ -65,32 +59,8 @@ public class TransactionController : ApiController
         return Ok(result);
 
     }
-    // [HttpGet("/api/v{version:apiVersion}/transaction/report")]
-    // public async Task<IActionResult> TransferMoney(TransferMoneyRequest request)
-    // {
-    //     var userId = GetUserId(User.Claims);
-    //     var command = new TransferMoneyCommand(request.OTP,
-    //                                            request.amount,
-    //                                            userId);
-    //     var result = await _sender.Send(command);
-    //     return Ok(result);
 
-    // }
-    // [HttpGet("/api/v{version:apiVersion}/transaction/{id}")]
-    // public async Task<IActionResult> Get(int id)
-    // {
-    //     var query = new GetTransactionByIdQuery(id);
-    //     var result = await _sender.Send(query);
-    //     return Ok(result);
-
-    // }
 
 
 }
 
-public record OTPRequest(string CardNumber,
-                         string CVV2,
-                         string ExpiryYear,
-                         string ExpiryMonth,
-                         double Amount,
-                         string DestinationCardNumber);
