@@ -3,7 +3,7 @@ using InternetBank.Application.Authentication.Commands.Register;
 
 namespace InternetBank.Application.Authentication.Commands.Common;
 
-public class AuthResultService
+public static class AuthResultService
 {
     public static RegisterActionResult CreateRegisterResult(string id)
     {
@@ -13,8 +13,8 @@ public class AuthResultService
     public static LoginActionResult CreateLoginResult(string id,
                                                       string token)
     {
-        return new LoginActionResult("Login succesfull",
-                                       id,
-                                       token);
+        return new LoginActionResult("Login succesfull..",
+                                     id,
+                                     token);
     }
 }

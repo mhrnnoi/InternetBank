@@ -1,12 +1,12 @@
 using Asp.Versioning;
 using InternetBank.Application.Authentication.Commands.Login;
 using InternetBank.Application.Authentication.Commands.Register;
-using InternetBank.Api.Requests.Users;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using InternetBank.Application.Authentication.Queries.GetUser;
 using InternetBank.Application.Authentication.Queries.GetUsers;
+using InternetBank.Contracts.Requests.Users;
 namespace InternetBank.Api.Controllers;
 
 [ApiVersion("1.0")]

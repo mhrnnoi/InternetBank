@@ -1,8 +1,8 @@
 using Asp.Versioning;
-using InternetBank.Api.Requests.Transactions;
 using InternetBank.Application.Transaction.Commands.Send_OTP;
 using InternetBank.Application.Transaction.Commands.Transfer_Money;
 using InternetBank.Application.Transaction.Queries.GetReportQuery;
+using InternetBank.Contracts.Requests.Transactions;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

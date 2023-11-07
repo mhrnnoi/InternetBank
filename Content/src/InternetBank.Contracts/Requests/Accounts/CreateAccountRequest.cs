@@ -1,6 +1,4 @@
-using InternetBank.Domain.Accounts;
-
-namespace InternetBank.Api.Requests.Accounts;
+namespace InternetBank.Contracts.Requests.Accounts;
 
 public record CreateAccountRequest(double Amount,
                                    int AccountTypes);

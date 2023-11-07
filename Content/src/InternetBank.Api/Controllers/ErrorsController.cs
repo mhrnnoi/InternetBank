@@ -3,6 +3,7 @@ using InternetBank.Domain.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace InternetBank.Api.Controllers;
 
@@ -15,26 +16,20 @@ public class ErrorsController : ApiController
         var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
 
         if (exceptionFeature is DomainExceptions domainExceptions)
-        {
+            return Problem(statusCode: domainExceptions.StatusCode, title: domainExceptions.Message);
 
-            return Problem(statusCode: domainExceptions.StatusCode, title: "expected error : " + domainExceptions.Message);
-
-        }
         else if (exceptionFeature is ValidationException validationException)
         {
             foreach (var item in validationException.Errors)
             {
                 ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
             }
-
             return ValidationProblem(ModelState);
-
-
+            
+            
         }
         else
-        {
-            return Problem(statusCode: 500, title: "unexpected error : " + exceptionFeature?.Message);
-        }
+            return Problem(statusCode: 500, title: exceptionFeature?.Message);
 
     }
 }

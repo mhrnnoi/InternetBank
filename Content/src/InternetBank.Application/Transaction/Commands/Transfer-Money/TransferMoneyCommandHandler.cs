@@ -26,6 +26,7 @@ public class TransferMoneyCommandHandler : IRequestHandler<TransferMoneyCommand,
         {
             throw new WrongOTP();
         }
+        
 
         var srcAcc = await _accountRepository.GetByCardNumber(transaction.SourceCardNumber);
         var destAcc = await _accountRepository.GetByCardNumber(transaction.DestinationCardNumber);

@@ -1,9 +1,9 @@
-namespace InternetBank.Api.Requests.Users;
+namespace InternetBank.Contracts.Requests.Users;
 
 public record RegisterRequest(string FirstName,
                               string LastName,
                               string NationalCode,
-                              DateTime BirthDate,
+                              DateOnly BirthDate,
                               string PhoneNumber,
                               string Email,
                               string Username,

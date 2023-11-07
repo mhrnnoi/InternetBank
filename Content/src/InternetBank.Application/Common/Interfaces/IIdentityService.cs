@@ -9,7 +9,7 @@ public interface IIdentityService
     Task<string> CreateUserAsync(string firstName,
                                  string lastName,
                                  string nationalCode,
-                                 DateTime birthDate,
+                                 DateOnly birthDate,
                                  string Email,
                                  string PhoneNumber,
                                  string Username,

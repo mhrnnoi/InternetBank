@@ -1,5 +1,6 @@
 using InternetBank.Domain.Accounts;
 using static InternetBank.Domain.Exceptions.DomainExceptions.Transaction;
+using static InternetBank.Domain.Exceptions.Transaction;
 
 namespace InternetBank.Domain.Transactions;
 

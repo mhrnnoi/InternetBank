@@ -32,7 +32,7 @@ public sealed class ApplicationUser : IdentityUser
     public static ApplicationUser CreateUser(string firstName,
                                              string lastName,
                                              string nationalCode,
-                                             DateTime birthDate,
+                                             DateOnly birthDate,
                                              string userName,
                                              string email,
                                              string phoneNumber)
@@ -41,19 +41,17 @@ public sealed class ApplicationUser : IdentityUser
         LastNamePersianCheck(lastName);
         CorrectNationalCodeCheck(nationalCode);
         BirthDateCheck(birthDate);
-        //check user name phone number and email
-        
 
         return new ApplicationUser(firstName,
                                    lastName,
                                    nationalCode,
-                                   birthDate,
+                                   birthDate.ToDateTime(default),
                                    userName,
                                    email,
                                    phoneNumber);
     }
 
-    private static void BirthDateCheck(DateTime birthDate)
+    private static void BirthDateCheck(DateOnly birthDate)
     {
         if (!(DateTime.UtcNow.Year - birthDate.Year >= 18))
             throw new DomainExceptions.User.Below18();
@@ -65,6 +63,7 @@ public sealed class ApplicationUser : IdentityUser
     {
         if (nationalCode.Any(x => char.IsNumber(x) == false))
             throw new DomainExceptions.User.IncorrectNationalCode();
+
         if (nationalCode.Length >= 8 && nationalCode.Length <= 10)
         {
             for (int i = 0; i < 10 - nationalCode.Length; i++)
@@ -81,15 +80,18 @@ public sealed class ApplicationUser : IdentityUser
             var reminder = sum % 11;
             if (reminder < 2)
             {
-                if (!(reminder == int.Parse(nationalCode.Last().ToString())))
+                if (!(reminder == int.Parse(nationalCode[^1].ToString())))
                     throw new DomainExceptions.User.IncorrectNationalCode();
             }
             else
             {
-                if (!(11 - reminder == int.Parse(nationalCode.Last().ToString())))
+                if (!(11 - reminder == int.Parse(nationalCode[^1].ToString())))
                     throw new DomainExceptions.User.IncorrectNationalCode();
             }
         }
+        else
+            throw new DomainExceptions.User.IncorrectNationalCode();
+
 
 
 
@@ -99,13 +101,13 @@ public sealed class ApplicationUser : IdentityUser
     private static void FirstNamePersianCheck(string input)
     {
         string pattern = @"^[\u0600-\u06FF\s-]+$";
-        if (!(Regex.IsMatch(input, pattern)))
+        if (!Regex.IsMatch(input, pattern))
             throw new DomainExceptions.User.FirstNameIsNotFarsi();
     }
     private static void LastNamePersianCheck(string input)
     {
         string pattern = @"^[\u0600-\u06FF\s-]+$";
-        if (!(Regex.IsMatch(input, pattern)))
+        if (!Regex.IsMatch(input, pattern))
             throw new DomainExceptions.User.LastNameIsNotFarsi();
     }
 

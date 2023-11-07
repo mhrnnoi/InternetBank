@@ -65,6 +65,7 @@ public static class DependencyInjection
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+        
         services.AddSingleton<ProblemDetailsFactory, MyProblemDetailsFactory>();
         services.AddApiVersioning(
             options =>

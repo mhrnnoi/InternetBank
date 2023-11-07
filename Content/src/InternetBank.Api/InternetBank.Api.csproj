@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\InternetBank.Application\InternetBank.Application.csproj" />
     <ProjectReference Include="..\InternetBank.Infrastructure\InternetBank.Infrastructure.csproj" />
+    <ProjectReference Include="..\InternetBank.Contracts\InternetBank.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,5 @@
 using InternetBank.Application.Authentication.Queries.Common;
 using InternetBank.Application.Interfaces;
-using InternetBank.Domain.Exceptions;
 using MediatR;
 
 namespace InternetBank.Application.Authentication.Queries.GetUsers;

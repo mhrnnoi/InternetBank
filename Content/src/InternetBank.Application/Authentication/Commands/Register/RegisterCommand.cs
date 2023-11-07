@@ -5,7 +5,7 @@ namespace InternetBank.Application.Authentication.Commands.Register;
 public record RegisterCommand(string FirstName,
                               string LastName,
                               string NationalCode,
-                              DateTime BirthDate,
+                              DateOnly BirthDate,
                               string PhoneNumber,
                               string Email,
                               string Username,

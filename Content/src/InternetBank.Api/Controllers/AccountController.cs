@@ -5,12 +5,12 @@ using InternetBank.Application.Account.Commands.CreateAccount;
 using InternetBank.Application.Account.Commands.UnBlockAccount;
 using InternetBank.Application.Account.Queries.GetAccountBalanceById;
 using InternetBank.Application.Account.Queries.GetById;
-using InternetBank.Api.Requests.Accounts;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using InternetBank.Application.Account.Queries.GetAllAccounts;
+using InternetBank.Contracts.Requests.Accounts;
 
 namespace InternetBank.Api.Controllers;
 
