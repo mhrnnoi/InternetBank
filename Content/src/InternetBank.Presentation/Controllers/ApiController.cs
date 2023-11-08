@@ -1,7 +1,8 @@
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace InternetBank.Api.Controllers;
+namespace InternetBank.Presentation.Controllers;
 
 [ApiController]
 [Route("api")]

@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBank.Domain.Tests", "test\UnitTests\InternetBank.Domain.Tests\InternetBank.Domain.Tests.csproj", "{C97ED780-4AE2-437B-B187-E4734B94B47C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBank.Presentation", "src\InternetBank.Presentation\InternetBank.Presentation.csproj", "{5F8A199F-DFDE-469A-B83D-AE805639EE08}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,10 @@ Global
 		{C97ED780-4AE2-437B-B187-E4734B94B47C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C97ED780-4AE2-437B-B187-E4734B94B47C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C97ED780-4AE2-437B-B187-E4734B94B47C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F8A199F-DFDE-469A-B83D-AE805639EE08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F8A199F-DFDE-469A-B83D-AE805639EE08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F8A199F-DFDE-469A-B83D-AE805639EE08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F8A199F-DFDE-469A-B83D-AE805639EE08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{91B0806A-EEE6-4FD9-A104-2D9FDEABD32A} = {CBA4DF21-4E2F-4B3D-8E62-08BB60C4D63A}
@@ -63,5 +69,6 @@ Global
 		{E768824E-0785-4FD7-9FA8-75E428CE174F} = {CBA4DF21-4E2F-4B3D-8E62-08BB60C4D63A}
 		{DD946F57-D69F-4D36-9D7A-7B15A6BBA4E8} = {A91615EC-62BD-40CF-ACDC-BF7CFFA37368}
 		{C97ED780-4AE2-437B-B187-E4734B94B47C} = {DD946F57-D69F-4D36-9D7A-7B15A6BBA4E8}
+		{5F8A199F-DFDE-469A-B83D-AE805639EE08} = {CBA4DF21-4E2F-4B3D-8E62-08BB60C4D63A}
 	EndGlobalSection
 EndGlobal

@@ -10,31 +10,31 @@ namespace InternetBank.Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPresentation(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddApi(this IServiceCollection services, IConfiguration configuration)
     {
-         services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options =>
-        {
-            options.SaveToken = true;
-            options.Audience = configuration["JwtSettings:Audience"];
-            options.RequireHttpsMetadata = true;
-            options.TokenValidationParameters = new TokenValidationParameters()
-            {
-                ValidIssuer = configuration["JwtSettings:Issuer"],
-                ValidAudience = configuration["JwtSettings:Audience"],
-                ValidateIssuer = true,
-                ValidateLifetime = true,
-                ValidateAudience = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"]!)),
-                ValidateIssuerSigningKey = true
-            };
+        services.AddAuthentication(options =>
+       {
+           options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+           options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+           options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+       }).AddJwtBearer(options =>
+       {
+           options.SaveToken = true;
+           options.Audience = configuration["JwtSettings:Audience"];
+           options.RequireHttpsMetadata = true;
+           options.TokenValidationParameters = new TokenValidationParameters()
+           {
+               ValidIssuer = configuration["JwtSettings:Issuer"],
+               ValidAudience = configuration["JwtSettings:Audience"],
+               ValidateIssuer = true,
+               ValidateLifetime = true,
+               ValidateAudience = true,
+               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"]!)),
+               ValidateIssuerSigningKey = true
+           };
 
 
-        });
+       });
         services.AddSwaggerGen(option =>
         {
             option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
@@ -58,14 +58,14 @@ public static class DependencyInjection
                     Id="Bearer"
                 }
             },
-            new string[]{}
+            Array.Empty<string>()
         }
             });
         });
-        services.AddControllers();
+        services.AddControllers().AddApplicationPart(typeof(Presentation.AssemblyRefrence).Assembly);
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
-        
+
         services.AddSingleton<ProblemDetailsFactory, MyProblemDetailsFactory>();
         services.AddApiVersioning(
             options =>

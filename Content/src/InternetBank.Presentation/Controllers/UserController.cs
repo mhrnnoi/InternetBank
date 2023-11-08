@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using InternetBank.Application.Authentication.Queries.GetUser;
 using InternetBank.Application.Authentication.Queries.GetUsers;
 using InternetBank.Contracts.Requests.Users;
-namespace InternetBank.Api.Controllers;
+namespace InternetBank.Presentation.Controllers;
 
 [ApiVersion("1.0")]
 [Route("/api/v{version:apiVersion}/user")]

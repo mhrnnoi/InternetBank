@@ -8,7 +8,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace InternetBank.Api.Controllers;
+namespace InternetBank.Presentation.Controllers;
 
 [ApiVersion("1.0")]
 [Route("/api/v{version:apiVersion}/transaction")]

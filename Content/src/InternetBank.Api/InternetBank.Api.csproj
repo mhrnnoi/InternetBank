@@ -19,12 +19,8 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\InternetBank.Application\InternetBank.Application.csproj" />
     <ProjectReference Include="..\InternetBank.Infrastructure\InternetBank.Infrastructure.csproj" />
-    <ProjectReference Include="..\InternetBank.Contracts\InternetBank.Contracts.csproj" />
+    <ProjectReference Include="..\InternetBank.Presentation\InternetBank.Presentation.csproj" />
   </ItemGroup>
 
 </Project>

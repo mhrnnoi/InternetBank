@@ -3,7 +3,7 @@ using InternetBank.Domain.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace InternetBank.Api.Controllers;
+namespace InternetBank.Presentation.Controllers;
 
 [Route("/error")]
 public class ErrorsController : ApiController
