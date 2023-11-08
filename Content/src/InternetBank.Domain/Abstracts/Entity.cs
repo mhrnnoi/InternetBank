@@ -1,5 +1,3 @@
-using InternetBank.Domain.Exceptions;
-
 namespace InternetBank.Domain.Abstracts.Entity;
 
 public abstract class Entity : IEquatable<Entity>

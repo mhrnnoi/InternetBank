@@ -1,6 +1,6 @@
 namespace InternetBank.Domain.Exceptions.Transaction;
 
-public class WrongOTP : DomainExceptions
+public sealed class WrongOTP : DomainExceptions
 {
     public const string Massage = "your entered otp is wrong or maybe expired";
     public const int StatusCodeConst = 400;

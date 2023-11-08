@@ -1,5 +1,5 @@
 namespace InternetBank.Domain.Exceptions.User;
-public class NotFoundAccountById : DomainExceptions
+public sealed class NotFoundAccountById : DomainExceptions
 {
     public const string Massage = "there is no account with this id";
     public const int StatusCodeConst = 404;

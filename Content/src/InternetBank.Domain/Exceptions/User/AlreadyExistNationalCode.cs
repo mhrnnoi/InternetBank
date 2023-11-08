@@ -1,6 +1,6 @@
 namespace InternetBank.Domain.Exceptions.User;
 
-public class AlreadyExistNationalCode : DomainExceptions
+public sealed class AlreadyExistNationalCode : DomainExceptions
 {
     public const string Massage = "a user with this national code is already exist";
     public const int StatusCodeConst = 409;

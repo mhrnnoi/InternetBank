@@ -1,6 +1,6 @@
 namespace InternetBank.Domain.Exceptions.Transaction;
 
-public class NotYourTransaction : DomainExceptions
+public sealed class NotYourTransaction : DomainExceptions
 {
     public const string Massage = "you dont have transaction with this information";
     public const int StatusCodeConst = 400;

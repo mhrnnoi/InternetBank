@@ -1,6 +1,6 @@
 namespace InternetBank.Domain.Exceptions.Account;
 
-public class IncorrectPass : DomainExceptions
+public sealed class IncorrectPass : DomainExceptions
 {
     public const string Massage = "Incorrect Password";
     public const int StatusCodeConst = 400;

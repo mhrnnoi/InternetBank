@@ -1,6 +1,6 @@
 namespace InternetBank.Domain.Exceptions.Account;
 
-public class IncorrectPassFormat : DomainExceptions
+public sealed class IncorrectPassFormat : DomainExceptions
 {
     public const string Massage = "Incorrect Password format : password should have 6 numeric characters";
     public const int StatusCodeConst = 400;

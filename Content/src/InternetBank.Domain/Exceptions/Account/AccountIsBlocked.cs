@@ -1,6 +1,6 @@
 namespace InternetBank.Domain.Exceptions.Account;
 
-public class AccountIsBlocked : DomainExceptions
+public sealed class AccountIsBlocked : DomainExceptions
 {
     public const string Massage = "Account is blocked so no transfering can be done both recieve and send";
     public const int StatusCodeConst = 400;

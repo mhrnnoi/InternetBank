@@ -1,6 +1,6 @@
 namespace InternetBank.Domain.Exceptions.Transaction;
 
-public class IncorrectCardNumber : DomainExceptions
+public sealed class IncorrectCardNumber : DomainExceptions
 {
     public const string Massage = "Incorrect Card Number";
     public const int StatusCodeConst = 400;

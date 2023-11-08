@@ -1,6 +1,6 @@
 namespace InternetBank.Domain.Exceptions.Transaction;
 
-public class IncorrectExpiryDate : DomainExceptions
+public sealed class IncorrectExpiryDate : DomainExceptions
 {
     public const string Massage = "month or year of expiry is incorrect";
     public const int StatusCodeConst = 400;

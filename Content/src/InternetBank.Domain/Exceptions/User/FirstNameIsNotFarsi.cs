@@ -1,5 +1,5 @@
 namespace InternetBank.Domain.Exceptions.User;
-public class FirstNameIsNotFarsi : DomainExceptions
+public sealed class FirstNameIsNotFarsi : DomainExceptions
 {
     public const string Massage = "Plz Write first name with persian keyboard";
     public const int StatusCodeConst = 400;

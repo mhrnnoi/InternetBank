@@ -1,6 +1,6 @@
 namespace InternetBank.Domain.Exceptions.Transaction;
 
-public class IncorrectCVV2 : DomainExceptions
+public sealed class IncorrectCVV2 : DomainExceptions
 {
     public const string Massage = "Incorrect CVV2";
     public const int StatusCodeConst = 400;

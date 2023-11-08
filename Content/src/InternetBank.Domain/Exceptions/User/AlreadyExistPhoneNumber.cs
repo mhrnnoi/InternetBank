@@ -1,6 +1,6 @@
 namespace InternetBank.Domain.Exceptions.User;
 
-public class AlreadyExistPhoneNumber : DomainExceptions
+public sealed class AlreadyExistPhoneNumber : DomainExceptions
 {
     public const string Massage = "a user with this Phone number is already exist";
     public const int StatusCodeConst = 409;

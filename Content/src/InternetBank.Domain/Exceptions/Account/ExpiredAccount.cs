@@ -1,5 +1,5 @@
 namespace InternetBank.Domain.Exceptions.Account;
-public class ExpiredAccount : DomainExceptions
+public sealed class ExpiredAccount : DomainExceptions
 {
     public const string Massage = "Account Is Expired";
     public const int StatusCodeConst = 400;

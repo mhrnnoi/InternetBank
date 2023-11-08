@@ -1,5 +1,5 @@
 namespace InternetBank.Domain.Exceptions.User;
-public class InvalidCred : DomainExceptions
+public sealed class InvalidCred : DomainExceptions
 {
     public const string Massage = "Incorrect email or Password";
     public const int StatusCodeConst = 401;

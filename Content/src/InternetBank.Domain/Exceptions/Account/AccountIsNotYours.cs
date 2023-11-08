@@ -1,6 +1,6 @@
 namespace InternetBank.Domain.Exceptions.Account;
 
-public class AccountIsNotYours : DomainExceptions
+public sealed class AccountIsNotYours : DomainExceptions
 {
     public const string Massage = "Account Is Not yours";
     public const int StatusCodeConst = 400;
