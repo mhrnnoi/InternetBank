@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using InternetBank.Domain.Exceptions.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +15,11 @@ public class ApiController : ControllerBase
     }
     protected static string GetUserId(IEnumerable<Claim> claims)
     {
-        return claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
+        var isParsed = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+        if (isParsed is not null)
+            return isParsed;
+        else
+            throw new InvalidCred();
+
     }
 }

@@ -1,5 +1,5 @@
 using FluentValidation;
-using InternetBank.Domain.Exceptions;
+using InternetBank.Domain.Abstracts.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 

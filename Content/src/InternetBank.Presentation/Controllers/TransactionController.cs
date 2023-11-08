@@ -1,7 +1,7 @@
 using Asp.Versioning;
-using InternetBank.Application.Transaction.Commands.Send_OTP;
-using InternetBank.Application.Transaction.Commands.Transfer_Money;
-using InternetBank.Application.Transaction.Queries.GetReportQuery;
+using InternetBank.Application.Transactions.Commands.Send_OTP;
+using InternetBank.Application.Transactions.Commands.Transfer_Money;
+using InternetBank.Application.Transactions.Queries.GetReportQuery;
 using InternetBank.Contracts.Requests.Transactions;
 using MapsterMapper;
 using MediatR;

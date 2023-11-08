@@ -1,4 +1,5 @@
 namespace InternetBank.Domain.Exceptions.User;
+using InternetBank.Domain.Abstracts.Exceptions;
 
 public sealed class AlreadyExistPhoneNumber : DomainExceptions
 {

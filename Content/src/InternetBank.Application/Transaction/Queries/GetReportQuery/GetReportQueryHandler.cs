@@ -2,7 +2,7 @@ using InternetBank.Domain.Repositories;
 using MapsterMapper;
 using MediatR;
 
-namespace InternetBank.Application.Transaction.Queries.GetReportQuery;
+namespace InternetBank.Application.Transactions.Queries.GetReportQuery;
 
 public class GetReportQueryHandler : IRequestHandler<GetReportQuery, List<TransactionDTO>>
 {

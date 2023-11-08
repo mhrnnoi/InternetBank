@@ -1,4 +1,6 @@
 namespace InternetBank.Domain.Exceptions.User;
+using InternetBank.Domain.Abstracts.Exceptions;
+
 public sealed class LastNameIsNotFarsi : DomainExceptions
 {
     public const string Massage = "Plz Write Last name with persian keyboard";

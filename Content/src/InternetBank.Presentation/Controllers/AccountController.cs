@@ -1,15 +1,15 @@
 using Asp.Versioning;
-using InternetBank.Application.Account.Commands.BlockAccount;
-using InternetBank.Application.Account.Commands.ChangeAccountPassword;
-using InternetBank.Application.Account.Commands.CreateAccount;
-using InternetBank.Application.Account.Commands.UnBlockAccount;
-using InternetBank.Application.Account.Queries.GetAccountBalanceById;
-using InternetBank.Application.Account.Queries.GetById;
+using InternetBank.Application.Accounts.Commands.BlockAccount;
+using InternetBank.Application.Accounts.Commands.ChangeAccountPassword;
+using InternetBank.Application.Accounts.Commands.CreateAccount;
+using InternetBank.Application.Accounts.Commands.UnBlockAccount;
+using InternetBank.Application.Accounts.Queries.GetAccountBalanceById;
+using InternetBank.Application.Accounts.Queries.GetAccountById;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using InternetBank.Application.Account.Queries.GetAllAccounts;
+using InternetBank.Application.Accounts.Queries.GetAllAccounts;
 using InternetBank.Contracts.Requests.Accounts;
 
 namespace InternetBank.Presentation.Controllers;
@@ -50,7 +50,7 @@ public class AccountController : ApiController
     }
 
     [HttpPost("/api/v{version:apiVersion}/account/block/{id}")]
-    public async Task<IActionResult> BlockAccountById(int id)
+    public async Task<IActionResult> BlockAccountById(string id)
     {
         var userId =  GetUserId(User.Claims);
         var command = new BlockAccountCommand(id, userId);
@@ -58,7 +58,7 @@ public class AccountController : ApiController
         return Ok(result);
     }
     [HttpPost("/api/v{version:apiVersion}/account/unblock/{id}")]
-    public async Task<IActionResult> UnBlockAccountById(int id)
+    public async Task<IActionResult> UnBlockAccountById(string id)
     {
         var userId =  GetUserId(User.Claims);
         var command = new UnBlockAccountCommand(id, userId);
@@ -66,7 +66,7 @@ public class AccountController : ApiController
         return Ok(result);
     }
     [HttpGet("/api/v{version:apiVersion}/account/balance/{id}")]
-    public async Task<IActionResult> GetBalance(int id)
+    public async Task<IActionResult> GetBalance(string id)
     {
         var userId = GetUserId(User.Claims);
         var query = new GetAccountBalanceByIdQuery(id,
@@ -75,7 +75,7 @@ public class AccountController : ApiController
         return Ok(result);
     }
     [HttpGet("/api/v{version:apiVersion}/account/{id}")]
-    public async Task<IActionResult> GetAccount(int id)
+    public async Task<IActionResult> GetAccount(string id)
     {
         var userId = GetUserId(User.Claims);
         var query = new GetAccountByIdQuery(id,

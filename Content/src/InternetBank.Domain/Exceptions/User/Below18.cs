@@ -1,4 +1,6 @@
 namespace InternetBank.Domain.Exceptions.User;
+using InternetBank.Domain.Abstracts.Exceptions;
+
 public sealed class Below18 : DomainExceptions
 {
     public const string Massage = "you're not in supported age range ";

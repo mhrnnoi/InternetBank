@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace InternetBank.Application.Transaction.Queries.GetReportQuery;
+namespace InternetBank.Application.Transactions.Queries.GetReportQuery;
 
 public record GetReportQuery(DateOnly? From,
                              DateOnly? To,

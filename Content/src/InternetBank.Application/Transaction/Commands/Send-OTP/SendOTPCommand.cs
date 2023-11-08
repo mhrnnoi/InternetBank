@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace InternetBank.Application.Transaction.Commands.Send_OTP;
+namespace InternetBank.Application.Transactions.Commands.Send_OTP;
 
 public record Send_OTPCommand(string CardNumber,
                               string Cvv2,
@@ -8,4 +8,4 @@ public record Send_OTPCommand(string CardNumber,
                               string ExpiryMonth,
                               double Amount,
                               string DestinationCardNumber,
-                              string UserId) : IRequest<int>;
+                              string UserId) : IRequest<string>;

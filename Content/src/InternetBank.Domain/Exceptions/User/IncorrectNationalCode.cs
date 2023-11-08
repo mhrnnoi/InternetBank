@@ -1,4 +1,6 @@
 namespace InternetBank.Domain.Exceptions.User;
+using InternetBank.Domain.Abstracts.Exceptions;
+
 public  sealed class IncorrectNationalCode : DomainExceptions
 {
     public const string Massage = "Plz Write Correct National Code";

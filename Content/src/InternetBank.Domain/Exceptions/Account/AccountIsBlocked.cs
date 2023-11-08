@@ -1,3 +1,5 @@
+using InternetBank.Domain.Abstracts.Exceptions;
+
 namespace InternetBank.Domain.Exceptions.Account;
 
 public sealed class AccountIsBlocked : DomainExceptions

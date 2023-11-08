@@ -1,12 +1,14 @@
+using InternetBank.Domain.Transactions.Entities;
+
 namespace InternetBank.Domain.Repositories;
 
 public interface ITransactionRepository
 {
-    void Add(Transactions.Transaction transactions);
-    Task<Transactions.Transaction?> GetByOTP(string otp,
+    void Add(Transaction transactions);
+    Task<Transaction?> GetByOTP(string otp,
                                              double amount,
                                             string userId);
-    Task<List<Transactions.Transaction>> GetByDateAndSuccess(DateOnly? from,
+    Task<List<Transaction>> GetByDateAndSuccess(DateOnly? from,
                                                              DateOnly? to,
                                                              bool? isSuccess);
 

@@ -1,4 +1,5 @@
 namespace InternetBank.Domain.Exceptions.Transaction;
+using InternetBank.Domain.Abstracts.Exceptions;
 
 public sealed class IncorrectCVV2 : DomainExceptions
 {

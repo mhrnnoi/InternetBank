@@ -1,4 +1,6 @@
 namespace InternetBank.Domain.Exceptions.User;
+using InternetBank.Domain.Abstracts.Exceptions;
+
 public sealed class NotYourAccount : DomainExceptions
 {
     public const string Massage = "you dont have any account with this id";

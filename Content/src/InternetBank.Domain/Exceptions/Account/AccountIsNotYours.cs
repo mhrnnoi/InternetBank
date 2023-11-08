@@ -1,4 +1,5 @@
 namespace InternetBank.Domain.Exceptions.Account;
+using InternetBank.Domain.Abstracts.Exceptions;
 
 public sealed class AccountIsNotYours : DomainExceptions
 {

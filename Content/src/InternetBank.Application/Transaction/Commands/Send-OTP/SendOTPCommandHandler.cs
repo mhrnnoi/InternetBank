@@ -2,11 +2,12 @@ using InternetBank.Application.Interfaces;
 using InternetBank.Domain.Exceptions.Transaction;
 using InternetBank.Domain.Interfaces.UOF;
 using InternetBank.Domain.Repositories;
+using InternetBank.Domain.Transactions.Entities;
 using MediatR;
 
-namespace InternetBank.Application.Transaction.Commands.Send_OTP;
+namespace InternetBank.Application.Transactions.Commands.Send_OTP;
 
-public class Send_OTPCommandHandler : IRequestHandler<Send_OTPCommand, int>
+public class Send_OTPCommandHandler : IRequestHandler<Send_OTPCommand, string>
 {
     private readonly ITransactionRepository _transactionRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -24,7 +25,7 @@ public class Send_OTPCommandHandler : IRequestHandler<Send_OTPCommand, int>
         _identityService = identityService;
     }
 
-    public async Task<int> Handle(Send_OTPCommand request,
+    public async Task<string> Handle(Send_OTPCommand request,
                                   CancellationToken cancellationToken)
     {
 
@@ -32,7 +33,7 @@ public class Send_OTPCommandHandler : IRequestHandler<Send_OTPCommand, int>
         var destAccount = await _accountRepository.GetByCardNumber(request.DestinationCardNumber) ?? throw new IncorrectCardNumber();
         var user = await _identityService.GetByIdAsync(sourceAccount.UserId);
 
-        var transaction = Domain.Transactions.Transaction.CreateTransaction(sourceAccount,
+        var transaction = Transaction.CreateTransaction(sourceAccount,
                                                                             destAccount,
                                                                             request.ExpiryYear,
                                                                             request.ExpiryMonth,

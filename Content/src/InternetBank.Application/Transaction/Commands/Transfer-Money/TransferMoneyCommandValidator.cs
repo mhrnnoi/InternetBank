@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace InternetBank.Application.Transaction.Commands.Transfer_Money;
+namespace InternetBank.Application.Transactions.Commands.Transfer_Money;
 
 public class TransferMoneyCommandValidator : AbstractValidator<TransferMoneyCommand>
 {

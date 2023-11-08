@@ -1,4 +1,5 @@
 using InternetBank.Domain.Repositories;
+using InternetBank.Domain.Transactions.Entities;
 using InternetBank.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,18 +7,20 @@ namespace InternetBank.Infrastructure.Repositories;
 
 public class TransactionRepository : ITransactionRepository
 {
-    private readonly DbSet<Domain.Transactions.Transaction> dbContext;
+    private readonly DbSet<Transaction> dbContext;
     public TransactionRepository(ApplicationDbContext appdbContext)
     {
         dbContext = appdbContext.Transactions;
     }
 
-    public void Add(Domain.Transactions.Transaction transactions)
+    public void Add(Transaction transactions)
     {
         dbContext.Add(transactions);
     }
 
-    public async Task<List<Domain.Transactions.Transaction>> GetByDateAndSuccess(DateOnly? from, DateOnly? to, bool? isSuccess)
+    public async Task<List<Transaction>> GetByDateAndSuccess(DateOnly? from,
+                                                             DateOnly? to,
+                                                             bool? isSuccess)
     {
         if (from is not null && to is not null && isSuccess is not null)
             return await dbContext.Where(x => DateOnly.FromDateTime(x.CreatedDateTime) >= from && DateOnly.FromDateTime(x.CreatedDateTime) <= to && x.IsSuccess == isSuccess)
@@ -54,7 +57,7 @@ public class TransactionRepository : ITransactionRepository
 
     }
 
-    public async Task<Domain.Transactions.Transaction?> GetByOTP(string otp,
+    public async Task<Transaction?> GetByOTP(string otp,
                                                                  double amount,
                                                                  string userId)
     {

@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace InternetBank.Application.Transaction.Commands.Send_OTP;
+namespace InternetBank.Application.Transactions.Commands.Send_OTP;
 
 public class Send_OTPCommandValidator : AbstractValidator<Send_OTPCommand>
 {

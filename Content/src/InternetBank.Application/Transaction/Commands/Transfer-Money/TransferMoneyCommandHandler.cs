@@ -3,7 +3,7 @@ using InternetBank.Domain.Interfaces.UOF;
 using InternetBank.Domain.Repositories;
 using MediatR;
 
-namespace InternetBank.Application.Transaction.Commands.Transfer_Money;
+namespace InternetBank.Application.Transactions.Commands.Transfer_Money;
 
 public class TransferMoneyCommandHandler : IRequestHandler<TransferMoneyCommand, string>
 {

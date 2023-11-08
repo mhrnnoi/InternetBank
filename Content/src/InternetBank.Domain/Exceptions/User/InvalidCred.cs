@@ -1,4 +1,6 @@
 namespace InternetBank.Domain.Exceptions.User;
+using InternetBank.Domain.Abstracts.Exceptions;
+
 public sealed class InvalidCred : DomainExceptions
 {
     public const string Massage = "Incorrect email or Password";

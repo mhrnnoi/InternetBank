@@ -1,4 +1,6 @@
 namespace InternetBank.Domain.Exceptions.Account;
+using InternetBank.Domain.Abstracts.Exceptions;
+
 public sealed class ExpiredAccount : DomainExceptions
 {
     public const string Massage = "Account Is Expired";

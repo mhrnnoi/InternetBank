@@ -1,4 +1,4 @@
-using InternetBank.Domain.Accounts;
+using InternetBank.Domain.Accounts.Entities;
 using InternetBank.Domain.Repositories;
 using InternetBank.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +29,7 @@ public class AccountRepository : IAccountRepository
         return await _context.FirstOrDefaultAsync(x => x.CardNumber == cardNumber);
     }
 
-    public async Task<Account?> GetById(int AccountId,
+    public async Task<Account?> GetById(string AccountId,
                                         string userId)
     {
         return await _context.FirstOrDefaultAsync(x => x.Id == AccountId && x.UserId == userId);

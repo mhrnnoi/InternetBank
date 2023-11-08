@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace InternetBank.Application.Transaction.Commands.Transfer_Money;
+namespace InternetBank.Application.Transactions.Commands.Transfer_Money;
 
 public record TransferMoneyCommand(string Otp,
                                    double Amount,

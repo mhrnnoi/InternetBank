@@ -1,5 +1,5 @@
-using System.Transactions;
-using InternetBank.Domain.Accounts;
+using InternetBank.Domain.Accounts.Entities;
+using InternetBank.Domain.Transactions.Entities;
 using InternetBank.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +9,7 @@ namespace InternetBank.Infrastructure.Data;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public DbSet<Account> Accounts { get; set; }
-    public DbSet<Domain.Transactions.Transaction> Transactions { get; set; }
+    public DbSet<Transaction> Transactions { get; set; }
     public ApplicationDbContext()
     {
 

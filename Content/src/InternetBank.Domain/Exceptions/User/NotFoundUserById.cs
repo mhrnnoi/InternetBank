@@ -1,4 +1,6 @@
 namespace InternetBank.Domain.Exceptions.User;
+using InternetBank.Domain.Abstracts.Exceptions;
+
 public sealed class NotFoundUserById : DomainExceptions
 {
     public const string Massage = "there is no user with this id";

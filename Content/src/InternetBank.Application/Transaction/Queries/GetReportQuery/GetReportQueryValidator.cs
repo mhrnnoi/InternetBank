@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace InternetBank.Application.Transaction.Queries.GetReportQuery;
+namespace InternetBank.Application.Transactions.Queries.GetReportQuery;
 public class GetReportQueryValidator : AbstractValidator<GetReportQuery>
 {
     public GetReportQueryValidator()
