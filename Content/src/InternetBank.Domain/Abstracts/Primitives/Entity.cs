@@ -1,4 +1,4 @@
-namespace InternetBank.Domain.Abstracts.Entity.Primitives;
+namespace InternetBank.Domain.Abstracts.Primitives;
 
 public abstract class Entity : IEquatable<Entity>
 {

@@ -1,8 +1,7 @@
-using InternetBank.Domain.Abstracts.Entity.Primitives;
+using InternetBank.Domain.Abstracts.Primitives;
 using InternetBank.Domain.Accounts.Entities;
 using InternetBank.Domain.Exceptions.Account;
 using InternetBank.Domain.Exceptions.Transaction;
-using InternetBank.Domain.ValueObjects;
 
 namespace InternetBank.Domain.Transactions.Entities;
 

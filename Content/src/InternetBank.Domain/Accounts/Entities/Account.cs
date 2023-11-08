@@ -1,12 +1,15 @@
-using InternetBank.Domain.Abstracts.Entity.Primitives;
+using InternetBank.Domain.Abstracts.Primitives;
 using InternetBank.Domain.Accounts.Enums;
+using InternetBank.Domain.DomainEvents;
 using InternetBank.Domain.Exceptions.Account;
+using InternetBank.Domain.Transactions.Entities;
 using InternetBank.Domain.ValueObjects;
 
 namespace InternetBank.Domain.Accounts.Entities;
 
-public sealed class Account : Entity
+public sealed class Account : AggregateRoot
 {
+    private readonly List<Transaction> transactions = new();
     public AccountTypes AccountType { get; private set; }
     public double Amount { get; private set; }
     public string AccountNumber { get; private set; }
@@ -156,11 +159,12 @@ public sealed class Account : Entity
         strArr[2] = str;
         return string.Join(".", strArr);
     }
-    public static Account OpenAccount(int type,
+    public Account OpenAccount(int type,
                                       double amount,
                                       string userId)
     {
         if (type is 1 || type is 2)
+            RaiseDomainEvent(new AccountCreated(Id));
             return new Account((AccountTypes)type, amount, userId);
 
         else
