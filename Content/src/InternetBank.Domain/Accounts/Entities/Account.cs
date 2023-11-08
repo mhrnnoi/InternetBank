@@ -1,6 +1,7 @@
 using InternetBank.Domain.Abstracts.Entity.Primitives;
 using InternetBank.Domain.Accounts.Enums;
 using InternetBank.Domain.Exceptions.Account;
+using InternetBank.Domain.ValueObjects;
 
 namespace InternetBank.Domain.Accounts.Entities;
 
@@ -66,17 +67,17 @@ public sealed class Account : Entity
         }
         return str;
     }
-    public bool ChangePassword(string oldPass,
-                               string newPassword,
-                               string repeatNewPassword)
+    public bool ChangePassword(Password oldPass,
+                               Password newPassword,
+                               RepeatPassword repeatNewPassword)
     {
-        if (oldPass == StaticPassword)
+        if (oldPass.Value == StaticPassword)
         {
-            if (newPassword == repeatNewPassword)
+            if (newPassword.Value == repeatNewPassword.Value)
             {
-                if (newPassword.Length is 6 && newPassword.All(char.IsDigit))
+                if (newPassword.Value.Length is 6 && newPassword.Value.All(char.IsDigit))
                 {
-                    StaticPassword = newPassword;
+                    StaticPassword = newPassword.Value;
                     return true;
                 }
                 else

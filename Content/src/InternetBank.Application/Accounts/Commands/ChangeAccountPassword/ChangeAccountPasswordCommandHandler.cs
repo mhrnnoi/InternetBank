@@ -1,5 +1,6 @@
 using InternetBank.Domain.Interfaces.UOF;
 using InternetBank.Domain.Repositories;
+using InternetBank.Domain.ValueObjects;
 using MediatR;
 
 namespace InternetBank.Application.Accounts.Commands.ChangeAccountPassword;
@@ -20,9 +21,12 @@ public class ChangeAccountPasswordCommandHandler : IRequestHandler<ChangeAccount
     {
         var acc = await _accountRepository.GetById(request.AccountId,
                                                    request.UserId) ?? throw new Exception();
-        acc.ChangePassword(request.OldPassword,
-                           request.NewPassword,
-                           request.RepeatNewPassword);
+        var oldPass = Password.Create(request.OldPassword)                                                   ;
+        var newPass = Password.Create(request.NewPassword)                                                   ;
+        var repeatNewPassword = RepeatPassword.Create(oldPass, newPass);
+        acc.ChangePassword(oldPass,
+                           newPass,
+                           repeatNewPassword);
         await _unitOfWork.SaveChangesAsync();
         return true;
     }
