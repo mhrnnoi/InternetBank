@@ -3,10 +3,12 @@ using InternetBank.Application.Authentication.Commands.Common;
 using InternetBank.Application.Interfaces;
 using InternetBank.Domain.Interfaces.UOF;
 using MediatR;
+using ErrorOr;
+using InternetBank.Domain.Common.Errors;
 
 namespace InternetBank.Application.Authentication.Commands.Login;
 
-public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginActionResult>
+public class LoginCommandHandler : IRequestHandler<LoginCommand, ErrorOr<LoginActionResult>>
 {
     private readonly IIdentityService _identityservice;
     private readonly IJwtGenerator _jwtGenerator;
@@ -17,11 +19,15 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginActionResu
         _jwtGenerator = jwtGenerator;
     }
 
-    public async Task<LoginActionResult> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<LoginActionResult>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        var user = await _identityservice.LoginUserAsync(request.Email,
+        var userOrError = await _identityservice.LoginUserAsync(request.Email,
                                                          request.Password);
-        var output = AuthResultService.CreateLoginResult(user.Id, _jwtGenerator.GenerateToken(user));
+                                                         if(userOrError.IsError)
+                                                         {
+                                                            return userOrError.Errors;
+                                                         }
+        var output = AuthResultService.CreateLoginResult(userOrError.Value.Id, _jwtGenerator.GenerateToken(userOrError.Value));
         return output;
 
 

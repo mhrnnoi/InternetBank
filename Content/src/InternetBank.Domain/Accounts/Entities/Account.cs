@@ -1,5 +1,7 @@
+using ErrorOr;
 using InternetBank.Domain.Abstracts.Primitives;
 using InternetBank.Domain.Accounts.Enums;
+using InternetBank.Domain.Common.Errors;
 using InternetBank.Domain.DomainEvents;
 using InternetBank.Domain.Exceptions.Account;
 using InternetBank.Domain.Transactions.Entities;
@@ -70,7 +72,7 @@ public sealed class Account : AggregateRoot
         }
         return str;
     }
-    public bool ChangePassword(Password oldPass,
+    public ErrorOr<bool> ChangePassword(Password oldPass,
                                Password newPassword,
                                RepeatPassword repeatNewPassword)
     {
@@ -84,13 +86,13 @@ public sealed class Account : AggregateRoot
                     return true;
                 }
                 else
-                    throw new IncorrectPassFormat();
+                    return Errors.Account.IncorrectPassFormat;
             }
             else
-                throw new PassAndRepeatPassIsNotSame();
+                return Errors.Account.PassAndRepeatPassIsNotSame;
         }
         else
-            throw new IncorrectPass();
+            return Errors.Account.IncorrectPass;
     }
     private void SetExpiry()
     {
@@ -159,16 +161,17 @@ public sealed class Account : AggregateRoot
         strArr[2] = str;
         return string.Join(".", strArr);
     }
-    public static Account OpenAccount(int type,
+    public static ErrorOr<Account> OpenAccount(int type,
                                       double amount,
                                       string userId)
     {
         if (type is 1 || type is 2)
             // RaiseDomainEvent(new AccountCreated(Id));
+
             return new Account((AccountTypes)type, amount, userId);
 
         else
-            throw new InvalidAccountType();
+            return  Errors.Account.InvalidAccountType;
     }
 
 }

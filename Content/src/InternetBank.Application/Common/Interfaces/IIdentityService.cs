@@ -1,3 +1,4 @@
+using ErrorOr;
 using InternetBank.Application.Authentication.Queries.Common;
 
 namespace InternetBank.Application.Interfaces;
@@ -15,7 +16,7 @@ public interface IIdentityService
                                  string Username,
                                  string Password);
     
-    Task<UserDTO> LoginUserAsync(string Email,
+    Task<ErrorOr<UserDTO>> LoginUserAsync(string Email,
                                 string Password);
     // void Delete(ApplicationUser user);
     // void Update(ApplicationUser user);

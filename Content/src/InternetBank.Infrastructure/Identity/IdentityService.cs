@@ -1,6 +1,8 @@
+using ErrorOr;
 using FluentValidation.Results;
 using InternetBank.Application.Authentication.Queries.Common;
 using InternetBank.Application.Interfaces;
+using InternetBank.Domain.Common.Errors;
 using InternetBank.Domain.Exceptions.User;
 using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
@@ -90,7 +92,7 @@ public class IdentityService : IIdentityService
 
     }
 
-    public async Task<UserDTO> LoginUserAsync(string Email, string Password)
+    public async Task<ErrorOr<UserDTO>> LoginUserAsync(string Email, string Password)
     {
 
         var user = await _userManager.FindByEmailAsync(Email);
@@ -100,11 +102,16 @@ public class IdentityService : IIdentityService
             if (result)
                 return _mapper.Map<UserDTO>(user);
 
-            throw new InvalidCred();
+            return Errors.User.InvalidCred;
+
+        }
+        else
+        {
+            return Errors.User.InvalidCred;
+            // throw new InvalidCred();
 
         }
 
-        throw new InvalidCred();
     }
 
     public async Task<List<UserDTO>> GetAllAsync()

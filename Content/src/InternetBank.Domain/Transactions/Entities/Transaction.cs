@@ -1,7 +1,7 @@
+using ErrorOr;
 using InternetBank.Domain.Abstracts.Primitives;
 using InternetBank.Domain.Accounts.Entities;
-using InternetBank.Domain.Exceptions.Account;
-using InternetBank.Domain.Exceptions.Transaction;
+using InternetBank.Domain.Common.Errors;
 
 namespace InternetBank.Domain.Transactions.Entities;
 
@@ -30,15 +30,15 @@ public sealed class Transaction : Entity
         Description = "عملیات ناموفق به دلیل انجام ندادن کاری یا گذشتن زمان مجاز";
         AccountId = accountId;
     }
-    public string TransferMoney(Account sourceAccount,
+    public ErrorOr<string> TransferMoney(Account sourceAccount,
                                 Account destinationAcc,
                                 string userId)
     {
         if (UserId != userId)
-            throw new NotYourTransaction();
+            return Errors.Transaction.NotYourTransaction;
 
         if (IsSuccess)
-            throw new AlreadyCompletedTransaction();
+            return Errors.Transaction.AlreadyCompletedTransaction;
 
         if (DateTime.UtcNow > OtpExpireDate)
             Description = "عملیات ناموفق - رمز نادرست";
@@ -61,7 +61,7 @@ public sealed class Transaction : Entity
 
 
     }
-    public static Transaction CreateTransaction(Account sourceAccount,
+    public static ErrorOr<Transaction> CreateTransaction(Account sourceAccount,
                                                 Account destinationAccount,
                                                 string expiryYear,
                                                 string expiryMonth,
@@ -80,47 +80,49 @@ public sealed class Transaction : Entity
                       expiryMonth,
                       userId,
                       cvv2);
+                      
 
         return new Transaction(amount,
                                destinationAccount.CardNumber,
                                userId,
                                sourceAccount.Id);
     }
-    private static void CheckAccounts(Account sourceAccount,
-                                      Account destinationAccount,
-                                      string expiryYear,
-                                      string expiryMonth,
-                                      string userId,
-                                      string cvv2)
+    private static ErrorOr<Task> CheckAccounts(Account sourceAccount,
+                                               Account destinationAccount,
+                                               string expiryYear,
+                                               string expiryMonth,
+                                               string userId,
+                                               string cvv2)
     {
+        var errors = new List<Error>();
 
         if (sourceAccount.UserId != userId)
-            throw new AccountIsNotYours();
+            return Errors.Account.AccountIsNotYours;
 
         if (sourceAccount.IsBlocked)
-            throw new AccountIsBlocked("source account is blocked");
+            errors.Add(Errors.Transaction.SourceAccountIsBlocked);
 
         if (destinationAccount.IsBlocked)
-            throw new AccountIsBlocked("destination account is blocked");
+            errors.Add (Errors.Transaction.DestinationAccountIsBlocked);
 
         if (sourceAccount.ExpiryYear != expiryYear || sourceAccount.ExpiryMonth != expiryMonth)
-            throw new IncorrectExpiryDate();
+            return Errors.Transaction.IncorrectExpiryDate;
 
         if (sourceAccount.Cvv2 != cvv2)
-            throw new IncorrectCVV2();
+            return Errors.Transaction.IncorrectCVV2;
     }
 
 
     private static void CheckAmount(double amount)
     {
         if (amount < 1000 || amount > 5000000)
-            throw new IncorrectAmountRange();
+            return Errors.Transaction.IncorrectAmountRange;
     }
 
     private static void CheckExpiry(string expiryYear, string expiryMonth)
     {
         if (Convert.ToDateTime(expiryYear + "/" + expiryMonth) < DateTime.UtcNow)
-            throw new ExpiredAccount();
+            return Errors.Transaction.ExpiredAccount;
 
     }
 
@@ -128,7 +130,7 @@ public sealed class Transaction : Entity
     {
         if (!(cVV2.All(x => char.IsDigit(x))
                 && cVV2.Length == 4))
-            throw new IncorrectCVV2();
+            return Errors.Transaction.IncorrectCVV2;
     }
 
     private static void CheckCardNumberFormat(string cardNumber)
@@ -136,7 +138,7 @@ public sealed class Transaction : Entity
 
         if (!(cardNumber.All(char.IsDigit)
                  && cardNumber.Length == 16))
-            throw new IncorrectCardNumber();
+            return Errors.Transaction.IncorrectCardNumber;
     }
     public void SetOtp(string otp)
     {

@@ -4,6 +4,8 @@
 #nullable enable
 
 using System.Diagnostics;
+using ErrorOr;
+using InternetBank.Presentation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -98,6 +100,13 @@ internal sealed class MyProblemDetailsFactory : ProblemDetailsFactory
         }
         // ClientErrorData
         // problemDetails.Extensions["Errors"] = httpContext.;
+        var errors = httpContext?.Items[HttpContextItemKeys.Errors] as List<Error>;
+        if (errors is not null)
+        {
+            var codes = errors.Select(x => x.Code);
+            problemDetails.Extensions["errorCodes"] = codes;
+        }
+        
 
         _configure?.Invoke(new() { HttpContext = httpContext!, ProblemDetails = problemDetails });
     }

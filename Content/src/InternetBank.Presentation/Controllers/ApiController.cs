@@ -1,4 +1,6 @@
+using System.Net.Http.Headers;
 using System.Security.Claims;
+using ErrorOr;
 using InternetBank.Domain.Exceptions.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +22,27 @@ public class ApiController : ControllerBase
             return isParsed;
         else
             throw new InvalidCred();
+
+    }
+    protected IActionResult Problem(List<Error> errors)
+    {
+        HttpContext.Items.Add(HttpContextItemKeys.Errors, errors);
+        var firstError = errors.First();
+        var statusCode = firstError.Type switch
+        {
+
+            ErrorType.Failure => 400,
+            ErrorType.Validation => 422,
+            ErrorType.Conflict => 409,
+            ErrorType.Unauthorized => StatusCodes.Status401Unauthorized,
+            ErrorType.NotFound => 404,
+            _ => 500
+
+        };
+        HttpContext.Response.StatusCode = statusCode;
+
+        return Problem(statusCode: statusCode, title: firstError.Description);
+
 
     }
 }

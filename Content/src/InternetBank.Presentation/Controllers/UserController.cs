@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using InternetBank.Application.Authentication.Queries.GetUser;
 using InternetBank.Application.Authentication.Queries.GetUsers;
 using InternetBank.Contracts.Requests.Users;
+using System.Text.RegularExpressions;
+using ErrorOr;
+using System.Security.Cryptography.X509Certificates;
 namespace InternetBank.Presentation.Controllers;
 
 [ApiVersion("1.0")]
@@ -33,9 +36,10 @@ public class UserController : ApiController
     [HttpPost("/api/v{version:apiVersion}/user/login")]
     public async Task<IActionResult> Login(LoginRequest request)
     {
+        
         var command = _mapper.Map<LoginCommand>(request);
         var result = await _sender.Send(command);
-        return Ok(result);
+        return result.Match(x => Ok(x), _ => Problem(result.Errors));
     }
     [HttpGet("/api/v{version:apiVersion}/user/{id}")]
     public async Task<IActionResult> GetUserById(string id)
