@@ -1,17 +1,22 @@
 using System.Text;
 using Asp.Versioning;
-using InternetBank.Api.MyProblemDetails;
+using InternetBank.Infrastructure.Services;
+using InternetBank.Web.MyProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-namespace InternetBank.Application;
+namespace InternetBank.Web;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApi(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddPresentation(this IServiceCollection services, IConfiguration configuration)
     {
+        var jwtSettings = new JwtSettings();
+        configuration.Bind(JwtSettings.Key, jwtSettings);
+        services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.Key));
+        
         services.AddAuthentication(options =>
        {
            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -20,16 +25,16 @@ public static class DependencyInjection
        }).AddJwtBearer(options =>
        {
            options.SaveToken = true;
-           options.Audience = configuration["JwtSettings:Audience"];
+           options.Audience = jwtSettings.Audience;
            options.RequireHttpsMetadata = true;
            options.TokenValidationParameters = new TokenValidationParameters()
            {
-               ValidIssuer = configuration["JwtSettings:Issuer"],
-               ValidAudience = configuration["JwtSettings:Audience"],
+               ValidIssuer = jwtSettings.Issuer,
+               ValidAudience = jwtSettings.Audience,
                ValidateIssuer = true,
                ValidateLifetime = true,
                ValidateAudience = true,
-               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"]!)),
+               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
                ValidateIssuerSigningKey = true
            };
 

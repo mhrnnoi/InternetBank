@@ -5,8 +5,6 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CBA4DF21-4E2F-4B3D-8E62-08BB60C4D63A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBank.Api", "src\InternetBank.Api\InternetBank.Api.csproj", "{91B0806A-EEE6-4FD9-A104-2D9FDEABD32A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBank.Application", "src\InternetBank.Application\InternetBank.Application.csproj", "{D8276681-9300-4D5B-B406-AC36326772FB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBank.Contracts", "src\InternetBank.Contracts\InternetBank.Contracts.csproj", "{01ADEE31-BAED-48FD-B9C5-2D486408F220}"
@@ -23,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBank.Domain.Tests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBank.Presentation", "src\InternetBank.Presentation\InternetBank.Presentation.csproj", "{5F8A199F-DFDE-469A-B83D-AE805639EE08}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternetBank.Web", "src\InternetBank.Web\InternetBank.Web.csproj", "{9829D05A-AFCC-4307-B962-D27E3C5B1EF8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,10 +32,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{91B0806A-EEE6-4FD9-A104-2D9FDEABD32A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{91B0806A-EEE6-4FD9-A104-2D9FDEABD32A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{91B0806A-EEE6-4FD9-A104-2D9FDEABD32A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{91B0806A-EEE6-4FD9-A104-2D9FDEABD32A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D8276681-9300-4D5B-B406-AC36326772FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D8276681-9300-4D5B-B406-AC36326772FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8276681-9300-4D5B-B406-AC36326772FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -60,9 +56,12 @@ Global
 		{5F8A199F-DFDE-469A-B83D-AE805639EE08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F8A199F-DFDE-469A-B83D-AE805639EE08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F8A199F-DFDE-469A-B83D-AE805639EE08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9829D05A-AFCC-4307-B962-D27E3C5B1EF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9829D05A-AFCC-4307-B962-D27E3C5B1EF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9829D05A-AFCC-4307-B962-D27E3C5B1EF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9829D05A-AFCC-4307-B962-D27E3C5B1EF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{91B0806A-EEE6-4FD9-A104-2D9FDEABD32A} = {CBA4DF21-4E2F-4B3D-8E62-08BB60C4D63A}
 		{D8276681-9300-4D5B-B406-AC36326772FB} = {CBA4DF21-4E2F-4B3D-8E62-08BB60C4D63A}
 		{01ADEE31-BAED-48FD-B9C5-2D486408F220} = {CBA4DF21-4E2F-4B3D-8E62-08BB60C4D63A}
 		{CE145C93-F35C-425E-BFB8-A2B9B174ACF2} = {CBA4DF21-4E2F-4B3D-8E62-08BB60C4D63A}
@@ -70,5 +69,6 @@ Global
 		{DD946F57-D69F-4D36-9D7A-7B15A6BBA4E8} = {A91615EC-62BD-40CF-ACDC-BF7CFFA37368}
 		{C97ED780-4AE2-437B-B187-E4734B94B47C} = {DD946F57-D69F-4D36-9D7A-7B15A6BBA4E8}
 		{5F8A199F-DFDE-469A-B83D-AE805639EE08} = {CBA4DF21-4E2F-4B3D-8E62-08BB60C4D63A}
+		{9829D05A-AFCC-4307-B962-D27E3C5B1EF8} = {CBA4DF21-4E2F-4B3D-8E62-08BB60C4D63A}
 	EndGlobalSection
 EndGlobal

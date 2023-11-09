@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 
-namespace InternetBank.Api.MyProblemDetails;
+namespace InternetBank.Web.MyProblemDetails;
 internal sealed class MyProblemDetailsFactory : ProblemDetailsFactory
 {
     private readonly ApiBehaviorOptions _options;

@@ -25,8 +25,8 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand,
                                                   CancellationToken cancellationToken)
     {
         var acc = Account.OpenAccount(request.AccountType,
-                                                      request.Amount,
-                                                      request.UserId);
+                                      request.Amount,
+                                      request.UserId);
         _accountRepository.AddAccount(acc);
         await _unitOfWork.SaveChangesAsync();
 

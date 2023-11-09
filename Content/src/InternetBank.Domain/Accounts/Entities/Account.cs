@@ -159,12 +159,12 @@ public sealed class Account : AggregateRoot
         strArr[2] = str;
         return string.Join(".", strArr);
     }
-    public Account OpenAccount(int type,
+    public static Account OpenAccount(int type,
                                       double amount,
                                       string userId)
     {
         if (type is 1 || type is 2)
-            RaiseDomainEvent(new AccountCreated(Id));
+            // RaiseDomainEvent(new AccountCreated(Id));
             return new Account((AccountTypes)type, amount, userId);
 
         else

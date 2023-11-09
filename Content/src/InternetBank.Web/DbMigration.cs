@@ -1,7 +1,7 @@
 using InternetBank.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace InternetBank.Api;
+namespace InternetBank.Web;
 
 public static class DbMigration
 {

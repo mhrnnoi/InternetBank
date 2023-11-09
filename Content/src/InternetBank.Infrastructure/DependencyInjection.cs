@@ -15,18 +15,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 
 namespace InternetBank.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<IAccountRepository, AccountRepository>();
-        var cred = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"]!)),
-                                          SecurityAlgorithms.HmacSha512);
-
         services.AddScoped<IMapper, ServiceMapper>();
         var typeadapterConfig = TypeAdapterConfig.GlobalSettings;
         typeadapterConfig.Scan(Assembly.GetExecutingAssembly());
