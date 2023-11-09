@@ -1,4 +1,6 @@
 using System.Text.RegularExpressions;
+using ErrorOr;
+using InternetBank.Domain.Common.Errors;
 using InternetBank.Domain.Exceptions.User;
 using Microsoft.AspNetCore.Identity;
 
@@ -29,7 +31,7 @@ public sealed class ApplicationUser : IdentityUser
         PhoneNumber = phoneNumber;
     }
 
-    public static ApplicationUser CreateUser(string firstName,
+    public static ErrorOr<ApplicationUser> CreateUser(string firstName,
                                              string lastName,
                                              string nationalCode,
                                              DateTime birthDate,
@@ -37,10 +39,22 @@ public sealed class ApplicationUser : IdentityUser
                                              string email,
                                              string phoneNumber)
     {
-        FirstNamePersianCheck(firstName);
-        LastNamePersianCheck(lastName);
-        CorrectNationalCodeCheck(nationalCode);
-        BirthDateCheck(birthDate);
+        List<Error> errors = new();
+
+        if (!FirstNamePersianCheck(firstName))
+            errors.Add(Errors.User.FirstNameIsNotFarsi);
+
+        if (!LastNamePersianCheck(lastName))
+            errors.Add(Errors.User.LastNameIsNotFarsi);
+
+        if (!CorrectNationalCodeCheck(nationalCode))
+            errors.Add(Errors.User.IncorrectNationalCode);
+
+        if (!Above18Check(birthDate))
+            errors.Add(Errors.User.Below18);
+
+        if (errors.Any())
+            return errors;
 
         return new ApplicationUser(firstName,
                                    lastName,
@@ -51,18 +65,20 @@ public sealed class ApplicationUser : IdentityUser
                                    phoneNumber);
     }
 
-    private static void BirthDateCheck(DateTime birthDate)
+    private static bool Above18Check(DateTime birthDate)
     {
         if (!(DateTime.UtcNow.Year - birthDate.Year >= 18))
-            throw new Below18();
+            return false;
+        return true;
+        throw new Below18();
 
 
     }
 
-    private static void CorrectNationalCodeCheck(string nationalCode)
+    private static bool CorrectNationalCodeCheck(string nationalCode)
     {
         if (nationalCode.Any(x => char.IsNumber(x) == false))
-            throw new IncorrectNationalCode();
+            return false;
 
         if (nationalCode.Length >= 8 && nationalCode.Length <= 10)
         {
@@ -81,34 +97,32 @@ public sealed class ApplicationUser : IdentityUser
             if (reminder < 2)
             {
                 if (!(reminder == int.Parse(nationalCode[^1].ToString())))
-                    throw new IncorrectNationalCode();
+                    return false;
+                return true;
             }
             else
             {
                 if (!(11 - reminder == int.Parse(nationalCode[^1].ToString())))
-                    throw new IncorrectNationalCode();
+                    return false;
+                return true;
             }
         }
-        else
-            throw new IncorrectNationalCode();
-
-
-
-
-
+        return false;
     }
 
-    private static void FirstNamePersianCheck(string input)
+    private static bool FirstNamePersianCheck(string input)
     {
         string pattern = @"^[\u0600-\u06FF\s-]+$";
         if (!Regex.IsMatch(input, pattern))
-            throw new FirstNameIsNotFarsi();
+            return false;
+        return true;
     }
-    private static void LastNamePersianCheck(string input)
+    private static bool LastNamePersianCheck(string input)
     {
         string pattern = @"^[\u0600-\u06FF\s-]+$";
         if (!Regex.IsMatch(input, pattern))
-            throw new LastNameIsNotFarsi();
+            return false;
+        return true;
     }
 
 }

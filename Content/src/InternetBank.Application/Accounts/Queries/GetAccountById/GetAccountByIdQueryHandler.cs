@@ -1,3 +1,5 @@
+using ErrorOr;
+using InternetBank.Domain.Common.Errors;
 using InternetBank.Domain.Exceptions.User;
 using InternetBank.Domain.Repositories;
 using MapsterMapper;
@@ -5,7 +7,7 @@ using MediatR;
 
 namespace InternetBank.Application.Accounts.Queries.GetAccountById;
 
-public class GetAccountByIdQueryHandler : IRequestHandler<GetAccountByIdQuery, AccountDTO>
+public class GetAccountByIdQueryHandler : IRequestHandler<GetAccountByIdQuery, ErrorOr<AccountDTO>>
 {
     private readonly IAccountRepository _accountRepository;
     private readonly IMapper _mapper;
@@ -16,9 +18,12 @@ public class GetAccountByIdQueryHandler : IRequestHandler<GetAccountByIdQuery, A
         _mapper = mapper;
     }
 
-    public async Task<AccountDTO> Handle(GetAccountByIdQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<AccountDTO>> Handle(GetAccountByIdQuery request, CancellationToken cancellationToken)
     {
-        var acc = await _accountRepository.GetById(request.Id, request.UserId) ?? throw new NotFoundAccountById();
+        var acc = await _accountRepository.GetById(request.Id, request.UserId);
+
+        if (acc is null)
+            return Errors.User.NotFoundAccountById;
         var accDTO = _mapper.Map<AccountDTO>(acc);
         return accDTO ;
 

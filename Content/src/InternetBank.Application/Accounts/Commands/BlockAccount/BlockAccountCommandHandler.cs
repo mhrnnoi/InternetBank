@@ -1,3 +1,6 @@
+using ErrorOr;
+using InternetBank.Domain.Accounts.Entities;
+using InternetBank.Domain.Common.Errors;
 using InternetBank.Domain.Exceptions.User;
 using InternetBank.Domain.Interfaces.UOF;
 using InternetBank.Domain.Repositories;
@@ -5,7 +8,7 @@ using MediatR;
 
 namespace InternetBank.Application.Accounts.Commands.BlockAccount;
 
-public class BlockAccountCommandHandler : IRequestHandler<BlockAccountCommand, bool>
+public class BlockAccountCommandHandler : IRequestHandler<BlockAccountCommand, ErrorOr<bool>>
 {
     private readonly IAccountRepository _accountRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -16,10 +19,14 @@ public class BlockAccountCommandHandler : IRequestHandler<BlockAccountCommand, b
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<bool> Handle(BlockAccountCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<bool>> Handle(BlockAccountCommand request, CancellationToken cancellationToken)
     {
         var acc = await _accountRepository.GetById(request.Id,
-                                                   request.UserId) ?? throw new NotFoundAccountById();
+                                                   request.UserId);
+        if (acc is null)
+        {
+            return Errors.Account.InvalidAccountType;
+        }
         acc.BlockAccount();
         await _unitOfWork.SaveChangesAsync();
         return true;

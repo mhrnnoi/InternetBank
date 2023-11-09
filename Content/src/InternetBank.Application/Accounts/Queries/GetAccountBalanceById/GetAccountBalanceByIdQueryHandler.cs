@@ -1,3 +1,5 @@
+using ErrorOr;
+using InternetBank.Domain.Common.Errors;
 using InternetBank.Domain.Exceptions.User;
 using InternetBank.Domain.Interfaces.UOF;
 using InternetBank.Domain.Repositories;
@@ -5,7 +7,7 @@ using MediatR;
 
 namespace InternetBank.Application.Accounts.Queries.GetAccountBalanceById;
 
-public class GetAccountBalanceByIdQueryHandler : IRequestHandler<GetAccountBalanceByIdQuery, BalanceDTO>
+public class GetAccountBalanceByIdQueryHandler : IRequestHandler<GetAccountBalanceByIdQuery, ErrorOr<BalanceDTO>>
 {
     private readonly IAccountRepository _accountRepository;
 
@@ -15,11 +17,14 @@ public class GetAccountBalanceByIdQueryHandler : IRequestHandler<GetAccountBalan
         _accountRepository = accountRepository;
     }
 
-    public async Task<BalanceDTO> Handle(GetAccountBalanceByIdQuery request,
+    public async Task<ErrorOr<BalanceDTO>> Handle(GetAccountBalanceByIdQuery request,
                                      CancellationToken cancellationToken)
     {
         var acc = await _accountRepository.GetById(request.Id,
-                                                   request.UserId) ?? throw new NotFoundAccountById();
+                                                   request.UserId);
+        if (acc is null)
+            return Errors.User.NotFoundAccountById;
+            
         return new BalanceDTO(acc.Amount,
                               acc.Id,
                               acc.AccountNumber);

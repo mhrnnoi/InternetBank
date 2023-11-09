@@ -6,11 +6,11 @@ public interface ITransactionRepository
 {
     void Add(Transaction transactions);
     Task<Transaction?> GetByOTP(string otp,
-                                             double amount,
-                                            string userId);
-    Task<List<Transaction>> GetByDateAndSuccess(DateOnly? from,
-                                                             DateOnly? to,
-                                                             bool? isSuccess);
+                                double amount);
+    Task<List<Transaction>> GetByDateAndSuccess(DateOnly from,
+                                                DateOnly to,
+                                                bool isSuccess);
+    Task<List<Transaction>> GetLastFive();
 
      string SendOTP(string receptor,
                    double amount);

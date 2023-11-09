@@ -2,8 +2,6 @@ using ErrorOr;
 using InternetBank.Domain.Abstracts.Primitives;
 using InternetBank.Domain.Accounts.Enums;
 using InternetBank.Domain.Common.Errors;
-using InternetBank.Domain.DomainEvents;
-using InternetBank.Domain.Exceptions.Account;
 using InternetBank.Domain.Transactions.Entities;
 using InternetBank.Domain.ValueObjects;
 
@@ -24,18 +22,25 @@ public sealed class Account : AggregateRoot
     public bool IsBlocked { get; private set; }
     private Account(AccountTypes accountType,
                     double amount,
-                    string userId)
+                    string userId,
+                    string accountNumber,
+                    string cardNumber,
+                    string cvv2,
+                    string staticPassword,
+                    string expiryYear,
+                    string expiryMonth)
     {
 
         AccountType = accountType;
         Amount = amount;
         UserId = userId;
         IsBlocked = false;
-        AccountNumber = GenerateAccountNumber();
-        CardNumber = GenerateCartNumber();
-        Cvv2 = GenerateCVV2();
-        StaticPassword = GeneratePassword();
-        SetExpiry();
+        AccountNumber = accountNumber;
+        CardNumber = cardNumber;
+        Cvv2 = cvv2;
+        StaticPassword = staticPassword;
+        ExpiryYear = expiryYear;
+        ExpiryMonth = expiryMonth;
     }
     public string Balance()
     {
@@ -49,17 +54,20 @@ public sealed class Account : AggregateRoot
     {
         Amount -= amount;
     }
-    public string Report()
+
+    public static ErrorOr<bool> BlockAccount(Account? account)
     {
-        return "" + StaticPassword;
+        if (account is null)
+            return Errors.Account.AccountIsNotYours;
+        account.IsBlocked = true;
+        return true;
     }
-    public void BlockAccount()
+    public static ErrorOr<bool> UnBlockAccount(Account? account)
     {
-        IsBlocked = true;
-    }
-    public void UnBlockAccount()
-    {
-        IsBlocked = false;
+        if (account is null)
+            return Errors.Account.AccountIsNotYours;
+        account.IsBlocked = false;
+        return true;
     }
     private static string GeneratePassword()
     {
@@ -72,17 +80,20 @@ public sealed class Account : AggregateRoot
         }
         return str;
     }
-    public ErrorOr<bool> ChangePassword(Password oldPass,
-                               Password newPassword,
-                               RepeatPassword repeatNewPassword)
+    public static ErrorOr<bool> ChangePassword(Password oldPass,
+                                               Password newPassword,
+                                               RepeatPassword repeatNewPassword,
+                                               Account? account)
     {
-        if (oldPass.Value == StaticPassword)
+        if (account is null)
+            return Errors.Account.AccountIsNotYours;
+        if (oldPass.Value == account.StaticPassword)
         {
             if (newPassword.Value == repeatNewPassword.Value)
             {
                 if (newPassword.Value.Length is 6 && newPassword.Value.All(char.IsDigit))
                 {
-                    StaticPassword = newPassword.Value;
+                    account.StaticPassword = newPassword.Value;
                     return true;
                 }
                 else
@@ -94,12 +105,9 @@ public sealed class Account : AggregateRoot
         else
             return Errors.Account.IncorrectPass;
     }
-    private void SetExpiry()
+    private static DateTime SetExpiry()
     {
-        ExpiryYear = DateTime.UtcNow.AddYears(5).Year
-                                    .ToString();
-        ExpiryMonth = DateTime.UtcNow.AddYears(5).Month
-                                     .ToString();
+        return DateTime.UtcNow.AddYears(5);
     }
     private static string GenerateCVV2()
     {
@@ -127,7 +135,7 @@ public sealed class Account : AggregateRoot
         }
         return string.Join("", strArr);
     }
-    private string GenerateAccountNumber()
+    private static string GenerateAccountNumber(string userId, AccountTypes accountType)
     {
         var strArr = new string[3];
         var str = "";
@@ -138,7 +146,7 @@ public sealed class Account : AggregateRoot
         }
         strArr[0] = str;
         str = "";
-        var strUserId = UserId.ToString();
+        var strUserId = userId.ToString();
         for (int i = 0; i < 3; i++)
         {
             str += strUserId[i];
@@ -152,7 +160,7 @@ public sealed class Account : AggregateRoot
         strArr[1] = str;
         str = "";
 
-        if (AccountType == AccountTypes.Saving)
+        if (accountType == AccountTypes.Saving)
             str += 1;
 
         else
@@ -162,16 +170,36 @@ public sealed class Account : AggregateRoot
         return string.Join(".", strArr);
     }
     public static ErrorOr<Account> OpenAccount(int type,
-                                      double amount,
-                                      string userId)
+                                               double amount,
+                                               string userId)
     {
+        List<Error> errors = new();
         if (type is 1 || type is 2)
-            // RaiseDomainEvent(new AccountCreated(Id));
+        {
+            if (amount > 10000)
+            {
+                var accountNumber = GenerateAccountNumber(userId, (AccountTypes)type);
+                var cardNumber = GenerateCartNumber();
+                var cvv2 = GenerateCVV2();
+                var staticPassword = GeneratePassword();
+                var expiryDate = SetExpiry();
+                return new Account((AccountTypes)type,
+                                   amount,
+                                   userId,
+                                   accountNumber,
+                                   cardNumber,
+                                   cvv2,
+                                   staticPassword,
+                                   expiryDate.Year.ToString(),
+                                   expiryDate.Month.ToString());
+            }
+            errors.Add(Errors.Account.MinimumAccountAmount);
+            return errors;
 
-            return new Account((AccountTypes)type, amount, userId);
-
-        else
-            return  Errors.Account.InvalidAccountType;
+        }
+        errors.Add(Errors.Account.InvalidAccountType);
+        return errors;
     }
+
 
 }

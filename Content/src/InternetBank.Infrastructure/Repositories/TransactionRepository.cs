@@ -18,52 +18,30 @@ public class TransactionRepository : ITransactionRepository
         dbContext.Add(transactions);
     }
 
-    public async Task<List<Transaction>> GetByDateAndSuccess(DateOnly? from,
-                                                             DateOnly? to,
-                                                             bool? isSuccess)
+    public async Task<List<Transaction>> GetByDateAndSuccess(DateOnly from,
+                                                             DateOnly to,
+                                                             bool isSuccess)
     {
-        if (from is not null && to is not null && isSuccess is not null)
-            return await dbContext.Where(x => DateOnly.FromDateTime(x.CreatedDateTime) >= from && DateOnly.FromDateTime(x.CreatedDateTime) <= to && x.IsSuccess == isSuccess)
-                                .ToListAsync();
 
-        else if (from is null && to is not null && isSuccess is not null)
-            return await dbContext.Where(x => DateOnly.FromDateTime(x.CreatedDateTime) <= to && x.IsSuccess == isSuccess)
-                                .ToListAsync();
+        return await dbContext.Where(x => DateOnly.FromDateTime(x.CreatedDateTime) >= from
+                                          && DateOnly.FromDateTime(x.CreatedDateTime) <= to
+                                          && x.IsSuccess == isSuccess)
+                                                                      .ToListAsync();
 
-        else if (from is not null && to is null && isSuccess is not null)
-            return await dbContext.Where(x => DateOnly.FromDateTime(x.CreatedDateTime) >= from && x.IsSuccess == isSuccess)
-                    .ToListAsync();
-
-        else if (from is not null && to is not null && isSuccess is null)
-            return await dbContext.Where(x => DateOnly.FromDateTime(x.CreatedDateTime) >= from && DateOnly.FromDateTime(x.CreatedDateTime) <= to)
-                                .ToListAsync();
-
-        else if (from is null && to is null && isSuccess is not null)
-            return await dbContext.Where(x => x.IsSuccess == isSuccess)
-                                .ToListAsync();
-
-        else if (from is null && to is not null && isSuccess is null)
-            return await dbContext.Where(x => DateOnly.FromDateTime(x.CreatedDateTime) <= to)
-                                .ToListAsync();
-
-        else if (from is not null && to is null && isSuccess is null)
-            return await dbContext.Where(x => DateOnly.FromDateTime(x.CreatedDateTime) >= from)
-                                .ToListAsync();
-        else
-        {
-            var transactions = await dbContext.ToListAsync();
-            return transactions.OrderByDescending(x => x.CreatedDateTime).Take(5).ToList();
-        }
 
     }
 
     public async Task<Transaction?> GetByOTP(string otp,
-                                                                 double amount,
-                                                                 string userId)
+                                             double amount)
     {
         return await dbContext.FirstOrDefaultAsync(x => x.Otp == otp
-                                                        && amount == x.Amount
-                                                        && x.UserId == userId);
+                                                        && amount == x.Amount);
+    }
+
+    public async Task<List<Transaction>> GetLastFive()
+    {
+        var transactions = await dbContext.ToListAsync();
+        return transactions.OrderByDescending(x => x.CreatedDateTime).Take(5).ToList();
     }
 
     public string SendOTP(string receptor, double amount)

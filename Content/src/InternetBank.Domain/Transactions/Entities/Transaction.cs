@@ -31,8 +31,8 @@ public sealed class Transaction : Entity
         AccountId = accountId;
     }
     public ErrorOr<string> TransferMoney(Account sourceAccount,
-                                Account destinationAcc,
-                                string userId)
+                                         Account destinationAcc,
+                                         string userId)
     {
         if (UserId != userId)
             return Errors.Transaction.NotYourTransaction;
@@ -69,76 +69,117 @@ public sealed class Transaction : Entity
                                                 string cvv2,
                                                 string userId)
     {
-        CheckCardNumberFormat(sourceAccount.CardNumber);
-        CheckCardNumberFormat(destinationAccount.CardNumber);
-        CheckCVV2(cvv2);
-        CheckExpiry(expiryYear, expiryMonth);
-        CheckAmount(amount);
-        CheckAccounts(sourceAccount,
-                      destinationAccount,
-                      expiryYear,
-                      expiryMonth,
-                      userId,
-                      cvv2);
-                      
+        var inputCheckErrors = CheckInputs(sourceAccount,
+                                     destinationAccount,
+                                     expiryYear,
+                                     expiryMonth,
+                                     amount,
+                                     cvv2);
+        if (inputCheckErrors.Any())
+            return inputCheckErrors;
 
+        var accountCheckErrors = CheckAccounts(sourceAccount,
+                                         destinationAccount,
+                                         expiryYear,
+                                         expiryMonth,
+                                         userId,
+                                         cvv2);
+
+        if (accountCheckErrors.Any())
+            return accountCheckErrors;
+            
         return new Transaction(amount,
                                destinationAccount.CardNumber,
                                userId,
                                sourceAccount.Id);
     }
-    private static ErrorOr<Task> CheckAccounts(Account sourceAccount,
-                                               Account destinationAccount,
-                                               string expiryYear,
-                                               string expiryMonth,
-                                               string userId,
-                                               string cvv2)
+    private static List<Error> CheckInputs(Account sourceAccount,
+                                           Account destinationAccount,
+                                           string expiryYear,
+                                           string expiryMonth,
+                                           double amount,
+                                           string cvv2)
+
+    {
+        var errors = new List<Error>();
+
+        if (!CheckCardNumberFormat(sourceAccount.CardNumber))
+            errors.Add(Errors.Transaction.SourceIncorrectCardNumber);
+
+        if (!CheckCardNumberFormat(destinationAccount.CardNumber))
+            errors.Add(Errors.Transaction.DestinationIncorrectCardNumber);
+
+        if (!CheckCVV2(cvv2))
+            errors.Add(Errors.Transaction.IncorrectCVV2);
+
+        if (!CheckExpiry(expiryYear, expiryMonth))
+            errors.Add(Errors.Account.ExpiredAccount);
+
+        if (!CheckAmount(amount))
+            errors.Add(Errors.Transaction.IncorrectAmountRange);
+
+        return errors;
+    }
+    private static List<Error> CheckAccounts(Account sourceAccount,
+                                             Account destinationAccount,
+                                             string expiryYear,
+                                             string expiryMonth,
+                                             string userId,
+                                             string cvv2)
     {
         var errors = new List<Error>();
 
         if (sourceAccount.UserId != userId)
-            return Errors.Account.AccountIsNotYours;
+        {
+            errors.Add(Errors.Account.AccountIsNotYours);
+            return errors;
+        }
 
         if (sourceAccount.IsBlocked)
             errors.Add(Errors.Transaction.SourceAccountIsBlocked);
 
         if (destinationAccount.IsBlocked)
-            errors.Add (Errors.Transaction.DestinationAccountIsBlocked);
+            errors.Add(Errors.Transaction.DestinationAccountIsBlocked);
 
         if (sourceAccount.ExpiryYear != expiryYear || sourceAccount.ExpiryMonth != expiryMonth)
-            return Errors.Transaction.IncorrectExpiryDate;
+            errors.Add(Errors.Transaction.IncorrectExpiryDate);
 
         if (sourceAccount.Cvv2 != cvv2)
-            return Errors.Transaction.IncorrectCVV2;
+            errors.Add(Errors.Transaction.IncorrectCVV2);
+        return errors;
     }
 
 
-    private static void CheckAmount(double amount)
+    private static bool CheckAmount(double amount)
     {
         if (amount < 1000 || amount > 5000000)
-            return Errors.Transaction.IncorrectAmountRange;
+            return false;
+        return true;
     }
 
-    private static void CheckExpiry(string expiryYear, string expiryMonth)
+    private static bool CheckExpiry(string expiryYear, string expiryMonth)
     {
         if (Convert.ToDateTime(expiryYear + "/" + expiryMonth) < DateTime.UtcNow)
-            return Errors.Transaction.ExpiredAccount;
+            return false;
+        return true;
 
     }
 
-    private static void CheckCVV2(string cVV2)
+    private static bool CheckCVV2(string cVV2)
     {
         if (!(cVV2.All(x => char.IsDigit(x))
                 && cVV2.Length == 4))
-            return Errors.Transaction.IncorrectCVV2;
+            return false;
+        return true;
     }
 
-    private static void CheckCardNumberFormat(string cardNumber)
+    private static bool CheckCardNumberFormat(string cardNumber)
     {
 
         if (!(cardNumber.All(char.IsDigit)
                  && cardNumber.Length == 16))
-            return Errors.Transaction.IncorrectCardNumber;
+            return false;
+        return true;
     }
     public void SetOtp(string otp)
     {

@@ -14,8 +14,10 @@ public static partial class Errors
             description: "Source Account is blocked so no transfering can be done both recieve and send");
         public static Error DestinationAccountIsBlocked => Error.Failure(code : "Transaction.DestinationAccountIsBlocked",
             description: "Destination Account is blocked so no transfering can be done both recieve and send");
-        public static Error IncorrectCardNumber => Error.Failure(code: "Transaction.IncorrectCardNumber",
-            description: "Incorrect Card Number");
+        public static Error SourceIncorrectCardNumber => Error.Failure(code: "Transaction.SourceIncorrectCardNumber",
+            description: "Incorrect source Card Number");
+        public static Error DestinationIncorrectCardNumber => Error.Failure(code: "Transaction.DestinationIncorrectCardNumber",
+            description: "Incorrect destination Card Number");
         public static Error IncorrectCVV2 => Error.Failure(code: "Transaction.IncorrectCVV2",
             description: "Incorrect CVV2");
         public static Error IncorrectExpiryDate => Error.Failure(code: "Transaction.IncorrectExpiryDate",

@@ -1,3 +1,5 @@
+using ErrorOr;
+using InternetBank.Domain.Common.Errors;
 using InternetBank.Domain.Exceptions.Transaction;
 using InternetBank.Domain.Interfaces.UOF;
 using InternetBank.Domain.Repositories;
@@ -5,7 +7,7 @@ using MediatR;
 
 namespace InternetBank.Application.Transactions.Commands.Transfer_Money;
 
-public class TransferMoneyCommandHandler : IRequestHandler<TransferMoneyCommand, string>
+public class TransferMoneyCommandHandler : IRequestHandler<TransferMoneyCommand, ErrorOr<string>>
 {
     private readonly ITransactionRepository _transactionRepository;
     private readonly IAccountRepository _accountRepository;
@@ -21,7 +23,7 @@ public class TransferMoneyCommandHandler : IRequestHandler<TransferMoneyCommand,
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<string> Handle(TransferMoneyCommand request,
+    public async Task<ErrorOr<string>> Handle(TransferMoneyCommand request,
                                      CancellationToken cancellationToken)
     {
         var transaction = await _transactionRepository.GetByOTP(request.Otp,
@@ -30,6 +32,7 @@ public class TransferMoneyCommandHandler : IRequestHandler<TransferMoneyCommand,
 
         var srcAcc = await _accountRepository.GetById(transaction.AccountId,
                                                       request.UserId);
+
         var destAcc = await _accountRepository.GetByCardNumber(transaction.DestinationCardNumber);
 
         if (srcAcc is not null && destAcc is not null)
@@ -37,11 +40,25 @@ public class TransferMoneyCommandHandler : IRequestHandler<TransferMoneyCommand,
             var res = transaction.TransferMoney(srcAcc,
                                                 destAcc,
                                                 request.UserId);
+            if (res.IsError)
+                return res.Errors;
             await _unitOfWork.SaveChangesAsync();
-            return res;
+            return res.Value;
+
+
         }
-        else
-            throw new IncorrectCardNumber();
+        else if (srcAcc is null && destAcc is not null)
+        {
+            return Errors.Transaction.SourceIncorrectCardNumber;
+        }
+        else if (srcAcc is not null && destAcc is null)
+            return Errors.Transaction.DestinationAccountIsBlocked;
+
+        return new List<Error>()
+        {
+            Errors.Transaction.DestinationAccountIsBlocked,
+            Errors.Transaction.SourceIncorrectCardNumber
+        };
 
     }
 }
