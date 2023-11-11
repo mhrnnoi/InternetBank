@@ -1,6 +1,7 @@
 using ErrorOr;
 using InternetBank.Domain.Abstracts.Primitives;
 using InternetBank.Domain.Accounts.Enums;
+using InternetBank.Domain.Accounts.Events;
 using InternetBank.Domain.Common.Errors;
 using InternetBank.Domain.Transactions.Entities;
 using InternetBank.Domain.ValueObjects;
@@ -183,7 +184,9 @@ public sealed class Account : AggregateRoot
                 var cvv2 = GenerateCVV2();
                 var staticPassword = GeneratePassword();
                 var expiryDate = SetExpiry();
-                return new Account((AccountTypes)type,
+
+
+                var account = new Account((AccountTypes)type,
                                    amount,
                                    userId,
                                    accountNumber,
@@ -192,6 +195,8 @@ public sealed class Account : AggregateRoot
                                    staticPassword,
                                    expiryDate.Year.ToString(),
                                    expiryDate.Month.ToString());
+                account.AddDomainEvent(new AccountCreatedDomainEvent(account));
+                return account;
             }
             errors.Add(Errors.Account.MinimumAccountAmount);
             return errors;

@@ -20,8 +20,7 @@ public class GetAccountBalanceByIdQueryHandler : IRequestHandler<GetAccountBalan
     public async Task<ErrorOr<BalanceDTO>> Handle(GetAccountBalanceByIdQuery request,
                                      CancellationToken cancellationToken)
     {
-        var acc = await _accountRepository.GetById(request.Id,
-                                                   request.UserId);
+        var acc = await _accountRepository.GetById(request.Id);
         if (acc is null)
             return Errors.User.NotFoundAccountById;
             

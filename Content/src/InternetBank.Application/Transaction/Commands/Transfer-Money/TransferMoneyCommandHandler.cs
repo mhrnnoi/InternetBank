@@ -27,11 +27,9 @@ public class TransferMoneyCommandHandler : IRequestHandler<TransferMoneyCommand,
                                      CancellationToken cancellationToken)
     {
         var transaction = await _transactionRepository.GetByOTP(request.Otp,
-                                                                request.Amount,
-                                                                request.UserId) ?? throw new WrongOTP();
+                                                                request.Amount) ?? throw new WrongOTP();
 
-        var srcAcc = await _accountRepository.GetById(transaction.AccountId,
-                                                      request.UserId);
+        var srcAcc = await _accountRepository.GetById(transaction.AccountId);
 
         var destAcc = await _accountRepository.GetByCardNumber(transaction.DestinationCardNumber);
 

@@ -6,6 +6,7 @@ using InternetBank.Domain.Interfaces.UOF;
 using InternetBank.Domain.Repositories;
 using InternetBank.Infrastructure.Data;
 using InternetBank.Infrastructure.Identity;
+using InternetBank.Infrastructure.Interceptors;
 using InternetBank.Infrastructure.Repositories;
 using InternetBank.Infrastructure.Services;
 using InternetBank.Infrastructure.UOF;
@@ -31,6 +32,7 @@ public static class DependencyInjection
         services.AddScoped<IJwtGenerator, JwtGenerator>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IIdentityService, IdentityService>();
+        services.AddScoped<PublishDomainEventInterceptors>();
 
         services.AddIdentity<ApplicationUser, IdentityRole>(options =>
         {
@@ -39,9 +41,12 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ApplicationDbContext>((sp, optionBuilder) =>
         {
-            options.UseNpgsql("Host=localhost;Port=5432;Database=InternetBankDb2;Username=mehran;Password=MyPassword@complex3343;");
+
+            var interceptor = sp.GetService<PublishDomainEventInterceptors>();
+            optionBuilder.AddInterceptors(interceptor!);
+            optionBuilder.UseNpgsql("Host=localhost;Port=5432;Database=InternetBankDb2;Username=mehran;Password=MyPassword@complex3343;");
         });
 
         return services;

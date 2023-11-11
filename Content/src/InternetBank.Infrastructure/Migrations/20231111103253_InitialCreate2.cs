@@ -16,8 +16,7 @@ namespace InternetBank.Infrastructure.Migrations
                 name: "Accounts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<string>(type: "text", nullable: false),
                     AccountType = table.Column<int>(type: "integer", nullable: false),
                     Amount = table.Column<double>(type: "double precision", nullable: false),
                     AccountNumber = table.Column<string>(type: "text", nullable: false),
@@ -81,9 +80,8 @@ namespace InternetBank.Infrastructure.Migrations
                 name: "Transactions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AccountId = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    AccountId = table.Column<string>(type: "text", nullable: false),
                     IsSuccess = table.Column<bool>(type: "boolean", nullable: false),
                     Amount = table.Column<double>(type: "double precision", nullable: false),
                     CreatedDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),

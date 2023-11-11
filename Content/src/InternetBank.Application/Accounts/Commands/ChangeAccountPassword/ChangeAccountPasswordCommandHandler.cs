@@ -22,8 +22,7 @@ public class ChangeAccountPasswordCommandHandler : IRequestHandler<ChangeAccount
 
     public async Task<ErrorOr<bool>> Handle(ChangeAccountPasswordCommand request, CancellationToken cancellationToken)
     {
-        var acc = await _accountRepository.GetById(request.AccountId,
-                                                   request.UserId);
+        var acc = await _accountRepository.GetById(request.AccountId);
 
         var oldPass = Password.Create(request.OldPassword);
         var newPass = Password.Create(request.NewPassword);

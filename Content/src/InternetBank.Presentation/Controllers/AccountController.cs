@@ -36,7 +36,7 @@ public class AccountController : ApiController
         command = command with {UserId = userId};
         var result = await _sender.Send(command);
         int? apiVersion = GetApiVersion(HttpContext);
-        return Created($"/api/v{apiVersion}/account" + $"/{result.Id}", result);
+        return Ok("Ok");
     }
 
     [HttpPost("/api/v{version:apiVersion}/account/change-password")]

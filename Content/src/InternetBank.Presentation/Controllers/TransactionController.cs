@@ -48,9 +48,9 @@ public class TransactionController : ApiController
 
     [HttpGet("/api/v{version:apiVersion}/transaction/report")]
     [AllowAnonymous]
-    public async Task<IActionResult> ReportAsync(DateOnly? from,
-                                                 DateOnly? to,
-                                                 bool? isSuccess)
+    public async Task<IActionResult> ReportAsync(DateOnly from,
+                                                 DateOnly to,
+                                                 bool isSuccess)
     {
         var query = new GetReportQuery(from,
                                        to,

@@ -41,11 +41,11 @@ public class Send_OTPCommandHandler : IRequestHandler<Send_OTPCommand, string>
                                                                             request.Cvv2,
                                                                             request.UserId);
 
-        transaction.SetOtp(_transactionRepository.SendOTP(user.PhoneNumber,
+        transaction.Value.SetOtp(_transactionRepository.SendOTP(user.PhoneNumber,
                                                           request.Amount));
-        _transactionRepository.Add(transaction);
+        _transactionRepository.Add(transaction.Value);
         await _unitOfWork.SaveChangesAsync();
-        return transaction.Id;
+        return transaction.Value.Id;
     }
 
 

@@ -17,7 +17,7 @@ public class GetAllAccountsQueryHandler : IRequestHandler<GetAllAccountsQuery, L
 
     public async Task<List<AllAccountsDTO>> Handle(GetAllAccountsQuery request, CancellationToken cancellationToken)
     {
-        var accounts =  await _accountRepository.GetAllAccounts(request.UserId);
+        var accounts =  await _accountRepository.GetAllAccounts();
         var accDTOs =  _mapper.Map<List<AllAccountsDTO>>(accounts);
         return accDTOs;
     }

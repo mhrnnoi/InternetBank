@@ -20,7 +20,7 @@ public class GetAccountByIdQueryHandler : IRequestHandler<GetAccountByIdQuery, E
 
     public async Task<ErrorOr<AccountDTO>> Handle(GetAccountByIdQuery request, CancellationToken cancellationToken)
     {
-        var acc = await _accountRepository.GetById(request.Id, request.UserId);
+        var acc = await _accountRepository.GetById(request.Id);
 
         if (acc is null)
             return Errors.User.NotFoundAccountById;

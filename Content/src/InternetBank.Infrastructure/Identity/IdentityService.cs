@@ -46,10 +46,10 @@ public class IdentityService : IIdentityService
                                               Email,
                                               PhoneNumber);
 
-        var res = await _userManager.CreateAsync(user, Password);
+        var res = await _userManager.CreateAsync(user.Value, Password);
 
         if (res.Succeeded)
-            return user.Id;
+            return user.Value.Id;
 
         var failures = GetErrors(res);
         throw new FluentValidation.ValidationException(failures);

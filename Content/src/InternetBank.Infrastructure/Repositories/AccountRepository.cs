@@ -18,10 +18,9 @@ public class AccountRepository : IAccountRepository
         _context.Add(account);
     }
 
-    public async Task<List<Account>> GetAllAccounts(string userId)
+    public async Task<List<Account>> GetAllAccounts()
     {
-        return await _context.Where(x => x.UserId == userId)
-                             .ToListAsync();
+        return await _context.ToListAsync();
     }
 
     public async Task<Account?> GetByCardNumber(string cardNumber)
@@ -29,10 +28,9 @@ public class AccountRepository : IAccountRepository
         return await _context.FirstOrDefaultAsync(x => x.CardNumber == cardNumber);
     }
 
-    public async Task<Account?> GetById(string AccountId,
-                                        string userId)
+    public async Task<Account?> GetById(string AccountId)
     {
-        return await _context.FirstOrDefaultAsync(x => x.Id == AccountId && x.UserId == userId);
+        return await _context.FirstOrDefaultAsync(x => x.Id == AccountId);
     }
 
 

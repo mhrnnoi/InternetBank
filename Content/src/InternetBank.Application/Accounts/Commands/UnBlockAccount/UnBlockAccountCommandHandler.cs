@@ -20,8 +20,7 @@ public class UnBlockAccountCommandHandler : IRequestHandler<UnBlockAccountComman
 
     public async Task<ErrorOr<bool>> Handle(UnBlockAccountCommand request, CancellationToken cancellationToken)
     {
-        var acc = await _accountRepository.GetById(request.Id,
-                                                   request.UserId);
+        var acc = await _accountRepository.GetById(request.Id);
         var unBlockAccountRes = Account.UnBlockAccount(acc);
         if (unBlockAccountRes.IsError)
             return unBlockAccountRes.Errors;

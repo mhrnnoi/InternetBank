@@ -22,13 +22,10 @@ namespace InternetBank.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("InternetBank.Domain.Accounts.Account", b =>
+            modelBuilder.Entity("InternetBank.Domain.Accounts.Entities.Account", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<string>("AccountNumber")
                         .IsRequired()
@@ -72,16 +69,14 @@ namespace InternetBank.Infrastructure.Migrations
                     b.ToTable("Accounts");
                 });
 
-            modelBuilder.Entity("InternetBank.Domain.Transactions.Transaction", b =>
+            modelBuilder.Entity("InternetBank.Domain.Transactions.Entities.Transaction", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AccountId")
-                        .HasColumnType("integer");
+                    b.Property<string>("AccountId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<double>("Amount")
                         .HasColumnType("double precision");

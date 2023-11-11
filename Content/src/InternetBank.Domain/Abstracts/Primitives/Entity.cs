@@ -1,9 +1,13 @@
+using InternetBank.Domain.Interfaces;
+
 namespace InternetBank.Domain.Abstracts.Primitives;
 
-public abstract class Entity : IEquatable<Entity>
+public abstract class Entity : IEquatable<Entity>, IHasDomainEvents
 {
     public string Id { get; private init; }
+    private readonly List<IDomainEvent> _domainEvents = new();
 
+    public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
     protected Entity()
     {
         Id = Guid.NewGuid().ToString();
@@ -30,6 +34,10 @@ public abstract class Entity : IEquatable<Entity>
             return en.Id == Id;
         return false;
     }
+    protected void AddDomainEvent(IDomainEvent domainEvent)
+    {
+        _domainEvents.Add(domainEvent);
+    }
 
 
     public override int GetHashCode()
@@ -43,4 +51,10 @@ public abstract class Entity : IEquatable<Entity>
             return false;
         return other.Id == Id;
     }
+
+    public void ClearDomainEvents()
+    {
+        _domainEvents.Clear();
+    }
+
 }
