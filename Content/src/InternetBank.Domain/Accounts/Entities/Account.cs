@@ -3,15 +3,15 @@ using InternetBank.Domain.Abstracts.Primitives;
 using InternetBank.Domain.Accounts.Enums;
 using InternetBank.Domain.Accounts.Events;
 using InternetBank.Domain.Common.Errors;
-using InternetBank.Domain.Transactions.Entities;
 using InternetBank.Domain.ValueObjects;
+using Newtonsoft.Json;
 
 namespace InternetBank.Domain.Accounts.Entities;
 
+
 public sealed class Account : AggregateRoot
 {
-    private readonly List<Transaction> transactions = new();
-    public AccountTypes AccountType { get; private set; }
+    public int AccountType { get; private set; }
     public double Amount { get; private set; }
     public string AccountNumber { get; private set; }
     public string CardNumber { get; private set; }
@@ -21,7 +21,9 @@ public sealed class Account : AggregateRoot
     public string ExpiryMonth { get; private set; } = null!;
     public string StaticPassword { get; private set; }
     public bool IsBlocked { get; private set; }
-    private Account(AccountTypes accountType,
+
+    [JsonConstructor]
+    private Account(int accountType,
                     double amount,
                     string userId,
                     string accountNumber,
@@ -43,6 +45,9 @@ public sealed class Account : AggregateRoot
         ExpiryYear = expiryYear;
         ExpiryMonth = expiryMonth;
     }
+
+
+
     public string Balance()
     {
         return "" + Amount + "\n" + Id + "\n" + AccountNumber;
@@ -186,7 +191,7 @@ public sealed class Account : AggregateRoot
                 var expiryDate = SetExpiry();
 
 
-                var account = new Account((AccountTypes)type,
+                var account = new Account(type,
                                    amount,
                                    userId,
                                    accountNumber,

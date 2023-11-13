@@ -4,6 +4,7 @@ using InternetBank.Application.Common.Interfaces;
 using InternetBank.Application.Interfaces;
 using InternetBank.Domain.Interfaces.UOF;
 using InternetBank.Domain.Repositories;
+using InternetBank.Infrastructure.BackgroundJobs;
 using InternetBank.Infrastructure.Data;
 using InternetBank.Infrastructure.Identity;
 using InternetBank.Infrastructure.Interceptors;
@@ -16,6 +17,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Quartz;
 
 namespace InternetBank.Infrastructure;
 
@@ -23,6 +25,22 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
+               services.AddQuartz(configure => 
+        {
+            var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
+
+            configure.AddJob<ProcessOutboxMessagesJob>(jobKey)
+                .AddTrigger(
+                    trigger => trigger.ForJob(jobKey)
+                    .WithSimpleSchedule(schedule => 
+                    schedule.WithIntervalInSeconds(10)
+                    .RepeatForever())
+                );
+
+            // configure.UseMicrosoftDependencyInjectionJobFactory();
+            
+        });
+        services.AddQuartzHostedService();
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<IMapper, ServiceMapper>();
         var typeadapterConfig = TypeAdapterConfig.GlobalSettings;
@@ -32,7 +50,7 @@ public static class DependencyInjection
         services.AddScoped<IJwtGenerator, JwtGenerator>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IIdentityService, IdentityService>();
-        services.AddScoped<PublishDomainEventInterceptors>();
+        services.AddScoped<ConverDomainEventToOutboxMessagesInterceptors>();
 
         services.AddIdentity<ApplicationUser, IdentityRole>(options =>
         {
@@ -44,7 +62,7 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>((sp, optionBuilder) =>
         {
 
-            var interceptor = sp.GetService<PublishDomainEventInterceptors>();
+            var interceptor = sp.GetService<ConverDomainEventToOutboxMessagesInterceptors>();
             optionBuilder.AddInterceptors(interceptor!);
             optionBuilder.UseNpgsql("Host=localhost;Port=5432;Database=InternetBankDb2;Username=mehran;Password=MyPassword@complex3343;");
         });

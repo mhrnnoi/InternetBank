@@ -4,21 +4,13 @@ using InternetBank.Domain.Abstracts.Primitives;
 using InternetBank.Domain.Interfaces;
 using InternetBank.Infrastructure.OutboxMessages;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Newtonsoft.Json;
 
 namespace InternetBank.Infrastructure.Interceptors;
 
-public class PublishDomainEventInterceptors : SaveChangesInterceptor
+public class ConverDomainEventToOutboxMessagesInterceptors : SaveChangesInterceptor
 {
-    private readonly IPublisher _publisher;
-
-    public PublishDomainEventInterceptors(IPublisher publisher)
-    {
-        _publisher = publisher;
-    }
-
     public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData,
                                                                                 InterceptionResult<int> result,
                                                                                 CancellationToken cancellationToken = default)
@@ -39,10 +31,7 @@ public class PublishDomainEventInterceptors : SaveChangesInterceptor
                                                                                                         new JsonSerializerSettings()
                                                                                                         { TypeNameHandling = TypeNameHandling.All })));
 
-        foreach (var domainEvent in domainEvents)
-        {
-            
-        }
+        await dbContext.Set<OutboxMessage>().AddRangeAsync(outboxMessages, cancellationToken);
         return await base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 

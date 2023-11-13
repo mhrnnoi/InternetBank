@@ -3,4 +3,4 @@ using InternetBank.Domain.Accounts.Entities;
 
 namespace InternetBank.Domain.Accounts.Events;
 
-public record AccountCreatedDomainEvent(Account Account) : IDomainEvent;
+public record AccountCreatedDomainEvent(Account? Account) : IDomainEvent;
