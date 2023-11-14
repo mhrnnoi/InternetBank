@@ -3,6 +3,14 @@ namespace InternetBank.Domain.Abstracts.Primitives;
 public abstract class ValueObject : IEquatable<ValueObject>
 {
     public abstract IEnumerable<object> GetAtomicValue();
+    public static bool operator ==(ValueObject left, ValueObject right)
+    {
+        return left.Equals(right);
+    }
+    public static bool operator !=(ValueObject left, ValueObject right)
+    {
+        return !(left == right);
+    }
 
     public override bool Equals(object? obj)
     {
@@ -23,6 +31,7 @@ public abstract class ValueObject : IEquatable<ValueObject>
 
     public override int GetHashCode()
     {
-        return GetAtomicValue().GetHashCode();
+        return GetAtomicValue().Select(x => x?.GetHashCode() ?? 0)
+                               .Aggregate((x, y) => x ^ y);
     }
 }

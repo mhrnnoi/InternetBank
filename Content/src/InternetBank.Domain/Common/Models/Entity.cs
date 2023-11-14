@@ -2,17 +2,17 @@ using InternetBank.Domain.Interfaces;
 
 namespace InternetBank.Domain.Abstracts.Primitives;
 
-public abstract class Entity : IEquatable<Entity>, IHasDomainEvents
+public abstract class Entity<TID> : IEquatable<Entity<TID>>, IHasDomainEvents where TID : notnull
 {
-    public string Id { get; private init; }
+    public TID Id { get; private init; }
     private readonly List<IDomainEvent> _domainEvents = new();
 
     public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
-    protected Entity()
+    protected Entity(TID id)
     {
-        Id = Guid.NewGuid().ToString();
+        Id = id;
     }
-    public static bool operator ==(Entity? e1, Entity? e2)
+    public static bool operator ==(Entity<TID>? e1, Entity<TID>? e2)
     {
         if (e1 is not null)
         {
@@ -22,7 +22,7 @@ public abstract class Entity : IEquatable<Entity>, IHasDomainEvents
         }
         return false;
     }
-    public static bool operator !=(Entity? e1, Entity? e2) => !(e1 == e2);
+    public static bool operator !=(Entity<TID>? e1, Entity<TID>? e2) => !(e1 == e2);
 
 
 
@@ -30,8 +30,8 @@ public abstract class Entity : IEquatable<Entity>, IHasDomainEvents
     {
         if (obj is null || obj.GetType() != GetType())
             return false;
-        if (obj is Entity en)
-            return en.Id == Id;
+        if (obj is Entity<TID> en)
+            return en.Id.Equals(Id);
         return false;
     }
     protected void AddDomainEvent(IDomainEvent domainEvent)
@@ -45,16 +45,17 @@ public abstract class Entity : IEquatable<Entity>, IHasDomainEvents
         return Id.GetHashCode() * 66;
     }
 
-    public bool Equals(Entity? other)
+    public bool Equals(Entity<TID>? other)
     {
         if (other is null || other.GetType() != GetType())
             return false;
-        return other.Id == Id;
+        return other.Id.Equals(Id);
     }
 
     public void ClearDomainEvents()
     {
         _domainEvents.Clear();
     }
+
 
 }

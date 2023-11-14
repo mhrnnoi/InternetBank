@@ -34,12 +34,12 @@ public class Send_OTPCommandHandler : IRequestHandler<Send_OTPCommand, string>
         var user = await _identityService.GetByIdAsync(sourceAccount.UserId);
 
         var transaction = Transaction.CreateTransaction(sourceAccount,
-                                                                            destAccount,
-                                                                            request.ExpiryYear,
-                                                                            request.ExpiryMonth,
-                                                                            request.Amount,
-                                                                            request.Cvv2,
-                                                                            request.UserId);
+                                                        destAccount,
+                                                        request.ExpiryYear,
+                                                        request.ExpiryMonth,
+                                                        request.Amount,
+                                                        request.Cvv2,
+                                                        request.UserId);
 
         transaction.Value.SetOtp(_transactionRepository.SendOTP(user.PhoneNumber,
                                                           request.Amount));
