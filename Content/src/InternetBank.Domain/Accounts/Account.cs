@@ -5,90 +5,122 @@ using InternetBank.Domain.Accounts.Events;
 using InternetBank.Domain.Accounts.ValueObjects;
 using InternetBank.Domain.Common.Errors;
 using InternetBank.Domain.Transactions.Entities;
+using InternetBank.Domain.Transactions.Enums;
 using InternetBank.Domain.ValueObjects;
 using Newtonsoft.Json;
 
 namespace InternetBank.Domain.Accounts.Entities;
 
-public sealed class Account : AggregateRoot<AccountId>
+public sealed class Account 
 {
+    public string Id { get; set; }
     private readonly List<Transaction> _transactions = new();
     public IReadOnlyList<Transaction> Transactions => _transactions.AsReadOnly();
     public AccountTypes AccountType { get; private set; }
     public double Amount { get; private set; }
-    public AccountNumberVO AccountNumber { get; private set; }
-    public CardNumberVO CardNumber { get; private set; }
-    public string UserId { get; init; }
-    public Cvv2VO Cvv2 { get; private set; }
-    public ExpiryDateVO ExpiryDate { get; private set; } = null!;
-    public PasswordVO StaticPassword { get; private set; }
+    // public AccountNumber AccountNumber { get; private set; }
+    // public CardNumber CardNumber { get; private set; }
+    // public Cvv2 Cvv2 { get; private set; }
+    // public ExpiryDate ExpiryDate { get; private set; } = null!;
+    // public Password StaticPassword { get; private set; }
     public bool IsBlocked { get; private set; }
+    public string UserId { get; init; }
 
     [JsonConstructor]
-    private Account(AccountId accountId,
-                    AccountTypes accountType,
+    private Account(string id
+                    , AccountTypes accountType,
                     double amount,
-                    string userId,
-                    AccountNumberVO accountNumber,
-                    CardNumberVO cardNumber,
-                    Cvv2VO cvv2,
-                    PasswordVO staticPassword,
-                    ExpiryDateVO expiryDate) : base(accountId)
+                    string userId)
     {
 
         AccountType = accountType;
         Amount = amount;
-        UserId = userId;
         IsBlocked = false;
-        AccountNumber = accountNumber;
-        CardNumber = cardNumber;
-        Cvv2 = cvv2;
-        StaticPassword = staticPassword;
-        ExpiryDate = expiryDate;
+        // AccountNumber =AccountNumber.GenerateAccountNumber(userId, accountType)  ;//accountNumber
+        // CardNumber = CardNumber.GenerateCartNumber();// cardNumber
+        // Cvv2 = Cvv2.GenerateCVV2();
+        // StaticPassword = Password.GeneratePassword();
+        // ExpiryDate = ExpiryDate.SetExpiry();
+        UserId = userId;
+        Id = id;
     }
 
+    // public Transaction? FindTransaction(double amount,
+    //                                    CardNumber destinationCardNumber)
+    // {
+    //     var transaction = _transactions.FirstOrDefault(x => x.Status == Status.Pending
+    //                                         && amount == x.Amount
+    //                                         && x.DestinationCardNumber == destinationCardNumber);
 
-    public ErrorOr<TransactionId> SetOTP(CardNumberVO destinationAccountCardNumber,
-                                         double amount,
-                                         string otp,
-                                         Cvv2VO cvv2VO,
-                                         ExpiryDateVO expiryDateVO)
-    {
-        if (cvv2VO != Cvv2)
-            return Errors.Transaction.IncorrectCVV2;
+    //     return transaction;
+    // }
+    // public TransactionId AddTransaction(Transaction transaction)
+    // {
+    //     _transactions.Add(transaction);
+    //     return transaction.Id;
+    // }
 
-        if (expiryDateVO != ExpiryDate)
-            return Errors.Transaction.IncorrectExpiryDate;
+    // public string TransferMoney(double amount,
+    //                             Cvv2 cvv2,
+    //                             ExpiryDate expiryDate,
+    //                             Otp otp,
+    //                             Account destAccount,
+    //                             Transaction transaction)
+    // {
 
-        var transaction = _transactions.FirstOrDefault(x => x.Amount == amount
-                                                            && x.DestinationCardNumber == destinationAccountCardNumber
-                                                            && x.IsSuccess == false && x.SourceCardNumber == CardNumber);
+    //     // if (expiryDate != ExpiryDate || cvv2 != Cvv2) //for security reason
+    //     // {
+    //     //     transaction.ChangeDescription("عملیات ناموفق - رمز نادرست ");
+    //     //     transaction.ChangeStatus(Status.Failed);
+    //     //     return transaction.Description;
+    //     // }
+    //     if (transaction.Otp is null || DateTime.UtcNow > transaction.OtpExpireDate || otp != transaction.Otp)
+    //     {
+    //         transaction.ChangeDescription("عملیات ناموفق - رمز نادرست");
+    //         transaction.ChangeStatus(Status.Failed);
+    //         return transaction.Description;
+    //     }
+    //     if (IsBlocked)
+    //     {
+    //         transaction.ChangeDescription("عملیات ناموفق - اکانت مبدا مسدود هست");
+    //         transaction.ChangeStatus(Status.Failed);
+    //         return transaction.Description;
 
-        if (transaction is not null)
-        {
-            transaction.SetOtp(otp);
-            return transaction.Id;
-        }
-        var transactionCreateRes = CreateTransaction(amount, destinationAccountCardNumber);
-        if (transactionCreateRes.IsError)
-            return transactionCreateRes.Errors;
+    //     }
 
-        _transactions.Add(transactionCreateRes.Value);
-        transactionCreateRes.Value.SetOtp(otp);
-        return transactionCreateRes.Value.Id;
-    }
-    
+    //     if (destAccount.IsBlocked)
+    //     {
+    //         transaction.ChangeDescription("عملیات ناموفق - اکانت مقصد مسدود هست");
+    //         transaction.ChangeStatus(Status.Failed);
 
+    //         return transaction.Description;
 
-    public string Balance()
-    {
-        return "" + Amount + "\n" + Id + "\n" + AccountNumber;
-    }
-    private void Deposit(double amount, Transaction transaction)
+    //     }
+
+    //     if (Amount < amount)
+    //     {
+    //         transaction.ChangeDescription("عملیات ناموفق - عدم موجودی");
+    //         transaction.ChangeStatus(Status.Failed);
+
+    //         return transaction.Description;
+
+    //     }
+    //     transaction.ChangeStatus(Status.Success);
+    //     transaction.ChangeDescription("عملیات موفق");
+
+    //     Withdrawl(amount);
+    //     destAccount.Deposit(amount);
+    //     return transaction.Description;
+    // }
+
+    // public string Balance()
+    // {
+    //     //id
+    //     return "" + Amount + "\n"  + "\n" + AccountNumber;
+    // }
+    private void Deposit(double amount)
     {
         Amount += amount;
-        _transactions.Add(transaction);
-
     }
     private void Withdrawl(double amount)
     {
@@ -105,60 +137,53 @@ public sealed class Account : AggregateRoot<AccountId>
         IsBlocked = false;
     }
 
-    public ErrorOr<bool> ChangePassword(PasswordVO oldPass,
-                                        PasswordVO newPassword,
-                                        PasswordVO repeatNewPassword)
-    {
-        if (oldPass == StaticPassword)
-        {
-            if (newPassword == repeatNewPassword)
-            {
-                StaticPassword = newPassword;
-                return true;
-            }
-            else
-                return Errors.Account.PassAndRepeatPassIsNotSame;
-        }
-        else
-            return Errors.Account.IncorrectPass;
-    }
+    // public ErrorOr<bool> ChangePassword(Password oldPass,
+    //                                     Password newPassword,
+    //                                     Password repeatNewPassword)
+    // {
+    //     if (oldPass == StaticPassword)
+    //     {
+    //         if (newPassword == repeatNewPassword)
+    //         {
+    //             StaticPassword = newPassword;
+    //             return true;
+    //         }
+    //         else
+    //             return Errors.Account.PassAndRepeatPassIsNotSame;
+    //     }
+    //     else
+    //         return Errors.Account.IncorrectPass;
+    // }
 
 
     public static ErrorOr<Account> OpenAccount(int type,
                                                double amount,
                                                string userId)
     {
-        List<Error> errors = new();
         if (type is 1 || type is 2)
         {
             if (amount > 10000)
             {
-                var accountNumber = AccountNumberVO.GenerateAccountNumber(userId, type);
-                var cardNumber = CardNumberVO.GenerateCartNumber();
-                var cvv2 = Cvv2VO.GenerateCVV2();
-                var staticPassword = PasswordVO.GeneratePassword();
-                var expiryDate = ExpiryDateVO.SetExpiry();
 
+                var accountType = (AccountTypes)type;
+                // var accountNumber = AccountNumber.GenerateAccountNumber(userId, accountType);
+                // var cardNumber = CardNumber.GenerateCartNumber();
+                // var cvv2 = Cvv2.GenerateCVV2();
+                // var staticPassword = Password.GeneratePassword();
+                // var expiryDate = ExpiryDate.SetExpiry();
+                var accId = "AccountId.GenerateId()";
 
-                var account = new Account(AccountId.GenerateId(),
-                                          (AccountTypes)type,
+                var account = new Account(accId,
+                accountType,
                                           amount,
-                                          userId,
-                                          accountNumber,
-                                          cardNumber,
-                                          cvv2,
-                                          staticPassword,
-                                          expiryDate);
+                                          userId);
 
-                account.AddDomainEvent(new AccountCreatedDomainEvent(account));
+                // account.AddDomainEvent(new AccountCreatedDomainEvent(account));
                 return account;
             }
-            errors.Add(Errors.Account.MinimumAccountAmount);
-            return errors;
-
+            return Errors.Account.MinimumAccountAmount;
         }
-        errors.Add(Errors.Account.InvalidAccountType);
-        return errors;
+        return Errors.Account.InvalidAccountType;
     }
 
 

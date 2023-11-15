@@ -1,5 +1,4 @@
 using ErrorOr;
-using FluentValidation.Results;
 using InternetBank.Application.Authentication.Queries.Common;
 using InternetBank.Application.Interfaces;
 using InternetBank.Domain.Common.Errors;
@@ -20,7 +19,7 @@ public class IdentityService : IIdentityService
         _userManager = userManager;
         _mapper = mapper;
     }
-    public async Task<string> CreateUserAsync(string firstName,
+    public async Task<ErrorOr<string>> CreateUserAsync(string firstName,
                                               string lastName,
                                               string nationalCode,
                                               DateOnly birthDate,
@@ -32,11 +31,11 @@ public class IdentityService : IIdentityService
 
         var isNationalCodeUnique = await IsNationalCodeUnique(nationalCode);
         if (!isNationalCodeUnique)
-            throw new AlreadyExistNationalCode();
+            return Errors.User.AlreadyExistNationalCode;
 
         var isPhoneNumberUnique = await IsPhoneNumberUnique(PhoneNumber);
         if (!isPhoneNumberUnique)
-            throw new AlreadyExistPhoneNumber();
+            return Errors.User.AlreadyExistPhoneNumber;
 
         var user = ApplicationUser.CreateUser(firstName,
                                               lastName,
@@ -52,7 +51,7 @@ public class IdentityService : IIdentityService
             return user.Value.Id;
 
         var failures = GetErrors(res);
-        throw new FluentValidation.ValidationException(failures);
+        return failures;
 
     }
 
@@ -71,12 +70,12 @@ public class IdentityService : IIdentityService
         return true;
     }
 
-    private static List<ValidationFailure> GetErrors(IdentityResult result)
+    private static List<Error> GetErrors(IdentityResult result)
     {
-        var failures = new List<ValidationFailure>();
+        var failures = new List<Error>();
         foreach (var item in result.Errors)
         {
-            failures.Add(new ValidationFailure(item.Code, item.Description));
+            failures.Add(Error.Validation(item.Code, item.Description));
         }
 
         return failures;
@@ -108,8 +107,6 @@ public class IdentityService : IIdentityService
         else
         {
             return Errors.User.InvalidCred;
-            // throw new InvalidCred();
-
         }
 
     }

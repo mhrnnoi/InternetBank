@@ -1,13 +1,11 @@
 using System.Text;
 using Asp.Versioning;
-using InternetBank.Infrastructure.BackgroundJobs;
 using InternetBank.Infrastructure.Services;
 using InternetBank.Web.MyProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Quartz;
 
 namespace InternetBank.Web;
 

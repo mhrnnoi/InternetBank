@@ -1,3 +1,4 @@
+using ErrorOr;
 using MediatR;
 
 namespace InternetBank.Application.Authentication.Commands.Register;
@@ -9,4 +10,4 @@ public record RegisterCommand(string FirstName,
                               string PhoneNumber,
                               string Email,
                               string Username,
-                              string Password) : IRequest<RegisterActionResult>;
+                              string Password) : IRequest<ErrorOr<RegisterActionResult>>;

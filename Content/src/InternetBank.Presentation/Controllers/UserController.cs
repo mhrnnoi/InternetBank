@@ -7,9 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using InternetBank.Application.Authentication.Queries.GetUser;
 using InternetBank.Application.Authentication.Queries.GetUsers;
 using InternetBank.Contracts.Requests.Users;
-using System.Text.RegularExpressions;
 using ErrorOr;
-using System.Security.Cryptography.X509Certificates;
+
 namespace InternetBank.Presentation.Controllers;
 
 [ApiVersion("1.0")]
@@ -28,10 +27,12 @@ public class UserController : ApiController
     [HttpPost("/api/v{version:apiVersion}/user/register")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
+        //vo needed for register command
         var command = _mapper.Map<RegisterCommand>(request);
         var result = await _sender.Send(command);
         var apiVersion = GetApiVersion(HttpContext);
-        return Created($"/api/v{apiVersion}/user/{result.Id}", result);
+        return result.Match(x =>  Created($"/api/v{apiVersion}/user/{result.Value.Id}",
+                                          result), _ => Problem(result.Errors));
     }
     [HttpPost("/api/v{version:apiVersion}/user/login")]
     public async Task<IActionResult> Login(LoginRequest request)

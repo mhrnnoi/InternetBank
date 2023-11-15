@@ -7,7 +7,7 @@ public interface IIdentityService
 {
     Task<List<UserDTO>> GetAllAsync();
     Task<UserDTO> GetByIdAsync(string id);
-    Task<string> CreateUserAsync(string firstName,
+    Task<ErrorOr<string>> CreateUserAsync(string firstName,
                                  string lastName,
                                  string nationalCode,
                                  DateOnly birthDate,

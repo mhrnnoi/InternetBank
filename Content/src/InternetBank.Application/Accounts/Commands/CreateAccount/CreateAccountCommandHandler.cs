@@ -4,6 +4,8 @@ using MapsterMapper;
 using MediatR;
 using InternetBank.Domain.Accounts.Entities;
 using ErrorOr;
+using InternetBank.Domain.Accounts.Enums;
+using InternetBank.Application.Interfaces;
 
 namespace InternetBank.Application.Accounts.Commands.CreateAccount;
 
@@ -12,28 +14,32 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand,
     private readonly IAccountRepository _accountRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IIdentityService _identityService;
 
     public CreateAccountCommandHandler(IAccountRepository accountRepository,
                                        IUnitOfWork unitOfWork,
-                                       IMapper mapper)
+                                       IMapper mapper,
+                                       IIdentityService identityService)
     {
         _accountRepository = accountRepository;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _identityService = identityService;
     }
 
     public async Task<ErrorOr<CreateAccountResult>> Handle(CreateAccountCommand request,
                                                   CancellationToken cancellationToken)
     {
-        var acc = Account.OpenAccount(request.AccountType,
-                                      request.Amount,
-                                      request.UserId);
-        if (acc.IsError)
-            return acc.Errors;
+        var accOrErrors = Account.OpenAccount(request.AccountType,
+                                              request.Amount,
+                                              request.UserId);
+        if (accOrErrors.IsError)
+            return accOrErrors.Errors;
 
-        _accountRepository.AddAccount(acc.Value);
+        _accountRepository.AddAccount(accOrErrors.Value);
+        
         await _unitOfWork.SaveChangesAsync();
-
-        return _mapper.Map<CreateAccountResult>(acc);
+        //Config needed for mapping
+        return _mapper.Map<CreateAccountResult>(accOrErrors.Value);
     }
 }

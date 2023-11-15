@@ -1,5 +1,7 @@
-namespace InternetBank.Application.Accounts.Queries.GetAllAccounts;
+// using InternetBank.Domain.Accounts.ValueObjects;
 
-public record AllAccountsDTO(string AccountNumber,
-                             string Id,
-                             string CardNumber);
+// namespace InternetBank.Application.Accounts.Queries.GetAllAccounts;
+
+// public record AllAccountsDTO(string AccountNumber,
+//                              AccountId Id,
+//                              string CardNumber);

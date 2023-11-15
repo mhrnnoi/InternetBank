@@ -1,7 +1,7 @@
-using ErrorOr;
-using MediatR;
+// using ErrorOr;
+// using InternetBank.Domain.Accounts.ValueObjects;
+// using MediatR;
 
-namespace InternetBank.Application.Accounts.Commands.UnBlockAccount;
+// namespace InternetBank.Application.Accounts.Commands.UnBlockAccount;
 
-public record UnBlockAccountCommand(string Id,
-                                    string UserId) : IRequest<ErrorOr<bool>>;
+// public record UnBlockAccountCommand(string UserId) : IRequest<ErrorOr<bool>>;

@@ -4,6 +4,7 @@ namespace InternetBank.Domain.Abstracts.Primitives;
 
 public abstract class Entity<TID> : IEquatable<Entity<TID>>, IHasDomainEvents where TID : notnull
 {
+    
     public TID Id { get; private init; }
     private readonly List<IDomainEvent> _domainEvents = new();
 

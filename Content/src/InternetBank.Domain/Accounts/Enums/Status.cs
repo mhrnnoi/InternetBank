@@ -2,7 +2,7 @@ namespace InternetBank.Domain.Transactions.Enums;
 
 public enum Status
 {
-    Pending,
+    Pending = 1,
     Failed,
     Success
 }

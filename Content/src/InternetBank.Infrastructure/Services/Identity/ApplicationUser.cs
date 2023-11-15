@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using ErrorOr;
+using InternetBank.Domain.Accounts.ValueObjects;
 using InternetBank.Domain.Common.Errors;
 using InternetBank.Domain.Exceptions.User;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +9,7 @@ namespace InternetBank.Infrastructure.Identity;
 
 public sealed class ApplicationUser : IdentityUser
 {
+
     public string FirstName { get; private init; }
     public string LastName { get; private init; }
     public string NationalCode { get; private init; }

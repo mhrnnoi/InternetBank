@@ -1,4 +1,5 @@
 using InternetBank.Domain.Accounts.Entities;
+using InternetBank.Domain.Accounts.ValueObjects;
 using InternetBank.Domain.Repositories;
 using InternetBank.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -23,15 +24,17 @@ public class AccountRepository : IAccountRepository
         return await _context.ToListAsync();
     }
 
-    public async Task<Account?> GetByCardNumber(string cardNumber)
-    {
-        return await _context.FirstOrDefaultAsync(x => x.CardNumber == cardNumber);
-    }
+    // public async Task<Account?> GetByCardNumber(CardNumber cardNumber)
+    // {
+    //     return await _context.FirstOrDefaultAsync(x => x.CardNumber == cardNumber);
+    // }
 
-    public async Task<Account?> GetById(string AccountId)
-    {
-        return await _context.FirstOrDefaultAsync(x => x.Id == AccountId);
-    }
+
+
+    // public async Task<Account?> GetById(AccountId AccountId)
+    // {
+    //     return await _context.FirstOrDefaultAsync(x => x.Id == AccountId);
+    // }
 
 
 }
