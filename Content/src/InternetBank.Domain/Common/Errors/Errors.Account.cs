@@ -24,5 +24,7 @@ public static partial class Errors
             description: "password and repeat password is not same");
         public static Error MinimumAccountAmount => Error.Failure(code: "Account.MinimumAccountAmount",
             description: "Amount at least should be 10k");
+        public static Error NotFoundAccount => Error.NotFound(code: "Account.NotFound",
+            description: "account is not found");
     }
 }

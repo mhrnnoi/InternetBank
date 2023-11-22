@@ -4,12 +4,11 @@ using MapsterMapper;
 using MediatR;
 using InternetBank.Domain.Accounts.Entities;
 using ErrorOr;
-using InternetBank.Domain.Accounts.Enums;
 using InternetBank.Application.Interfaces;
 
 namespace InternetBank.Application.Accounts.Commands.CreateAccount;
 
-public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand, ErrorOr<CreateAccountResult>>
+public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand, ErrorOr<Guid>>
 {
     private readonly IAccountRepository _accountRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -27,7 +26,7 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand,
         _identityService = identityService;
     }
 
-    public async Task<ErrorOr<CreateAccountResult>> Handle(CreateAccountCommand request,
+    public async Task<ErrorOr<Guid>> Handle(CreateAccountCommand request,
                                                   CancellationToken cancellationToken)
     {
         var accOrErrors = Account.OpenAccount(request.AccountType,
@@ -39,7 +38,6 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand,
         _accountRepository.AddAccount(accOrErrors.Value);
         
         await _unitOfWork.SaveChangesAsync();
-        //Config needed for mapping
-        return _mapper.Map<CreateAccountResult>(accOrErrors.Value);
+        return accOrErrors.Value.Id.Value;
     }
 }

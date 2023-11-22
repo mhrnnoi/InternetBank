@@ -1,6 +1,7 @@
-// using MediatR;
+using InternetBank.Application.Accounts.Queries.GetAccountById;
+using MediatR;
 
-// namespace InternetBank.Application.Accounts.Queries.GetAllAccounts;
+namespace InternetBank.Application.Accounts.Queries.GetAllAccounts;
 
-// public record GetAllAccountsQuery(string UserId) : IRequest<List<AllAccountsDTO>>;
+public record GetUserAllAccountsQuery(string UserId) : IRequest<List<AccountDTO>>;
 

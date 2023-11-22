@@ -1,19 +1,17 @@
+using FluentValidation.Validators;
+using InternetBank.Domain.Abstracts.Primitives;
 using InternetBank.Domain.Accounts.Entities;
 using InternetBank.Domain.Transactions.Entities;
 using InternetBank.Infrastructure.Identity;
-using InternetBank.Infrastructure.Interceptors;
 using InternetBank.Infrastructure.OutboxMessages;
-using MediatR;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
 
 namespace InternetBank.Infrastructure.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public DbSet<Account> Accounts { get; set; }
-    public DbSet<Transaction> Transactions { get; set; }
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
     public ApplicationDbContext()
@@ -32,6 +30,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     }
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        builder
+            .Ignore<List<IDomainEvent>>()
+            .ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         base.OnModelCreating(builder);
     }
 }

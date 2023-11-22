@@ -24,17 +24,23 @@ public class AccountRepository : IAccountRepository
         return await _context.ToListAsync();
     }
 
-    // public async Task<Account?> GetByCardNumber(CardNumber cardNumber)
-    // {
-    //     return await _context.FirstOrDefaultAsync(x => x.CardNumber == cardNumber);
-    // }
+    public async Task<Account?> GetByCardNumber(CardNumber cardNumber)
+    {
+        return await _context.FirstOrDefaultAsync(x => x.CardNumber == cardNumber);
+    }
 
 
 
-    // public async Task<Account?> GetById(AccountId AccountId)
-    // {
-    //     return await _context.FirstOrDefaultAsync(x => x.Id == AccountId);
-    // }
+    public async Task<Account?> GetById(string accountId)
+    {
+        var accId = AccountId.Parse(accountId);
+        if (accId is null)
+            return null;
+        return await _context.FirstOrDefaultAsync(x => x.Id == accId);
+    }
 
-
+    public async Task<List<Account>> GetUserAllAccounts(string UserId)
+    {
+        return await _context.Where(x => x.UserId == UserId).ToListAsync();
+    }
 }

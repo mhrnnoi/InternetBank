@@ -1,9 +1,8 @@
-// using ErrorOr;
-// using InternetBank.Domain.Accounts.ValueObjects;
-// using MediatR;
+using ErrorOr;
+using MediatR;
 
-// namespace InternetBank.Application.Accounts.Queries.GetAccountById;
+namespace InternetBank.Application.Accounts.Queries.GetAccountById;
 
-// public record GetAccountByIdQuery(string UserId) : IRequest<ErrorOr<AccountDTO>>;
+public record GetAccountByIdQuery(string UserId, string AccountId) : IRequest<ErrorOr<AccountDTO>>;
 
 

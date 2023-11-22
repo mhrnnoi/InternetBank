@@ -4,7 +4,7 @@ namespace InternetBank.Domain.Accounts.ValueObjects;
 
 public class TransactionId : ValueObject
 {
-    public Guid Value { get;}
+    public Guid Value { get; }
     private TransactionId(Guid id)
     {
         Value = id;
@@ -18,5 +18,10 @@ public class TransactionId : ValueObject
     public override IEnumerable<object> GetAtomicValue()
     {
         yield return Value;
+    }
+
+    public static TransactionId Create(Guid value)
+    {
+        return new TransactionId(value);
     }
 }

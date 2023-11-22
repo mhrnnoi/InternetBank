@@ -19,4 +19,21 @@ public class AccountId : ValueObject
     {
         yield return Value;
     }
+
+    public static AccountId Create(Guid value)
+    {
+        return new AccountId(value);
+    }
+
+    public static AccountId? Parse(string id)
+    {
+        try
+        {
+            return new AccountId(Guid.Parse(id));
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
 }

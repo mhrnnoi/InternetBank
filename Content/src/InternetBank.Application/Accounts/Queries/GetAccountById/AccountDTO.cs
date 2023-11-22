@@ -1,5 +1,3 @@
-using InternetBank.Domain.Accounts.Enums;
-
 namespace InternetBank.Application.Accounts.Queries.GetAccountById;
 
 public record AccountDTO(string AccountNumber,
@@ -8,5 +6,5 @@ public record AccountDTO(string AccountNumber,
                          string ExpiryYear,
                          string ExpiryMonth,
                          string StaticPassword,
-                         string Id,
-                         AccountTypes AccountType);
+                         Guid Id,
+                         string AccountType);

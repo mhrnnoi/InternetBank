@@ -5,4 +5,4 @@ namespace InternetBank.Application.Accounts.Commands.CreateAccount;
 
 public record CreateAccountCommand(double Amount,
                                    int AccountType,
-                                   string UserId) : IRequest<ErrorOr<CreateAccountResult>>;
+                                   string UserId) : IRequest<ErrorOr<Guid>>;

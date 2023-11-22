@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using InternetBank.Application.Authentication.Queries.GetUser;
 using InternetBank.Application.Authentication.Queries.GetUsers;
 using InternetBank.Contracts.Requests.Users;
-using ErrorOr;
 
 namespace InternetBank.Presentation.Controllers;
 
@@ -27,12 +26,11 @@ public class UserController : ApiController
     [HttpPost("/api/v{version:apiVersion}/user/register")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
-        //vo needed for register command
         var command = _mapper.Map<RegisterCommand>(request);
         var result = await _sender.Send(command);
         var apiVersion = GetApiVersion(HttpContext);
-        return result.Match(x =>  Created($"/api/v{apiVersion}/user/{result.Value.Id}",
-                                          result), _ => Problem(result.Errors));
+        return result.Match(value => Created($"/api/v{apiVersion}/user/{value.Id}",
+                                          value), Problem);
     }
     [HttpPost("/api/v{version:apiVersion}/user/login")]
     public async Task<IActionResult> Login(LoginRequest request)
@@ -40,7 +38,7 @@ public class UserController : ApiController
         
         var command = _mapper.Map<LoginCommand>(request);
         var result = await _sender.Send(command);
-        return result.Match(x => Ok(x), _ => Problem(result.Errors));
+        return result.Match(Ok, Problem);
     }
     [HttpGet("/api/v{version:apiVersion}/user/{id}")]
     public async Task<IActionResult> GetUserById(string id)

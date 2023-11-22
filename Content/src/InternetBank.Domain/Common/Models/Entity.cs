@@ -4,6 +4,13 @@ namespace InternetBank.Domain.Abstracts.Primitives;
 
 public abstract class Entity<TID> : IEquatable<Entity<TID>>, IHasDomainEvents where TID : notnull
 {
+    #pragma warning disable CS8618
+    protected Entity()
+    {
+        
+    }
+    #pragma warning restore CS8618
+
     
     public TID Id { get; private init; }
     private readonly List<IDomainEvent> _domainEvents = new();

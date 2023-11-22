@@ -1,14 +1,16 @@
 namespace InternetBank.Domain.Accounts.ValueObjects;
 
 using InternetBank.Domain.Abstracts.Primitives;
-using InternetBank.Domain.Common.Errors;
 
 public class Otp : ValueObject
 {
     public string Value { get; set; }
+    public DateTime OtpExpireDate { get; private set; }
+
     private Otp(string otp)
     {
         Value = otp;
+        OtpExpireDate = DateTime.UtcNow.AddMinutes(2);
     }
 
     public static Otp GenerateOTP()
@@ -29,5 +31,10 @@ public class Otp : ValueObject
     public override IEnumerable<object> GetAtomicValue()
     {
         yield return Value;
+    }
+
+    public static Otp Create(string value)
+    {
+        return new Otp(value);
     }
 }

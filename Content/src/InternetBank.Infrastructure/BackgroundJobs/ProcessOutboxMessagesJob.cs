@@ -28,7 +28,8 @@ public class ProcessOutboxMessagesJob : IJob
     {
         var messages = await _dbContext.Set<OutboxMessage>()
                                        .Where(x => x.IsProcced == false)
-                                       .Take(20)
+                                       .OrderBy(x => x.OccuredOnUTC)
+                                       .Take(1)
                                        .ToListAsync(context.CancellationToken);
         foreach (var item in messages)
         {

@@ -1,33 +1,33 @@
-// using ErrorOr;
-// using InternetBank.Domain.Common.Errors;
-// using InternetBank.Domain.Exceptions.User;
-// using InternetBank.Domain.Repositories;
-// using MapsterMapper;
-// using MediatR;
+using ErrorOr;
+using InternetBank.Domain.Common.Errors;
+using InternetBank.Domain.Exceptions.User;
+using InternetBank.Domain.Repositories;
+using MapsterMapper;
+using MediatR;
 
-// namespace InternetBank.Application.Accounts.Queries.GetAccountById;
+namespace InternetBank.Application.Accounts.Queries.GetAccountById;
 
-// public class GetAccountByIdQueryHandler : IRequestHandler<GetAccountByIdQuery, ErrorOr<AccountDTO>>
-// {
-//     private readonly IAccountRepository _accountRepository;
-//     private readonly IMapper _mapper;
+public class GetAccountByIdQueryHandler : IRequestHandler<GetAccountByIdQuery, ErrorOr<AccountDTO>>
+{
+    private readonly IAccountRepository _accountRepository;
+    private readonly IMapper _mapper;
 
-//     public GetAccountByIdQueryHandler(IAccountRepository accountRepository, IMapper mapper)
-//     {
-//         _accountRepository = accountRepository;
-//         _mapper = mapper;
-//     }
+    public GetAccountByIdQueryHandler(IAccountRepository accountRepository, IMapper mapper)
+    {
+        _accountRepository = accountRepository;
+        _mapper = mapper;
+    }
 
-//     public async Task<ErrorOr<AccountDTO>> Handle(GetAccountByIdQuery request, CancellationToken cancellationToken)
-//     {
-//         var acc = await _accountRepository.GetById(request.Id);
+    public async Task<ErrorOr<AccountDTO>> Handle(GetAccountByIdQuery request, CancellationToken cancellationToken)
+    {
+        var acc = await _accountRepository.GetById(request.AccountId);
+        if (acc is null || acc.UserId!= request.UserId)
+            return Errors.User.NotFoundAccountById;
 
-//         if (acc is null)
-//             return Errors.User.NotFoundAccountById;
-//         var accDTO = _mapper.Map<AccountDTO>(acc);
-//         return accDTO ;
+        var accDTO = _mapper.Map<AccountDTO>(acc);
+        return accDTO ;
 
 
 
-//     }
-// }
+    }
+}

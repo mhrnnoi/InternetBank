@@ -1,7 +1,6 @@
-// using ErrorOr;
-// using InternetBank.Domain.Accounts.ValueObjects;
-// using MediatR;
+using ErrorOr;
+using MediatR;
 
-// namespace InternetBank.Application.Accounts.Commands.BlockAccount;
+namespace InternetBank.Application.Accounts.Commands.BlockAccount;
 
-// public record BlockAccountCommand(string UserId) :IRequest<ErrorOr<bool>>;
+public record BlockAccountCommand(string AccountId, string UserId) :IRequest<ErrorOr<bool>>;

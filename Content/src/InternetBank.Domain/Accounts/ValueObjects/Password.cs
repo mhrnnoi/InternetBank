@@ -35,4 +35,9 @@ public class Password : ValueObject
         return new Password(password);
 
     }
+
+    public static Password Create(string value)
+    {
+        return new Password(value);
+    }
 }

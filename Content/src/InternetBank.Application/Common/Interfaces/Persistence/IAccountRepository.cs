@@ -6,7 +6,8 @@ namespace InternetBank.Domain.Repositories;
 public interface IAccountRepository
 {
     void AddAccount(Account account);
-    // Task<Account?> GetById(AccountId AccountId);
-    // Task<Account?> GetByCardNumber(CardNumber cardNumber);
+    Task<Account?> GetById(string AccountId);
+    Task<Account?> GetByCardNumber(CardNumber cardNumber);
     Task<List<Account>> GetAllAccounts();
+    Task<List<Account>> GetUserAllAccounts(string UserId);
 }

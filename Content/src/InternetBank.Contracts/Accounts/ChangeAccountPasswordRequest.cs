@@ -1,7 +1,6 @@
 namespace InternetBank.Contracts.Requests.Accounts;
 
-public record ChangeAccountPasswordRequest(int AccountId,
-                                           string UserId,
+public record ChangeAccountPasswordRequest(string AccountId,
                                            string OldPassword,
                                            string NewPassword,
                                            string RepeatNewPassword);
