@@ -81,7 +81,7 @@ public sealed class Account : AggregateRoot<AccountId>
         if (expiryDate != ExpiryDate)
             return Errors.Transaction.IncorrectExpiryDate;
 
-        if ((otp != transaction.Otp) || (DateTime.UtcNow > otp.OtpExpireDate))
+        if ((otp != transaction.Otp) || (DateTime.UtcNow > transaction.OtpExpireDate))
         {
             description = transaction.ChangeDescription(DescriptionTypes.IncorrectPass);
             return description.Value;
@@ -107,7 +107,7 @@ public sealed class Account : AggregateRoot<AccountId>
         destinationAccount.Deposit(amount);
         return description.Value;
     }
-    public ErrorOr<TransactionId> SendOTP(double amount,
+    public ErrorOr<Transaction> SendOTP(double amount,
                                           CardNumber destinationCardNumber)
     {
 
@@ -123,10 +123,14 @@ public sealed class Account : AggregateRoot<AccountId>
 
             transaction = transactionOrError.Value;
             _transactions.Add(transaction);
-            return transaction.Id;
+            return transaction;
         }
 
-        return transaction.SendOtp();
+        var transacitonOrError = transaction.SendOtp();
+        if (transacitonOrError.IsError)
+            return transacitonOrError.Errors;
+
+        return transacitonOrError.Value;
 
 
 
@@ -172,7 +176,7 @@ public sealed class Account : AggregateRoot<AccountId>
 
     public string Balance()
     {
-        return "" + Amount + "\n" + Id + "\n" + AccountNumber;
+        return "" + Amount + "\n" + Id.Value + "\n" + AccountNumber.Value;
     }
     public double Deposit(double amount)
     {

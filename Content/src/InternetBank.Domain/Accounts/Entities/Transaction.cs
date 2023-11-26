@@ -22,6 +22,8 @@ public sealed class Transaction : Entity<TransactionId>
     public CardNumber DestinationCardNumber { get; init; }
     public Status Status { get; set; }
     public Otp Otp { get; private set; }
+    public DateTime OtpExpireDate { get; private set; }
+
 
     private Transaction(TransactionId transactionId,
                         double amount,
@@ -34,6 +36,7 @@ public sealed class Transaction : Entity<TransactionId>
         DestinationCardNumber = destinationCardNumber;
         Description = Description.GenerateDescription(DescriptionTypes.PendingToPaid);
         Otp = Otp.GenerateOTP();
+        OtpExpireDate = DateTime.UtcNow.AddMinutes(2);
     }
     public static ErrorOr<Transaction> CreateTransaction(double amount,
                                                 CardNumber destinationCardNumber)
@@ -54,13 +57,14 @@ public sealed class Transaction : Entity<TransactionId>
         Description = Description.GenerateDescription(descriptionTypes);
         return Description;
     }
-    public ErrorOr<TransactionId> SendOtp()
+    public ErrorOr<Transaction> SendOtp()
     {
-        if (Otp.OtpExpireDate >= DateTime.UtcNow)
+        if (OtpExpireDate >= DateTime.UtcNow)
             return Errors.Transaction.OtpLimit;
 
         Otp = Otp.GenerateOTP();
-        return Id;
+        OtpExpireDate = DateTime.UtcNow.AddMinutes(2);
+        return this;
     }
 
 

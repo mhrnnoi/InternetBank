@@ -21,8 +21,10 @@ public class GetAccountByIdQueryHandler : IRequestHandler<GetAccountByIdQuery, E
     public async Task<ErrorOr<AccountDTO>> Handle(GetAccountByIdQuery request, CancellationToken cancellationToken)
     {
         var acc = await _accountRepository.GetById(request.AccountId);
-        if (acc is null || acc.UserId!= request.UserId)
-            return Errors.User.NotFoundAccountById;
+        if (acc is null )
+            return Errors.Account.NotFoundAccount;
+        if (acc.UserId!= request.UserId)
+            return Errors.Account.AccountIsNotYours;
 
         var accDTO = _mapper.Map<AccountDTO>(acc);
         return accDTO ;

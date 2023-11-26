@@ -48,7 +48,7 @@ public class AccountConfigurations : IEntityTypeConfiguration<Account>
             );
             tb.Property(t => t.Status)
             .HasConversion(
-                type => nameof(type),
+                type => type.ToString(),
                 value => (Status)Enum.Parse(typeof(Status), value)
             );
 

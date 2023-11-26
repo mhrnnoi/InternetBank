@@ -5,14 +5,15 @@ namespace InternetBank.Domain.Repositories;
 
 public interface ITransactionRepository
 {
-    void Add(Transaction transactions);
+    // void Add(Transaction transactions);
     // Task<Transaction?> GetByOTP(string otp,
     //                             double amount);
     // Task<List<Transaction>> GetByDateAndSuccess(DateOnly from,
     //                                             DateOnly to,
     //                                             bool isSuccess);
-    Task<List<Transaction>> GetLastFive();
+    // Task<List<Transaction>> GetLastFive();
 
-     Otp SendOTP(string receptor,
-                   double amount, Otp otp);
+    string SendOTP(string receptor,
+                   double amount,
+                   Otp otp);
 }

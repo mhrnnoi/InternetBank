@@ -1,7 +1,5 @@
-using FluentValidation.Validators;
 using InternetBank.Domain.Abstracts.Primitives;
 using InternetBank.Domain.Accounts.Entities;
-using InternetBank.Domain.Transactions.Entities;
 using InternetBank.Infrastructure.Identity;
 using InternetBank.Infrastructure.OutboxMessages;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

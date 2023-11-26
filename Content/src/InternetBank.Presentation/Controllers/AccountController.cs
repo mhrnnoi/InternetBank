@@ -14,6 +14,7 @@ using InternetBank.Contracts.Requests.Accounts;
 using InternetBank.Domain.Accounts.ValueObjects;
 using System.Text.RegularExpressions;
 using ErrorOr;
+using InternetBank.Application.Accounts.Queries.GetAllAccounts;
 
 namespace InternetBank.Presentation.Controllers;
 
@@ -48,7 +49,7 @@ public class AccountController : ApiController
     {
         var command = _mapper.Map<ChangeAccountPasswordCommand>(request);
         var userId = GetUserId(User.Claims);
-        command = command with {UserId = userId};
+        command = command with { UserId = userId };
         var result = await _sender.Send(command);
         return result.Match(value => Ok(value), Problem);
     }
@@ -64,36 +65,35 @@ public class AccountController : ApiController
     [HttpPost("/api/v{version:apiVersion}/account/unblock/{id}")]
     public async Task<IActionResult> UnBlockAccountById(string id)
     {
-        var userId =  GetUserId(User.Claims);
+        var userId = GetUserId(User.Claims);
         var command = new UnBlockAccountCommand(id, userId);
         var result = await _sender.Send(command);
         return result.Match(value => Ok(value), Problem);
     }
-    // [HttpGet("/api/v{version:apiVersion}/account/balance/{id}")]
-    // public async Task<IActionResult> GetBalance(string id)
-    // {
-    //     var userId = GetUserId(User.Claims);
-    //     var query = new GetAccountBalanceByIdQuery(id,
-    //                                                userId);
-    //     var result = await _sender.Send(query);
-    //     return Ok(result);
-    // }
-    // [HttpGet("/api/v{version:apiVersion}/account/{id}")]
-    // public async Task<IActionResult> GetAccount(string id)
-    // {
-    //     var userId = GetUserId(User.Claims);
-    //     var query = new GetAccountByIdQuery(id,
-    //                                         userId);
-    //     var result = await _sender.Send(query);
-    //     return Ok(result);
-    // }
-    // [HttpGet]
-    // public async Task<IActionResult> GetAllAccounts()
-    // {
-    //     var userId = GetUserId(User.Claims);
-    //     var query = new GetAllAccountsQuery(userId);
-    //     var result = await _sender.Send(query);
-    //     return Ok(result);
-    // }
+    [HttpGet("/api/v{version:apiVersion}/account/balance/{accountId}")]
+    public async Task<IActionResult> GetBalance(string accountId)
+    {
+        var userId = GetUserId(User.Claims);
+        var query = new GetAccountBalanceByIdQuery(userId,
+                                                   accountId);
+        var result = await _sender.Send(query);
+        return result.Match(Ok, Problem);
+    }
+    [HttpGet("/api/v{version:apiVersion}/account/{accountId}")]
+    public async Task<IActionResult> GetAccount(string accountId)
+    {
+        var userId = GetUserId(User.Claims);
+        var query = new GetAccountByIdQuery(userId, accountId);
+        var result = await _sender.Send(query);
+        return result.Match(Ok, Problem);
+    }
+    [HttpGet]
+    public async Task<IActionResult> GetAllAccounts()
+    {
+        var userId = GetUserId(User.Claims);
+        var query = new GetUserAllAccountsQuery(userId);
+        var result = await _sender.Send(query);
+        return Ok(result);
+    }
 
 }

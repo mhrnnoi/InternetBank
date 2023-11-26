@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace InternetBank.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231122124335_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20231126110956_InitialCreate2")]
+    partial class InitialCreate2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -341,6 +341,9 @@ namespace InternetBank.Infrastructure.Migrations
                             b1.Property<string>("Otp")
                                 .IsRequired()
                                 .HasColumnType("text");
+
+                            b1.Property<DateTime>("OtpExpireDate")
+                                .HasColumnType("timestamp with time zone");
 
                             b1.Property<string>("Status")
                                 .IsRequired()

@@ -31,21 +31,21 @@ public class TransactionController : ApiController
         var command = _mapper.Map<Send_OTPCommand>(request);
         command = command with {UserId = userId};
         var result = await _sender.Send(command);
+        return result.Match(Ok, Problem);
+
+    }
+    [HttpPost("/api/v{version:apiVersion}/transaction/transfer-money")]
+    public async Task<IActionResult> TransferMoney(TransferMoneyRequest request)
+    {
+        var userId = GetUserId(User.Claims);
+        var command = new TransferMoneyCommand(request.Otp,
+                                               request.Amount,
+                                               userId,
+                                               request.);
+        var result = await _sender.Send(command);
         return Ok(result);
 
     }
-    // [HttpPost("/api/v{version:apiVersion}/transaction/transfer-money")]
-    // public async Task<IActionResult> TransferMoney(TransferMoneyRequest request)
-    // {
-    //     var userId = GetUserId(User.Claims);
-    //     var command = new TransferMoneyCommand(request.Otp,
-    //                                            request.Amount,
-    //                                            userId,
-    //                                            request.);
-    //     var result = await _sender.Send(command);
-    //     return Ok(result);
-
-    // }
 
     [HttpGet("/api/v{version:apiVersion}/transaction/report")]
     [AllowAnonymous]

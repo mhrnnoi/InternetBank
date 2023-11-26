@@ -18,9 +18,10 @@ public class GetAccountBalanceByIdQueryHandler : IRequestHandler<GetAccountBalan
                                                   CancellationToken cancellationToken)
     {
         var acc = await _accountRepository.GetById(request.AccountId);
-        if (acc is null || acc.UserId != request.UserId)
-            return Errors.User.NotFoundAccountById;
-        
+        if (acc is null )
+            return Errors.Account.NotFoundAccount;
+        if (acc.UserId != request.UserId)
+            return Errors.Account.AccountIsNotYours;
         return acc.Balance();
  
     }
