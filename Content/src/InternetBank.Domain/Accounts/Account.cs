@@ -54,61 +54,68 @@ public sealed class Account : AggregateRoot<AccountId>
     }
 #pragma warning restore CS8618
 
+    public List<Transaction> GetTransactionsByDateAndSuccess(DateOnly? from,
+                                                             DateOnly? to,
+                                                             bool? isSuccess)
+    {
+        return Transactions.Where(x => DateOnly.FromDateTime(x.CreatedDateTime) >= (from ??= DateOnly.FromDateTime(x.CreatedDateTime))
+                                          && DateOnly.FromDateTime(x.CreatedDateTime) <= (to ??= DateOnly.FromDateTime(x.CreatedDateTime))
+                                          && x.IsSuccess == (isSuccess ??= x.IsSuccess)).ToList();
+    }
+
     public ErrorOr<string> TransferMoney(double amount,
                                          Cvv2 cvv2,
                                          DateTime expiryDate,
                                          Otp otp,
                                          Account destinationAccount)
     {
-        Description description;
+        Description? description = null;
         var transaction = _transactions.FirstOrDefault(x => x.Amount == amount
-                                                            && x.DestinationCardNumber == destinationAccount.CardNumber);
+                                                            && x.DestinationCardNumber == destinationAccount.CardNumber
+                                                            && x.Status == Status.Pending);
+        Transaction transaction2;
         if (transaction is null)
         {
-            var transactionOrError = Transaction.CreateTransaction(amount, CardNumber);
+            var transactionOrError = Transaction.CreateTransaction(amount, CardNumber, otp);
             if (transactionOrError.IsError)
                 return transactionOrError.Errors;
 
             transaction = transactionOrError.Value;
-
             description = transaction.ChangeDescription(DescriptionTypes.IncorrectPass);
             _transactions.Add(transaction);
             return description.Value;
         }
+        transaction2 = Transaction.CreateTransaction(amount, destinationAccount.CardNumber, otp).Value;
         if (cvv2 != Cvv2)
-            return Errors.Transaction.IncorrectCVV2;
+            description = transaction2.ChangeDescription(DescriptionTypes.IncorrectCvv2);
 
-        if (expiryDate != ExpiryDate)
-            return Errors.Transaction.IncorrectExpiryDate;
+        if (expiryDate.Year != ExpiryDate.Year || expiryDate.Month != ExpiryDate.Month)
+            description = transaction2.ChangeDescription(DescriptionTypes.IncorrectExpiryDate);
 
-        if ((otp != transaction.Otp) || (DateTime.UtcNow > transaction.OtpExpireDate))
-        {
-            description = transaction.ChangeDescription(DescriptionTypes.IncorrectPass);
-            return description.Value;
-        }
+        if ((transaction.Otp is null) || (otp != transaction.Otp) || (DateTime.UtcNow > transaction.OtpExpireDate.Value))
+            description = transaction2.ChangeDescription(DescriptionTypes.IncorrectPass);
+
         if (IsBlocked)
-        {
-            description = transaction.ChangeDescription(DescriptionTypes.BlockedSourceAccount);
-            return description.Value;
-        }
+            description = transaction2.ChangeDescription(DescriptionTypes.BlockedSourceAccount);
 
         if (destinationAccount.IsBlocked)
-        {
-            description = transaction.ChangeDescription(DescriptionTypes.BlockedDestinationAccount);
-            return description.Value;
-        }
+            description = transaction2.ChangeDescription(DescriptionTypes.BlockedDestinationAccount);
+
         if (Amount < amount)
+            description = transaction2.ChangeDescription(DescriptionTypes.LowBalance);
+
+        if (description is not null)
         {
-            description = transaction.ChangeDescription(DescriptionTypes.LowBalance);
+            _transactions.Add(transaction2);
             return description.Value;
         }
         description = transaction.ChangeDescription(DescriptionTypes.Success);
         Withdrawl(amount);
-        destinationAccount.Deposit(amount);
+        destinationAccount.Deposit(amount, transaction);
         return description.Value;
     }
-    public ErrorOr<Transaction> SendOTP(double amount,
-                                          CardNumber destinationCardNumber)
+    public ErrorOr<Otp> SendOTP(double amount,
+                                CardNumber destinationCardNumber)
     {
 
 
@@ -117,20 +124,21 @@ public sealed class Account : AggregateRoot<AccountId>
                                                             && destinationCardNumber == x.DestinationCardNumber);
         if (transaction is null)
         {
-            var transactionOrError = Transaction.CreateTransaction(amount, destinationCardNumber);
+            var otp = Otp.GenerateOTP();
+            var transactionOrError = Transaction.CreateTransaction(amount, destinationCardNumber, otp);
             if (transactionOrError.IsError)
                 return transactionOrError.Errors;
 
             transaction = transactionOrError.Value;
             _transactions.Add(transaction);
-            return transaction;
+            return otp;
         }
 
         var transacitonOrError = transaction.SendOtp();
         if (transacitonOrError.IsError)
             return transacitonOrError.Errors;
 
-        return transacitonOrError.Value;
+        return transacitonOrError.Value.Otp;
 
 
 
@@ -178,8 +186,11 @@ public sealed class Account : AggregateRoot<AccountId>
     {
         return "" + Amount + "\n" + Id.Value + "\n" + AccountNumber.Value;
     }
-    public double Deposit(double amount)
+    public double Deposit(double amount, Transaction transaction)
     {
+        if (transaction.DestinationCardNumber != CardNumber)
+            _transactions.Add(transaction);
+
         Amount += amount;
         return Amount;
     }

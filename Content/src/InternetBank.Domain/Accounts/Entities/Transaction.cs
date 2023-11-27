@@ -9,12 +9,12 @@ namespace InternetBank.Domain.Transactions.Entities;
 
 public sealed class Transaction : Entity<TransactionId>
 {
-    #pragma warning disable CS8618
+#pragma warning disable CS8618
     private Transaction()
     {
-        
+
     }
-    #pragma warning restore CS8618
+#pragma warning restore CS8618
     public bool IsSuccess { get; private set; }
     public double Amount { get; init; }
     public DateTime CreatedDateTime { get; init; }
@@ -22,12 +22,13 @@ public sealed class Transaction : Entity<TransactionId>
     public CardNumber DestinationCardNumber { get; init; }
     public Status Status { get; set; }
     public Otp Otp { get; private set; }
-    public DateTime OtpExpireDate { get; private set; }
+    public OtpExpireDate OtpExpireDate { get; private set; }
 
 
     private Transaction(TransactionId transactionId,
                         double amount,
-                        CardNumber destinationCardNumber) : base(transactionId)
+                        CardNumber destinationCardNumber,
+                        Otp otp) : base(transactionId)
     {
         Amount = amount;
         Status = Status.Pending;
@@ -35,35 +36,45 @@ public sealed class Transaction : Entity<TransactionId>
         IsSuccess = false;
         DestinationCardNumber = destinationCardNumber;
         Description = Description.GenerateDescription(DescriptionTypes.PendingToPaid);
-        Otp = Otp.GenerateOTP();
-        OtpExpireDate = DateTime.UtcNow.AddMinutes(2);
+        Otp = otp;
+        OtpExpireDate = OtpExpireDate.GenerateOTPExpiryDate();
+
     }
     public static ErrorOr<Transaction> CreateTransaction(double amount,
-                                                CardNumber destinationCardNumber)
+                                                         CardNumber destinationCardNumber,
+                                                         Otp otp)
     {
         if (amount < 1000 || amount > 5000000)
             return Errors.Transaction.IncorrectAmountRange;
         return new Transaction(TransactionId.GenerateId(),
                                amount,
-                               destinationCardNumber);
+                               destinationCardNumber,
+                                otp);
 
     }
 
     public Description ChangeDescription(DescriptionTypes descriptionTypes)
     {
         if (descriptionTypes is DescriptionTypes.Success)
+        {
             IsSuccess = true;
+            Status = Status.Success;
+            Description = Description.GenerateDescription(descriptionTypes);
+            return Description;
+        }
 
+        Status = Status.Failed;
         Description = Description.GenerateDescription(descriptionTypes);
+
         return Description;
     }
     public ErrorOr<Transaction> SendOtp()
     {
-        if (OtpExpireDate >= DateTime.UtcNow)
+        if (OtpExpireDate.Value >= DateTime.UtcNow)
             return Errors.Transaction.OtpLimit;
 
         Otp = Otp.GenerateOTP();
-        OtpExpireDate = DateTime.UtcNow.AddMinutes(2);
+        OtpExpireDate =  OtpExpireDate.GenerateOTPExpiryDate();
         return this;
     }
 

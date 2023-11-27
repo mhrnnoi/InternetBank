@@ -19,12 +19,14 @@ public class Description : ValueObject
     {
         return descriptionTypes switch
         {
-            DescriptionTypes.PendingToPaid => new Description("در نتظار پرداخت"),
+            DescriptionTypes.PendingToPaid => new Description("در انتظار پرداخت"),
             DescriptionTypes.BlockedDestinationAccount => new Description("عملیات ناموفق - اکانت مقصد مسدود هست"),
             DescriptionTypes.BlockedSourceAccount => new Description("عملیات ناموفق - اکانت مبدا مسدود هست"),
             DescriptionTypes.Success => new Description("عملیات موفق"),
             DescriptionTypes.LowBalance => new Description("عملیات ناموفق - عدم موجودی"),
             DescriptionTypes.IncorrectPass => new Description("عملیات ناموفق - رمز نادرست"),
+            DescriptionTypes.IncorrectExpiryDate => new Description("عملیات ناموفق - تاریخ انقضا نامعتبر میباشد "),
+            DescriptionTypes.IncorrectCvv2 => new Description("عملیات ناموفق - رمز نامعتبر میباشد "),
             _ => throw new InvalidDescriptionType(),
         };
     }

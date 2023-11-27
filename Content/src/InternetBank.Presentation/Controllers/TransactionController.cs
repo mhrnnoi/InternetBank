@@ -29,35 +29,39 @@ public class TransactionController : ApiController
     {
         var userId = GetUserId(User.Claims);
         var command = _mapper.Map<Send_OTPCommand>(request);
-        command = command with {UserId = userId};
+        command = command with { UserId = userId };
         var result = await _sender.Send(command);
-        return result.Match(Ok, Problem);
+        return result.Match(value => Ok(value), Problem);
 
     }
     [HttpPost("/api/v{version:apiVersion}/transaction/transfer-money")]
     public async Task<IActionResult> TransferMoney(TransferMoneyRequest request)
     {
         var userId = GetUserId(User.Claims);
-        var command = new TransferMoneyCommand(request.Otp,
-                                               request.Amount,
-                                               userId,
-                                               request.);
+        var command = _mapper.Map<TransferMoneyCommand>(request);
+        command = command with { UserId = userId };
         var result = await _sender.Send(command);
-        return Ok(result);
+        return result.Match(Ok, Problem);
 
     }
 
     [HttpGet("/api/v{version:apiVersion}/transaction/report")]
-    [AllowAnonymous]
-    public async Task<IActionResult> ReportAsync(DateOnly from,
-                                                 DateOnly to,
-                                                 bool isSuccess)
+    public async Task<IActionResult> ReportAsync(string SourceCardNumber,
+                                                 DateOnly? From,
+                                                 DateOnly? To,
+                                                 bool? IsSuccess)
     {
-        var query = new GetReportQuery(from,
-                                       to,
-                                       isSuccess);
+        var userId = GetUserId(User.Claims);
+
+        var query = new GetReportQuery(SourceCardNumber,
+                                       From,
+                                       To,
+                                       IsSuccess,
+                                       userId);
+                                       
         var result = await _sender.Send(query);
-        return Ok(result);
+        return result.Match(Ok, Problem);
+
 
     }
 

@@ -1,6 +1,8 @@
 using System.Security.Cryptography.X509Certificates;
 using InternetBank.Application.Accounts.Queries.GetAccountById;
+using InternetBank.Application.Transactions.Queries.GetReportQuery;
 using InternetBank.Domain.Accounts.Entities;
+using InternetBank.Domain.Transactions.Entities;
 using Mapster;
 
 namespace InternetBank.Presentation.Mapping;
@@ -18,5 +20,13 @@ public class MappingConfig : IRegister
         .Map(dest => dest.ExpiryYear, source => source.ExpiryDate.Year.ToString())
         .Map(dest => dest.Id, source => source.Id.Value)
         .Map(dest => dest.StaticPassword, source => source.StaticPassword.Value);
+
+        config.NewConfig<Transaction, TransactionDTO>()
+        .Map(dest => dest.Description, source => source.Description.Value)
+        .Map(dest => dest.Amount, source => source.Amount)
+        .Map(dest => dest.CreatedDateTime, source => source.CreatedDateTime)
+        .Map(dest => dest.DestinationCardNumber, source => source.DestinationCardNumber.Value)
+        .Map(dest => dest.IsSuccess, source => source.IsSuccess)
+        .Map(dest => dest.Status, source => source.Status.ToString());
     }
 }

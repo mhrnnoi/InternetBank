@@ -31,11 +31,15 @@ public class AccountConfigurations : IEntityTypeConfiguration<Account>
                     .HasConversion(id => id.Value,
                        value => TransactionId.Create(value));
 
-            tb.Property(t => t.Otp)
-           .HasConversion(
-               id => id.Value,
-               value => Otp.Create(value)
+            tb.Property(t => t.Otp).HasConversion(
+            otp => otp.Value,
+            value => Otp.Create(value)
            );
+            tb.Property(t => t.OtpExpireDate).HasConversion(
+            otp => otp.Value,
+            value => OtpExpireDate.Create(value)
+           );
+
             tb.Property(t => t.DestinationCardNumber)
             .HasConversion(
                 id => id.Value,

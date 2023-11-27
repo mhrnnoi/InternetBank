@@ -1,6 +1,5 @@
 using ErrorOr;
 using InternetBank.Domain.Common.Errors;
-using InternetBank.Domain.Exceptions.User;
 using InternetBank.Domain.Repositories;
 using MapsterMapper;
 using MediatR;

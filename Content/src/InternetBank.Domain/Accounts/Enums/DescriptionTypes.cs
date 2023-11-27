@@ -7,6 +7,9 @@ public enum DescriptionTypes
     BlockedSourceAccount,
     BlockedDestinationAccount,
     LowBalance,
-    Success
+    Success,
+    IncorrectCvv2,
+    IncorrectExpiryDate
+
 
 }

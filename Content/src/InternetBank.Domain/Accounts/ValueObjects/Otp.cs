@@ -4,14 +4,11 @@ using InternetBank.Domain.Abstracts.Primitives;
 
 public class Otp : ValueObject
 {
-    public string Value { get; set; }
-
+    public string Value { get; private set; }
     private Otp(string otp)
     {
         Value = otp;
-        
     }
-
     public static Otp GenerateOTP()
     {
         string otp = "";

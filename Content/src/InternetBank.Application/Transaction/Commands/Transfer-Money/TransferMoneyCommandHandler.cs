@@ -1,58 +1,61 @@
-// using ErrorOr;
-// using InternetBank.Domain.Accounts.ValueObjects;
-// using InternetBank.Domain.Common.Errors;
-// using InternetBank.Domain.Exceptions.Transaction;
-// using InternetBank.Domain.Interfaces.UOF;
-// using InternetBank.Domain.Repositories;
-// using MediatR;
+using ErrorOr;
+using InternetBank.Domain.Accounts.ValueObjects;
+using InternetBank.Domain.Common.Errors;
+using InternetBank.Domain.Interfaces.UOF;
+using InternetBank.Domain.Repositories;
+using MediatR;
 
-// namespace InternetBank.Application.Transactions.Commands.Transfer_Money;
+namespace InternetBank.Application.Transactions.Commands.Transfer_Money;
 
-// public class TransferMoneyCommandHandler : IRequestHandler<TransferMoneyCommand, ErrorOr<string>>
-// {
-//     private readonly ITransactionRepository _transactionRepository;
-//     private readonly IAccountRepository _accountRepository;
-//     private readonly IUnitOfWork _unitOfWork;
+public class TransferMoneyCommandHandler : IRequestHandler<TransferMoneyCommand, ErrorOr<string>>
+{
+    private readonly IAccountRepository _accountRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
 
-//     public TransferMoneyCommandHandler(ITransactionRepository transactionRepository,
-//                                        IAccountRepository accountRepository,
-//                                        IUnitOfWork unitOfWork)
-//     {
-//         _transactionRepository = transactionRepository;
-//         _accountRepository = accountRepository;
-//         _unitOfWork = unitOfWork;
-//     }
+    public TransferMoneyCommandHandler(IAccountRepository accountRepository,
+                                       IUnitOfWork unitOfWork)
+    {
+        _accountRepository = accountRepository;
+        _unitOfWork = unitOfWork;
+    }
 
-//     public async Task<ErrorOr<string>> Handle(TransferMoneyCommand request,
-//                                      CancellationToken cancellationToken)
-//     {
-//         var errors = new List<Error>();
-//         var sourceAccount = await _accountRepository.GetByCardNumber(request.SourceCardNumber);
-//         if (sourceAccount is null)
-//             errors.Add(Errors.Transaction.SourceIncorrectCardNumber);
+    public async Task<ErrorOr<string>> Handle(TransferMoneyCommand request,
+                                              CancellationToken cancellationToken)
+    {
+        var sourceCard = CardNumber.Create(request.SourceCardNumber);
+        var destinationCard = CardNumber.Create(request.DestinationCardNumber);
+        var sourceAccount = await _accountRepository.GetByCardNumber(sourceCard);
 
-//         var destinationAccount = await _accountRepository.GetByCardNumber(request.DestCardNumber);
-//         if (sourceAccount is null)
-//             errors.Add(Errors.Transaction.DestinationIncorrectCardNumber);
+        if (sourceAccount is null)
+            return Errors.Transaction.SourceIncorrectCardNumber;
 
-//         if (errors.Any())
-//             return errors;
+        if (sourceAccount.UserId != request.UserId)
+            return Errors.Account.AccountIsNotYours;
 
-//         var otp = Otp.ConvertToOTP(request.Otp);
+        var destinationAccount = await _accountRepository.GetByCardNumber(destinationCard);
 
-//         var transaction = sourceAccount!.FindTransaction(request.Amount, request.DestCardNumber);
-//         if (transaction is null)
-//             return Errors.Account.IncorrectPass;
+        if (destinationAccount is null)
+            return Errors.Transaction.DestinationIncorrectCardNumber;
 
-//         var desc = sourceAccount.TransferMoney(request.Amount,
-//                                                request.Cvv2,
-//                                                request.ExpiryDate,
-//                                                otp,
-//                                                destinationAccount!,
-//                                                transaction);
+        var otp = Otp.ConvertToOTP(request.Otp);
 
-//         return desc;
+        var cvv2 = Cvv2.Create(request.Cvv2);
 
-//     }
-// }
+        var expiryDate = Convert.ToDateTime(request.ExpiryYear + "/" + request.ExpiryMonth);
+
+        var transaction = sourceAccount.TransferMoney(request.Amount,
+                                                      cvv2,
+                                                      expiryDate,
+                                                      otp,
+                                                      destinationAccount);
+
+        if (transaction.IsError)
+            return transaction.Errors;
+
+        await _unitOfWork.SaveChangesAsync();
+
+        return transaction.Value;
+
+    }
+}

@@ -8,7 +8,7 @@ using MediatR;
 
 namespace InternetBank.Application.Transactions.Commands.Send_OTP;
 
-public class Send_OTPCommandHandler : IRequestHandler<Send_OTPCommand, ErrorOr<string>>
+public class Send_OTPCommandHandler : IRequestHandler<Send_OTPCommand, ErrorOr<bool>>
 {
     private readonly ITransactionRepository _transactionRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -26,14 +26,14 @@ public class Send_OTPCommandHandler : IRequestHandler<Send_OTPCommand, ErrorOr<s
         _identityService = identityService;
     }
 
-    public async Task<ErrorOr<string>> Handle(Send_OTPCommand request,
+    public async Task<ErrorOr<bool>> Handle(Send_OTPCommand request,
                                               CancellationToken cancellationToken)
     {
 
-        await _unitOfWork.SaveChangesAsync();
         var sourceCard = CardNumber.Create(request.CardNumber);
         var destinationCard = CardNumber.Create(request.DestinationCardNumber);
         var sourceAccount = await _accountRepository.GetByCardNumber(sourceCard);
+
         if (sourceAccount is null)
             return Errors.Transaction.SourceIncorrectCardNumber;
 
@@ -47,13 +47,14 @@ public class Send_OTPCommandHandler : IRequestHandler<Send_OTPCommand, ErrorOr<s
             return Errors.Transaction.DestinationIncorrectCardNumber;
 
         var transactionOrError = sourceAccount.SendOTP(request.Amount, destinationCard);
+
         if (transactionOrError.IsError)
             return transactionOrError.Errors;
 
-        // _transactionRepository.Add(transactionOrError.Value);
         await _unitOfWork.SaveChangesAsync();
-        _transactionRepository.SendOTP(user.PhoneNumber, request.Amount, transactionOrError.Value.Otp);
-        return transactionOrError.Value.Id.Value.ToString();
+
+        _transactionRepository.SendOTP(user.PhoneNumber, request.Amount, transactionOrError.Value);
+        return true;
 
     }
 

@@ -4,4 +4,4 @@ public record TransactionDTO(string Description,
                              DateTime CreatedDateTime,
                              string DestinationCardNumber,
                              bool IsSuccess,
-                             string AccountId);
+                             string Status);

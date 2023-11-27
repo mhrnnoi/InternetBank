@@ -10,18 +10,7 @@ public class TransactionRepository : ITransactionRepository
 {
 
 
-        // public async Task<List<Transaction>> GetByDateAndSuccess(DateOnly from,
-        //                                                          DateOnly to,
-        //                                                          bool isSuccess)
-        // {
 
-        //     return await dbContext.Where(x => DateOnly.FromDateTime(x.CreatedDateTime) >= from
-        //                                       && DateOnly.FromDateTime(x.CreatedDateTime) <= to
-        //                                       && x.IsSuccess == isSuccess)
-        //                                                                   .ToListAsync();
-
-
-        // }
 
         // public async Task<Transaction?> GetByOTP(string otp,
         //                                          double amount)
