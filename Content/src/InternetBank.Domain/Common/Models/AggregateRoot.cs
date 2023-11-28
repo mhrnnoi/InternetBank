@@ -1,3 +1,4 @@
+
 namespace InternetBank.Domain.Abstracts.Primitives;
 
 public abstract class AggregateRoot<TID>: Entity<TID>

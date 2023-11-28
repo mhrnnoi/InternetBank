@@ -1,6 +1,9 @@
 using InternetBank.Domain.Abstracts.Primitives;
-using InternetBank.Domain.Accounts.Entities;
 
 namespace InternetBank.Domain.Accounts.Events;
 
-public record AccountCreatedDomainEvent(Account? Account) : IDomainEvent;
+public record AccountCreatedDomainEvent(string AccountType,
+                                        double Amount,
+                                        string AccountNumber,
+                                        string CardNumber,
+                                        string UserId) : IDomainEvent;

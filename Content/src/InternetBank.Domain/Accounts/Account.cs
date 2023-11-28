@@ -83,6 +83,18 @@ public sealed class Account : AggregateRoot<AccountId>
             transaction = transactionOrError.Value;
             description = transaction.ChangeDescription(DescriptionTypes.IncorrectPass);
             _transactions.Add(transaction);
+            
+            AddDomainEvent(new TransactionCreatedDomainEvent(transaction.Amount,
+                                                             transaction.DestinationCardNumber.Value,
+                                                             CardNumber.Value,
+                                                             UserId));
+
+            AddDomainEvent(new TransactionCompletedDomainEvent(transaction.Amount,
+                                                             transaction.DestinationCardNumber.Value,
+                                                             CardNumber.Value,
+                                                             UserId));
+
+
             return description.Value;
         }
         transaction2 = Transaction.CreateTransaction(amount, destinationAccount.CardNumber, otp).Value;
@@ -107,11 +119,20 @@ public sealed class Account : AggregateRoot<AccountId>
         if (description is not null)
         {
             _transactions.Add(transaction2);
+            AddDomainEvent(new TransactionCompletedDomainEvent(transaction.Amount,
+                                                             transaction.DestinationCardNumber.Value,
+                                                             CardNumber.Value,
+                                                             UserId));
             return description.Value;
         }
-        description = transaction.ChangeDescription(DescriptionTypes.Success);
         Withdrawl(amount);
+        description = transaction.ChangeDescription(DescriptionTypes.Success);
         destinationAccount.Deposit(amount, transaction);
+        AddDomainEvent(new TransactionCompletedDomainEvent(transaction.Amount,
+                                                           transaction.DestinationCardNumber.Value,
+                                                           CardNumber.Value,
+                                                           UserId));
+
         return description.Value;
     }
     public ErrorOr<Otp> SendOTP(double amount,
@@ -131,6 +152,11 @@ public sealed class Account : AggregateRoot<AccountId>
 
             transaction = transactionOrError.Value;
             _transactions.Add(transaction);
+            AddDomainEvent(new TransactionCreatedDomainEvent(transaction.Amount,
+                                                             transaction.DestinationCardNumber.Value,
+                                                             CardNumber.Value,
+                                                             UserId));
+
             return otp;
         }
 
@@ -171,7 +197,11 @@ public sealed class Account : AggregateRoot<AccountId>
                                           cvv2,
                                           staticPassword,
                                           expiryDate);
-                account.AddDomainEvent(new AccountCreatedDomainEvent(account));
+                account.AddDomainEvent(new AccountCreatedDomainEvent(account.AccountType.ToString(),
+                                                                     amount,
+                                                                     account.AccountNumber.Value,
+                                                                     account.CardNumber.Value,
+                                                                     userId));
                 return account;
             }
             errors.Add(Errors.Account.MinimumAccountAmount);
